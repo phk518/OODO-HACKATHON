@@ -1,1 +1,1 @@
-# OODO-HACKATHON
+# Odoo x KAHE Hackathon 26 
