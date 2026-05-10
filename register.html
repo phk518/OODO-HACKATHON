@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register — Traveloop</title>
+<meta name="description" content="Create your Traveloop account and start planning your perfect trip."/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    darkMode:"class",
+    theme:{
+      extend:{
+        colors:{
+          "primary":"#031632","primary-container":"#1a2b48","on-primary":"#ffffff",
+          "primary-fixed":"#d7e2ff","primary-fixed-dim":"#b6c7eb","on-primary-fixed":"#081b38",
+          "on-primary-container":"#8293b5","secondary":"#ac3509","secondary-container":"#fe6f42",
+          "on-secondary":"#ffffff","on-secondary-container":"#631800",
+          "surface":"#fbf9fb","surface-variant":"#e4e2e5","surface-container":"#efedf0",
+          "surface-container-low":"#f5f3f6","surface-container-lowest":"#ffffff",
+          "surface-container-high":"#e9e7ea","surface-container-highest":"#e4e2e5",
+          "surface-dim":"#dbd9dc","on-surface":"#1b1b1e","on-surface-variant":"#44474d",
+          "outline":"#75777e","outline-variant":"#c5c6ce","background":"#fbf9fb",
+          "on-background":"#1b1b1e","error":"#ba1a1a","on-error":"#ffffff",
+          "inverse-surface":"#303033","inverse-on-surface":"#f2f0f3",
+        },
+        borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},
+        spacing:{
+          "xs":"4px","sm":"8px","md":"16px","lg":"24px","xl":"40px",
+          "gutter":"24px","margin-desktop":"32px","margin-mobile":"16px","container-max":"1280px"
+        },
+        fontFamily:{sans:["Plus Jakarta Sans","sans-serif"]},
+        fontSize:{
+          "body-sm": ["14px",{lineHeight:"20px",fontWeight:"400"}],
+          "body-md": ["16px",{lineHeight:"24px",fontWeight:"400"}],
+          "body-lg": ["18px",{lineHeight:"28px",fontWeight:"400"}],
+          "label-md":["12px",{lineHeight:"16px",letterSpacing:"0.05em",fontWeight:"600"}],
+          "headline-sm":["20px",{lineHeight:"28px",fontWeight:"600"}],
+          "headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],
+          "headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"700"}],
+          "headline-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .registration-card { box-shadow:0px 2px 4px rgba(3,22,50,0.05); transition:box-shadow .3s; }
+  .registration-card:hover { box-shadow:0px 8px 16px rgba(3,22,50,0.08); }
+  .input-field {
+    background:#f5f3f6;border:1px solid #c5c6ce;border-radius:0.5rem;
+    padding:12px 16px;font-size:16px;line-height:24px;width:100%;
+    transition:border-color .2s,box-shadow .2s;outline:none;
+  }
+  .input-field:focus { border-color:#031632;box-shadow:0 0 0 2px rgba(3,22,50,.12); }
+  .error-msg { display:none;color:#ba1a1a;font-size:12px;margin-top:4px; }
+</style>
+</head>
+<body class="bg-surface font-sans text-on-surface">
+
+<main class="min-h-screen flex flex-col md:flex-row">
+
+  <!-- Left Visual Panel -->
+  <section class="hidden md:flex md:w-1/2 lg:w-5/12 bg-primary relative overflow-hidden items-center justify-center p-xl">
+    <div class="absolute inset-0 opacity-40">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWPUOg7FgFVcQRuJryCZSaEv1oAFh8GdL3EySRvLTWxDR8K60vX3mTyHSLtrnIxYQaASoV47asyqgFlQI5N2DFN2oX1AhfqDlTtZblzbWsmifFA4Eat008ic_TQc9v7aXjJUt1JkhT9rjXJvg3dL-Ek7WTz11ljM5_fnSgu_LORaIESNydOnZF726BvMO54Cgy52Z8mlRWWMy4sHxOIRbVLCWFP4rEsWDhILVQ3PoI7jGHysGHyb2wXu-BVOo9__joi2glCMMZU5o"
+           alt="Travel scenery" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent"></div>
+    </div>
+    <div class="relative z-10 text-white max-w-md">
+      <div class="mb-lg flex items-center gap-3">
+        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-[22px]" style="font-variation-settings:'FILL' 1;">explore</span>
+        </div>
+        <span class="text-headline-xl font-extrabold tracking-tight">Traveloop</span>
+      </div>
+      <h1 class="text-headline-lg mb-md">Your journey begins with a single step.</h1>
+      <p class="text-body-lg opacity-90">Join thousands of travellers who plan, track, and share their adventures with ease.</p>
+      <div class="mt-xl flex flex-col gap-md">
+        <div class="flex items-center gap-md">
+          <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-white">flight_takeoff</span>
+          </div>
+          <div>
+            <p class="font-bold text-body-md">Seamless Itineraries</p>
+            <p class="text-body-sm opacity-70">Connect every stop, activity, and budget.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-md">
+          <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-white">map</span>
+          </div>
+          <div>
+            <p class="font-bold text-body-md">50+ Global Destinations</p>
+            <p class="text-body-sm opacity-70">Discover curated cities across every continent.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-md">
+          <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-white">people</span>
+          </div>
+          <div>
+            <p class="font-bold text-body-md">Community & Sharing</p>
+            <p class="text-body-sm opacity-70">Share your plans and get inspired by others.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Right Form Panel -->
+  <section class="flex-1 flex flex-col justify-center items-center px-4 md:px-8 py-10 bg-background overflow-y-auto">
+    <div class="w-full max-w-xl">
+
+      <!-- Mobile Branding -->
+      <div class="md:hidden mb-8 text-center">
+        <span class="text-headline-md font-bold text-primary">Traveloop</span>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-headline-md text-on-surface">Create your account</h2>
+        <p class="text-body-md text-on-surface-variant mt-1">Start your next adventure today — it's free.</p>
+      </div>
+
+      <!-- Form -->
+      <form id="register-form" class="registration-card bg-white p-6 md:p-8 rounded-xl border border-outline-variant flex flex-col gap-6" onsubmit="handleRegister(event)">
+
+        <!-- Row 1: Name -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="first_name">First Name *</label>
+            <input class="input-field" id="first_name" placeholder="Alex" type="text" required/>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="last_name">Last Name *</label>
+            <input class="input-field" id="last_name" placeholder="Smith" type="text" required/>
+          </div>
+        </div>
+
+        <!-- Row 2: Contact -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="email">Email Address *</label>
+            <input class="input-field" id="email" placeholder="you@example.com" type="email" required/>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="phone">Phone Number</label>
+            <input class="input-field" id="phone" placeholder="+1 (555) 000-0000" type="tel"/>
+          </div>
+        </div>
+
+        <!-- Row 3: Location -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="city">City</label>
+            <input class="input-field" id="city" placeholder="New York" type="text"/>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="country">Country</label>
+            <input class="input-field" id="country" placeholder="United States" type="text"/>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="password">Password *</label>
+            <div class="relative">
+              <input class="input-field pr-12" id="password" placeholder="Min. 6 characters" type="password" minlength="6" required/>
+              <button type="button" onclick="togglePwd('password','pwd-eye')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[20px]" id="pwd-eye">visibility</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-label-md text-on-surface-variant" for="confirm">Confirm Password *</label>
+            <div class="relative">
+              <input class="input-field pr-12" id="confirm" placeholder="Re-enter password" type="password" required/>
+              <button type="button" onclick="togglePwd('confirm','conf-eye')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[20px]" id="conf-eye">visibility</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="flex flex-col gap-1">
+          <label class="text-label-md text-on-surface-variant" for="additional_info">About You (optional)</label>
+          <textarea class="input-field resize-none" id="additional_info" placeholder="Tell us about your travel style or interests…" rows="3"></textarea>
+        </div>
+
+        <!-- Terms -->
+        <div class="flex items-start gap-3">
+          <input id="terms" type="checkbox" required class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary"/>
+          <label class="text-body-sm text-on-surface-variant" for="terms">
+            I agree to the <a class="text-primary font-bold hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-bold hover:underline" href="#">Privacy Policy</a>.
+          </label>
+        </div>
+
+        <!-- Error -->
+        <div id="form-error" class="error-msg text-sm"></div>
+
+        <!-- Submit -->
+        <button type="submit" id="submit-btn"
+          class="bg-primary text-white py-4 px-8 rounded-lg font-bold text-body-md shadow-sm active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[20px]">person_add</span>
+          Create Account
+        </button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-body-md text-on-surface-variant">
+          Already have an account?
+          <a class="text-secondary font-bold hover:underline" href="index.html">Sign in here</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container-highest py-10">
+  <div class="max-w-5xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div>
+      <span class="text-headline-sm font-bold text-primary">Traveloop</span>
+      <p class="text-body-sm text-on-surface-variant mt-2">Plan, track, and share your adventures with professional precision.</p>
+    </div>
+    <div class="flex flex-col gap-2">
+      <span class="text-label-md text-on-surface uppercase tracking-wider">Company</span>
+      <a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">About Us</a>
+      <a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="community.html">Community</a>
+    </div>
+    <div class="flex flex-col gap-2">
+      <span class="text-label-md text-on-surface uppercase tracking-wider">Legal</span>
+      <a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+      <a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+    </div>
+    <div class="flex flex-col gap-2">
+      <span class="text-label-md text-on-surface uppercase tracking-wider">Support</span>
+      <a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+      <div class="flex gap-2 mt-1">
+        <span class="material-symbols-outlined text-primary">mail</span>
+        <span class="material-symbols-outlined text-primary">help</span>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-5xl mx-auto px-8 mt-8 pt-6 border-t border-outline-variant text-center">
+    <p class="text-body-sm text-on-surface-variant opacity-70">© 2025 Traveloop. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="js/db.js"></script>
+<script>
+  if (Session.get()) window.location.href = 'dashboard.html';
+
+  function togglePwd(inputId, iconId) {
+    const inp  = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (inp.type === 'password') { inp.type = 'text';     icon.textContent = 'visibility_off'; }
+    else                         { inp.type = 'password'; icon.textContent = 'visibility'; }
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    const errEl   = document.getElementById('form-error');
+    errEl.style.display = 'none';
+
+    const first   = document.getElementById('first_name').value.trim();
+    const last    = document.getElementById('last_name').value.trim();
+    const email   = document.getElementById('email').value.trim().toLowerCase();
+    const phone   = document.getElementById('phone').value.trim();
+    const city    = document.getElementById('city').value.trim();
+    const country = document.getElementById('country').value.trim();
+    const pass    = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm').value;
+    const bio     = document.getElementById('additional_info').value.trim();
+
+    if (pass !== confirm) {
+      errEl.textContent = 'Passwords do not match.';
+      errEl.style.display = 'block'; return;
+    }
+    if (Users.findByEmail(email)) {
+      errEl.textContent = 'An account with this email already exists. Sign in instead.';
+      errEl.style.display = 'block'; return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> Creating...';
+
+    setTimeout(() => {
+      const user = Users.create({
+        name: `${first} ${last}`, email, password: btoa(pass),
+        phone, city, country, bio, language: 'en'
+      });
+      Session.set(user);
+      window.location.href = 'preferences.html';
+    }, 600);
+  }
+</script>
+</body>
+</html>
