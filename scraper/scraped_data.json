@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "upcomingTrips": [
+      {
+        "title": "Parisian Spring",
+        "dates": "calendar_today May 12 - May 19, 2024"
+      },
+      {
+        "title": "Maldives Retreat",
+        "dates": "calendar_today Aug 05 - Aug 15, 2024"
+      }
+    ],
+    "destinations": [
+      "Parisian Spring",
+      "Maldives Retreat",
+      "Kyoto, Japan",
+      "Santorini",
+      "Cinque Terre"
+    ]
+  },
+  "discovery": {
+    "trendingCities": [
+      "London",
+      "Sydney",
+      "Tokyo"
+    ]
+  }
+}
