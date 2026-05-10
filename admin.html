@@ -6,6 +6,7 @@
   <title>Traveloop — Admin Dashboard</title>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/gsap-3d.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     .admin-kpi { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-md); margin-bottom:var(--space-xl); }
@@ -21,6 +22,8 @@
   </style>
 </head>
 <body class="bg-dots">
+<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
+<canvas id="particles-canvas"></canvas>
 <header id="main-navbar" class="navbar"></header>
 <div id="admin-gate" style="display:none;">
   <div class="empty-state" style="min-height:80vh;">
@@ -92,6 +95,8 @@
 </main>
 
 <div id="toast-container"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/db.js"></script>
 <script src="js/utils.js"></script>
 <script>
@@ -186,5 +191,6 @@ function dbFindAll(key) {
   try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch { return []; }
 }
 </script>
+<script src="js/gsap-3d.js"></script>
 </body>
 </html>

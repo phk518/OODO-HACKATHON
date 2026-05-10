@@ -4,299 +4,245 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Traveloop — Trip Notes & Journal</title>
+  <meta name="description" content="Keep track of travel notes, reminders, and journal entries for your trip."/>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/gsap-3d.css"/>
   <style>
-    .notes-layout { display:grid; grid-template-columns:300px 1fr; gap:var(--space-xl); align-items:start; }
-    .notes-sidebar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-lg); position:sticky; top:calc(var(--navbar-h)+20px); }
-    .note-card {
-      border-radius:var(--radius-xl);
-      padding:var(--space-lg) var(--space-xl);
-      margin-bottom:var(--space-md);
-      position:relative;
-      overflow:hidden;
-      cursor:pointer;
-      transition:all .2s;
-      border:1px solid transparent;
-    }
-    .note-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--border-hover); }
-    .note-card-gradient { position:absolute; inset:0; opacity:.85; }
-    .note-card-content { position:relative; z-index:1; }
-    .note-card-title { font-weight:700; font-size:1rem; margin-bottom:6px; }
-    .note-card-trip { font-size:.75rem; opacity:.75; margin-bottom:8px; }
-    .note-card-body { font-size:.85rem; line-height:1.5; opacity:.85; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-    .note-card-time { font-size:.7rem; opacity:.6; margin-top:10px; }
-    .note-card-actions { position:absolute; top:12px; right:12px; display:flex; gap:4px; opacity:0; transition:opacity .15s; }
-    .note-card:hover .note-card-actions { opacity:1; }
-
-    .note-editor { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; }
-    .editor-header { display:flex; align-items:center; justify-content:space-between; padding:var(--space-md) var(--space-lg); border-bottom:1px solid var(--border); background:var(--bg-elevated); }
-    .editor-body { padding:var(--space-xl); display:flex; flex-direction:column; gap:var(--space-md); }
-    .editor-textarea { background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-md); font-size:.9rem; color:var(--text-primary); resize:none; min-height:160px; line-height:1.7; transition:border-color .2s; font-family:var(--font-sans); }
-    .editor-textarea:focus { border-color:var(--primary); outline:none; box-shadow:0 0 0 3px var(--primary-dim); }
-    .editor-title-input { background:none; border:none; border-bottom:1px solid var(--border); padding:8px 0; font-size:1.1rem; font-weight:700; font-family:var(--font-serif); color:var(--text-primary); width:100%; transition:border-color .2s; }
-    .editor-title-input:focus { outline:none; border-color:var(--primary); }
-    .editor-title-input::placeholder { color:var(--text-muted); font-weight:400; }
-
-    .note-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; gap:var(--space-md); text-align:center; }
-
-    .trip-filter-item { display:flex; align-items:center; gap:var(--space-sm); padding:8px 10px; border-radius:var(--radius-md); cursor:pointer; font-size:.85rem; transition:all .15s; }
-    .trip-filter-item:hover { background:var(--bg-elevated); }
-    .trip-filter-item.active { background:var(--primary-dim); color:var(--primary); }
-
-    /* Gradient presets for note cards */
-    .grad-0 { background:linear-gradient(135deg,#1e3a5f,#2563eb); color:#e0f2fe; }
-    .grad-1 { background:linear-gradient(135deg,#3b0764,#7c3aed); color:#f5f3ff; }
-    .grad-2 { background:linear-gradient(135deg,#064e3b,#059669); color:#ecfdf5; }
-    .grad-3 { background:linear-gradient(135deg,#7c2d12,#ea580c); color:#fff7ed; }
-    .grad-4 { background:linear-gradient(135deg,#831843,#db2777); color:#fdf2f8; }
-    .grad-5 { background:linear-gradient(135deg,#134e4a,#0d9488); color:#f0fdfa; }
-    .grad-6 { background:linear-gradient(135deg,#422006,#ca8a04); color:#fefce8; }
-
-    .color-picker { display:flex; gap:6px; flex-wrap:wrap; }
-    .color-dot { width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:all .15s; }
-    .color-dot.selected { border-color:white; transform:scale(1.2); }
+    .notes-layout { display:grid; grid-template-columns:280px 1fr; gap:var(--space-xl); align-items:start; }
+    .notes-sidebar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); position:sticky; top:calc(var(--navbar-h)+20px); }
+    .note-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-lg); margin-bottom:var(--space-md); transition:all .2s; position:relative; overflow:hidden; }
+    .note-card:hover { border-color:var(--border-hover); box-shadow:var(--shadow-md); }
+    .note-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--grad-primary); border-radius:0 4px 4px 0; }
+    .note-card.stop-note::before { background:var(--grad-accent); }
+    .note-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:var(--space-sm); }
+    .note-timestamp { font-size:.7rem; color:var(--text-muted); }
+    .note-stop-badge { font-size:.72rem; color:var(--accent); background:var(--accent-dim); padding:2px 8px; border-radius:var(--radius-full); }
+    .note-content { font-size:.875rem; line-height:1.6; color:var(--text-secondary); white-space:pre-wrap; word-break:break-word; }
+    .note-actions { display:flex; gap:6px; margin-top:var(--space-md); padding-top:var(--space-sm); border-top:1px solid var(--border); }
+    .add-note-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); margin-bottom:var(--space-xl); }
+    .add-note-card .form-textarea { min-height:120px; }
+    .filter-row { display:flex; gap:var(--space-sm); margin-bottom:var(--space-lg); flex-wrap:wrap; }
+    .note-count { font-size:.8rem; color:var(--text-muted); margin-bottom:var(--space-md); }
+    .note-edit-area { display:none; }
+    .note-edit-area.active { display:block; }
+    .note-view { display:block; }
+    .note-view.hidden { display:none; }
   </style>
 </head>
 <body class="bg-dots">
+<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
+<canvas id="particles-canvas"></canvas>
 <header id="main-navbar" class="navbar"></header>
 <main class="page-wrapper">
 
   <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;">
     <div>
-      <h1 class="page-title">Trip Notes &amp; Journal</h1>
-      <p class="page-subtitle">Capture thoughts, reminders, and memories for each trip.</p>
+      <div style="margin-bottom:4px;"><a id="back-link" href="itinerary.html" class="btn btn-ghost btn-sm">← Back to Itinerary</a></div>
+      <h1 class="page-title">📝 Trip Notes & Journal</h1>
+      <p class="page-subtitle" id="trip-name-sub"></p>
     </div>
-    <button class="btn btn-accent" onclick="startNewNote()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New Note
-    </button>
   </div>
 
-  <div class="notes-layout animate-in stagger-1">
+  <!-- Add Note -->
+  <div class="add-note-card animate-in stagger-1">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:var(--space-md);">✍️ New Note</div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+      <textarea id="note-content" class="form-textarea" placeholder="Write a note, reminder, or journal entry..."></textarea>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:var(--space-sm);">
+          <label class="form-label" style="margin:0;">Linked to:</label>
+          <select id="note-stop" class="form-select" style="width:200px;padding:8px 12px;font-size:.8rem;">
+            <option value="">📋 General Trip Note</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="addNote()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Note
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Filter -->
+  <div class="filter-row animate-in stagger-1">
+    <button class="chip active" onclick="setFilter('all',this)">📋 All Notes</button>
+    <button class="chip" onclick="setFilter('general',this)">🗒️ General</button>
+    <button class="chip" onclick="setFilter('stops',this)">📍 By Stop</button>
+  </div>
+
+  <div class="notes-layout animate-in stagger-2">
     <!-- Sidebar -->
     <div class="notes-sidebar">
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md);">Filter by Trip</div>
-      <div id="trip-filter-list" style="display:flex;flex-direction:column;gap:2px;">
-        <div class="trip-filter-item active" data-trip="all" onclick="setTripFilter('all',this)">
-          📋 All Notes
+      <div style="font-size:3rem;text-align:center;margin-bottom:var(--space-md);">📝</div>
+      <div style="text-align:center;font-weight:700;font-size:1.1rem;" id="sidebar-trip">Trip Name</div>
+      <div style="text-align:center;color:var(--text-secondary);font-size:.8rem;margin-top:4px;" id="sidebar-dates"></div>
+      <hr class="divider"/>
+      <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+          <span style="color:var(--text-muted);">Total Notes</span>
+          <span style="font-weight:700;" id="total-notes">0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+          <span style="color:var(--text-muted);">General</span>
+          <span style="font-weight:700;" id="general-notes">0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+          <span style="color:var(--text-muted);">Stop-linked</span>
+          <span style="font-weight:700;" id="stop-notes">0</span>
         </div>
       </div>
       <hr class="divider"/>
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md);">Search</div>
-      <div class="search-bar" style="padding:8px 12px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="note-search" placeholder="Search notes…" oninput="renderNotes()"/>
-      </div>
-      <hr class="divider"/>
-      <div id="notes-count" style="font-size:.75rem;color:var(--text-muted);"></div>
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-sm);">Quick Links</div>
+      <a id="packing-link" href="#" class="btn btn-ghost btn-sm btn-full">🧳 Packing List</a>
+      <a id="budget-link" href="#" class="btn btn-ghost btn-sm btn-full" style="margin-top:4px;">💰 Budget</a>
     </div>
 
-    <!-- Main Area -->
+    <!-- Notes List -->
     <div>
-      <!-- Editor (hidden by default) -->
-      <div class="note-editor animate-in" id="note-editor" style="display:none;margin-bottom:var(--space-xl);">
-        <div class="editor-header">
-          <div style="font-weight:600;font-size:.9rem;" id="editor-mode-label">New Note</div>
-          <div style="display:flex;gap:var(--space-sm);">
-            <button class="btn btn-ghost btn-sm" onclick="cancelEdit()">Cancel</button>
-            <button class="btn btn-primary btn-sm" onclick="saveNote()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              Save Note
-            </button>
-          </div>
-        </div>
-        <div class="editor-body">
-          <input type="text" class="editor-title-input" id="note-title-input" placeholder="Note title…" maxlength="80"/>
-          <div class="form-group">
-            <label class="form-label">Trip</label>
-            <select id="note-trip-select" class="form-select"></select>
-          </div>
-          <textarea class="editor-textarea" id="note-body-input" placeholder="Write your note here… (check-in details, local tips, reminders, memories)"></textarea>
-          <div>
-            <div class="form-label" style="margin-bottom:8px;">Note Color</div>
-            <div class="color-picker" id="color-picker">
-              <div class="color-dot selected" data-grad="0" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);" onclick="selectColor(0,this)"></div>
-              <div class="color-dot" data-grad="1" style="background:linear-gradient(135deg,#3b0764,#7c3aed);" onclick="selectColor(1,this)"></div>
-              <div class="color-dot" data-grad="2" style="background:linear-gradient(135deg,#064e3b,#059669);" onclick="selectColor(2,this)"></div>
-              <div class="color-dot" data-grad="3" style="background:linear-gradient(135deg,#7c2d12,#ea580c);" onclick="selectColor(3,this)"></div>
-              <div class="color-dot" data-grad="4" style="background:linear-gradient(135deg,#831843,#db2777);" onclick="selectColor(4,this)"></div>
-              <div class="color-dot" data-grad="5" style="background:linear-gradient(135deg,#134e4a,#0d9488);" onclick="selectColor(5,this)"></div>
-              <div class="color-dot" data-grad="6" style="background:linear-gradient(135deg,#422006,#ca8a04);" onclick="selectColor(6,this)"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notes Grid -->
-      <div id="notes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-md);"></div>
-
-      <div class="note-empty" id="notes-empty" style="display:none;">
-        <div style="font-size:4rem;">📝</div>
-        <div style="font-weight:700;font-size:1.1rem;">No notes yet</div>
-        <div style="color:var(--text-muted);font-size:.875rem;">Capture hotel check-in details, local tips, or trip memories.</div>
-        <button class="btn btn-primary mt-md" onclick="startNewNote()">Write First Note</button>
-      </div>
+      <div class="note-count" id="notes-count"></div>
+      <div id="notes-container"></div>
     </div>
   </div>
+
 </main>
 
 <div id="toast-container"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/db.js"></script>
 <script src="js/utils.js"></script>
 <script>
 const user = Session.require();
 renderNavbar(user);
+const tripId = getParam('trip');
+if (!tripId) window.location.href = 'trips.html';
+const trip = Trips.find(tripId);
+if (!trip) window.location.href = 'trips.html';
 
-let filterTrip = 'all';
-let editingNoteId = null;
-let selectedGrad = 0;
+document.getElementById('back-link').href = `itinerary.html?trip=${tripId}`;
+document.getElementById('packing-link').href = `packing.html?trip=${tripId}`;
+document.getElementById('budget-link').href = `budget.html?trip=${tripId}`;
+document.getElementById('trip-name-sub').textContent = trip.name;
+document.getElementById('sidebar-trip').textContent = trip.name;
+document.getElementById('sidebar-dates').textContent = `${formatDate(trip.startDate,{month:'short',day:'numeric'})} — ${formatDate(trip.endDate,{month:'short',day:'numeric',year:'numeric'})}`;
 
-const trips = Trips.forUser(user.id);
+// Populate stop dropdown
+const stops = Stops.forTrip(tripId);
+const stopSelect = document.getElementById('note-stop');
+stops.forEach(s => {
+  const opt = document.createElement('option');
+  opt.value = s.id;
+  opt.textContent = `${s.emoji||'📍'} ${s.cityName}`;
+  stopSelect.appendChild(opt);
+});
 
-// Build trip filter sidebar
-const filterList = document.getElementById('trip-filter-list');
-filterList.innerHTML = `<div class="trip-filter-item active" data-trip="all" onclick="setTripFilter('all',this)">📋 All Notes</div>` +
-  trips.map(t=>`<div class="trip-filter-item" data-trip="${t.id}" onclick="setTripFilter('${t.id}',this)">${t.coverEmoji||'✈️'} ${t.name}</div>`).join('');
+let activeFilter = 'all';
 
-// Build trip select in editor
-const tripSelect = document.getElementById('note-trip-select');
-tripSelect.innerHTML = `<option value="">— No specific trip —</option>` +
-  trips.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
-
-function setTripFilter(tripId, el) {
-  filterTrip = tripId;
-  document.querySelectorAll('[data-trip]').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  renderNotes();
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-row .chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  render();
 }
 
-function renderNotes() {
-  const q = (document.getElementById('note-search').value||'').toLowerCase();
-  let notes = getNotes();
-  if (filterTrip !== 'all') notes = notes.filter(n=>n.tripId===filterTrip);
-  if (q) notes = notes.filter(n=>(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q));
+function addNote() {
+  const content = document.getElementById('note-content').value.trim();
+  if (!content) { showToast('Please write something first','warning'); return; }
+  const stopId = document.getElementById('note-stop').value || null;
+  Notes.create({ tripId, stopId, content });
+  document.getElementById('note-content').value = '';
+  document.getElementById('note-stop').value = '';
+  render();
+  showToast('Note added!','success');
+}
 
-  document.getElementById('notes-count').textContent = `${notes.length} note${notes.length!==1?'s':''}`;
-  const grid  = document.getElementById('notes-grid');
-  const empty = document.getElementById('notes-empty');
+function deleteNote(id) {
+  if (!confirm('Delete this note?')) return;
+  Notes.delete(id);
+  render();
+  showToast('Note deleted','info');
+}
 
-  if (!notes.length) { grid.innerHTML=''; empty.style.display=''; return; }
-  empty.style.display='none';
+function startEdit(id) {
+  document.getElementById('view-'+id).classList.add('hidden');
+  document.getElementById('edit-'+id).classList.add('active');
+}
 
-  grid.innerHTML = notes.map(n=>{
-    const trip = trips.find(t=>t.id===n.tripId);
-    const grad = n.grad||0;
-    const ts   = new Date(n.updatedAt||n.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+function cancelEdit(id) {
+  document.getElementById('view-'+id).classList.remove('hidden');
+  document.getElementById('edit-'+id).classList.remove('active');
+}
+
+function saveEdit(id) {
+  const textarea = document.getElementById('textarea-'+id);
+  const content = textarea.value.trim();
+  if (!content) return;
+  Notes.update(id, { content });
+  render();
+  showToast('Note updated!','success');
+}
+
+function render() {
+  let notes = Notes.forTrip(tripId);
+
+  // Stats
+  const generalCount = notes.filter(n => !n.stopId).length;
+  const stopCount = notes.filter(n => n.stopId).length;
+  document.getElementById('total-notes').textContent = notes.length;
+  document.getElementById('general-notes').textContent = generalCount;
+  document.getElementById('stop-notes').textContent = stopCount;
+
+  // Filter
+  if (activeFilter === 'general') notes = notes.filter(n => !n.stopId);
+  if (activeFilter === 'stops') notes = notes.filter(n => n.stopId);
+
+  document.getElementById('notes-count').textContent = `${notes.length} note${notes.length!==1?'s':''} found`;
+
+  const container = document.getElementById('notes-container');
+  if (!notes.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-title">No notes yet</div><div class="empty-state-desc">Write your first note above — reminders, journal entries, or hotel check-in details!</div></div>`;
+    return;
+  }
+
+  container.innerHTML = notes.map(note => {
+    const stop = note.stopId ? Stops.find(note.stopId) : null;
+    const time = new Date(note.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const updated = note.updatedAt !== note.createdAt ? ` (edited)` : '';
     return `
-      <div class="note-card grad-${grad} animate-in" onclick="editNote('${n.id}')">
-        <div class="note-card-content">
-          ${n.title?`<div class="note-card-title">${n.title}</div>`:''}
-          ${trip?`<div class="note-card-trip">✈️ ${trip.name}</div>`:''}
-          <div class="note-card-body">${(n.content||'').replace(/\n/g,' ')}</div>
-          <div class="note-card-time">${ts}</div>
+      <div class="note-card ${stop?'stop-note':''} animate-in">
+        <div class="note-header">
+          <div>
+            <div class="note-timestamp">${time}${updated}</div>
+            ${stop ? `<span class="note-stop-badge">${stop.emoji||'📍'} ${stop.cityName}</span>` : ''}
+          </div>
         </div>
-        <div class="note-card-actions" onclick="event.stopPropagation()">
-          <button class="btn btn-sm" style="background:rgba(0,0,0,.3);color:white;padding:4px 8px;" onclick="deleteNote('${n.id}')">✕</button>
+        <div class="note-view" id="view-${note.id}">
+          <div class="note-content">${note.content}</div>
+        </div>
+        <div class="note-edit-area" id="edit-${note.id}">
+          <textarea class="form-textarea" id="textarea-${note.id}" style="min-height:80px;">${note.content}</textarea>
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <button class="btn btn-primary btn-sm" onclick="saveEdit('${note.id}')">Save</button>
+            <button class="btn btn-ghost btn-sm" onclick="cancelEdit('${note.id}')">Cancel</button>
+          </div>
+        </div>
+        <div class="note-actions">
+          <button class="btn btn-ghost btn-sm" onclick="startEdit('${note.id}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteNote('${note.id}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Delete
+          </button>
         </div>
       </div>`;
   }).join('');
 }
 
-function startNewNote() {
-  editingNoteId = null;
-  selectedGrad = 0;
-  document.getElementById('note-title-input').value='';
-  document.getElementById('note-body-input').value='';
-  document.getElementById('note-trip-select').value = filterTrip!=='all' ? filterTrip : '';
-  document.getElementById('editor-mode-label').textContent='New Note';
-  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
-  document.querySelector('.color-dot[data-grad="0"]').classList.add('selected');
-  document.getElementById('note-editor').style.display='';
-  document.getElementById('note-title-input').focus();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function editNote(id) {
-  const note = getNotes().find(n=>n.id===id);
-  if (!note) return;
-  editingNoteId = id;
-  selectedGrad = note.grad||0;
-  document.getElementById('note-title-input').value  = note.title||'';
-  document.getElementById('note-body-input').value   = note.content||'';
-  document.getElementById('note-trip-select').value  = note.tripId||'';
-  document.getElementById('editor-mode-label').textContent='Edit Note';
-  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
-  const dot = document.querySelector(`.color-dot[data-grad="${selectedGrad}"]`);
-  if (dot) dot.classList.add('selected');
-  document.getElementById('note-editor').style.display='';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function cancelEdit() {
-  editingNoteId=null;
-  document.getElementById('note-editor').style.display='none';
-}
-
-function saveNote() {
-  const title   = document.getElementById('note-title-input').value.trim();
-  const content = document.getElementById('note-body-input').value.trim();
-  const tripId  = document.getElementById('note-trip-select').value||null;
-  if (!content) { showToast('Please write something!','warning'); return; }
-
-  if (editingNoteId) {
-    Notes.update(editingNoteId, { title, content, tripId, grad: selectedGrad });
-    showToast('Note updated','success');
-  } else {
-    const all = getNotes(); // store in notes table with extra field
-    storeNote({ title, content, tripId, grad: selectedGrad });
-    showToast('Note saved! 📝','success');
-  }
-  cancelEdit();
-  renderNotes();
-}
-
-function deleteNote(id) {
-  if (!confirm('Delete this note?')) return;
-  deleteNoteById(id);
-  renderNotes();
-  showToast('Note deleted','info');
-}
-
-function selectColor(grad, el) {
-  selectedGrad = grad;
-  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
-  el.classList.add('selected');
-}
-
-// Simple note storage using localStorage directly (separate from Notes DB to support title/grad)
-function getNotes() {
-  try { return JSON.parse(localStorage.getItem('tl_rich_notes')||'[]'); } catch { return []; }
-}
-function storeNote(data) {
-  const notes = getNotes();
-  notes.unshift({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), ...data });
-  localStorage.setItem('tl_rich_notes', JSON.stringify(notes));
-}
-function deleteNoteById(id) {
-  const notes = getNotes().filter(n=>n.id!==id);
-  localStorage.setItem('tl_rich_notes', JSON.stringify(notes));
-}
-// Override Notes.update to use rich notes
-const _origNotesUpdate = Notes.update;
-Notes.update = function(id, patch) {
-  const notes = getNotes().map(n => n.id===id ? { ...n, ...patch, updatedAt:new Date().toISOString() } : n);
-  localStorage.setItem('tl_rich_notes', JSON.stringify(notes));
-};
-
-// Seed a demo note if none exist
-if (!getNotes().length && trips.length) {
-  storeNote({ title:'Hotel Check-In Details', content:'Paris hotel: Hôtel des Arts\nCheck-in: 15:00 | Check-out: 11:00\nAddress: 7 Cité Bergère, 75009 Paris\nConfirmation: HTL-20250701-4872\n\nRemember to ask for a room away from the elevator!', tripId:trips[0]?.id, grad:0 });
-  storeNote({ title:'Must-Try Restaurants in Rome', content:'1. Trattoria da Enzo al 29 — cacio e pepe\n2. Supplì Roma — fried rice balls\n3. Grazia & Graziella — best tiramisù\n4. Da Baffetto — thin-crust pizza\n\nBook ahead for Trattoria da Enzo!', tripId:trips[0]?.id, grad:2 });
-}
-
-renderNotes();
+render();
 </script>
+<script src="js/gsap-3d.js"></script>
 </body>
 </html>

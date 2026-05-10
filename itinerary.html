@@ -6,6 +6,7 @@
   <title>Traveloop — Itinerary Builder</title>
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/gsap-3d.css" />
   <style>
     .builder-layout { display:grid; grid-template-columns:300px 1fr; gap:0; min-height:calc(100vh - var(--navbar-h)); }
     .sidebar { background:var(--bg-surface); border-right:1px solid var(--border); padding:var(--space-lg); display:flex; flex-direction:column; gap:var(--space-md); overflow-y:auto; }
@@ -29,6 +30,8 @@
   </style>
 </head>
 <body class="bg-dots">
+<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
+<canvas id="particles-canvas"></canvas>
 <header id="main-navbar" class="navbar"></header>
 
 <!-- City Search Modal -->
@@ -92,6 +95,8 @@
     <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
       <a id="view-link"   href="#" class="btn btn-ghost btn-sm btn-full">👁 View Itinerary</a>
       <a id="budget-link" href="#" class="btn btn-ghost btn-sm btn-full">💰 Budget</a>
+      <a id="packing-link" href="#" class="btn btn-ghost btn-sm btn-full">🧳 Packing List</a>
+      <a id="notes-link" href="#" class="btn btn-ghost btn-sm btn-full">📝 Notes</a>
       <a id="share-link"  href="#" class="btn btn-ghost btn-sm btn-full">🔗 Share Trip</a>
     </div>
   </aside>
@@ -122,6 +127,8 @@
 </div>
 
 <div id="toast-container"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/db.js"></script>
 <script src="js/cities-data.js"></script>
 <script src="js/activities-data.js"></script>
@@ -142,6 +149,8 @@ let activeCatFilter = 'all';
 // Links
 document.getElementById('view-link').href   = `itinerary-view.html?trip=${tripId}`;
 document.getElementById('budget-link').href  = `budget.html?trip=${tripId}`;
+document.getElementById('packing-link').href = `packing.html?trip=${tripId}`;
+document.getElementById('notes-link').href   = `notes.html?trip=${tripId}`;
 document.getElementById('share-link').href   = `share.html?trip=${tripId}`;
 
 function refreshAll() {
@@ -350,5 +359,6 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
 renderCityResults();
 refreshAll();
 </script>
+<script src="js/gsap-3d.js"></script>
 </body>
 </html>

@@ -1,0 +1,474 @@
+/* ============================================================
+   TRAVELOOP — GSAP 3D & Premium Animations System
+   ============================================================ */
+
+/* ── 3D Scene Container ────────────────────────────────────── */
+.scene-3d {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+}
+
+/* ── 3D Floating Cards ─────────────────────────────────────── */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.card-3d:hover {
+  transform: rotateY(5deg) rotateX(-3deg) translateZ(20px);
+}
+
+.card-3d-deep:hover {
+  transform: rotateY(8deg) rotateX(-5deg) translateZ(40px) scale(1.03);
+  box-shadow: -15px 15px 40px rgba(0,0,0,0.4), 0 0 30px rgba(59,130,246,0.15);
+}
+
+/* ── Floating 3D Globe Element ─────────────────────────────── */
+.globe-3d {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, 
+    rgba(59,130,246,0.3) 0%, 
+    rgba(59,130,246,0.05) 40%, 
+    rgba(13,27,42,0.8) 100%
+  );
+  border: 1px solid rgba(59,130,246,0.2);
+  box-shadow: 
+    0 0 60px rgba(59,130,246,0.2),
+    inset 0 0 40px rgba(59,130,246,0.1);
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.globe-3d::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(59,130,246,0.15);
+  animation: globeSpin 20s linear infinite;
+}
+
+.globe-3d::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 80%;
+  height: 60%;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,107,107,0.12);
+  transform: rotateX(60deg);
+  animation: globeSpin 15s linear infinite reverse;
+}
+
+@keyframes globeSpin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+/* ── Particle Canvas ────────────────────────────────────────── */
+#particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* ── Parallax Layers ────────────────────────────────────────── */
+.parallax-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  will-change: transform;
+}
+
+.parallax-slow { transform: translateZ(-2px) scale(3); }
+.parallax-medium { transform: translateZ(-1px) scale(2); }
+
+/* ── 3D Text Effects ────────────────────────────────────────── */
+.text-3d {
+  text-shadow: 
+    0 1px 0 rgba(0,0,0,0.3),
+    0 2px 0 rgba(0,0,0,0.25),
+    0 3px 0 rgba(0,0,0,0.2),
+    0 4px 0 rgba(0,0,0,0.15),
+    0 5px 15px rgba(0,0,0,0.4);
+}
+
+.text-glow {
+  text-shadow: 
+    0 0 10px rgba(59,130,246,0.5),
+    0 0 20px rgba(59,130,246,0.3),
+    0 0 40px rgba(59,130,246,0.15);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #3B82F6, #FF6B6B, #F5A623);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Neon Glow Effects ──────────────────────────────────────── */
+.neon-blue {
+  box-shadow: 
+    0 0 5px rgba(59,130,246,0.3),
+    0 0 20px rgba(59,130,246,0.15),
+    0 0 40px rgba(59,130,246,0.05),
+    inset 0 0 15px rgba(59,130,246,0.05);
+}
+
+.neon-accent {
+  box-shadow: 
+    0 0 5px rgba(255,107,107,0.3),
+    0 0 20px rgba(255,107,107,0.15),
+    0 0 40px rgba(255,107,107,0.05);
+}
+
+.neon-gold {
+  box-shadow: 
+    0 0 5px rgba(245,166,35,0.3),
+    0 0 20px rgba(245,166,35,0.15),
+    0 0 40px rgba(245,166,35,0.05);
+}
+
+/* ── Morphing Background Blobs ──────────────────────────────── */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+  animation: blobMorph 8s ease-in-out infinite alternate;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(59,130,246,0.25), transparent);
+  top: -100px;
+  right: -100px;
+}
+
+.blob-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(255,107,107,0.2), transparent);
+  bottom: -80px;
+  left: -80px;
+  animation-delay: 2s;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(245,166,35,0.15), transparent);
+  top: 50%;
+  left: 50%;
+  animation-delay: 4s;
+}
+
+@keyframes blobMorph {
+  0% { border-radius: 50% 30% 60% 40%; transform: translate(0, 0) scale(1); }
+  33% { border-radius: 40% 60% 30% 70%; transform: translate(30px, -20px) scale(1.05); }
+  66% { border-radius: 60% 40% 50% 30%; transform: translate(-20px, 20px) scale(0.95); }
+  100% { border-radius: 30% 50% 40% 60%; transform: translate(10px, 10px) scale(1.02); }
+}
+
+/* ── 3D Rotating Ring ──────────────────────────────────────── */
+.orbit-ring {
+  position: absolute;
+  border: 1px solid rgba(59,130,246,0.12);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  animation: orbitSpin 12s linear infinite;
+}
+
+.orbit-ring::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  top: -4px;
+  left: calc(50% - 4px);
+  box-shadow: 0 0 15px rgba(59,130,246,0.6);
+}
+
+@keyframes orbitSpin {
+  from { transform: rotateX(65deg) rotateZ(0deg); }
+  to { transform: rotateX(65deg) rotateZ(360deg); }
+}
+
+/* ── Interactive Tilt Card ──────────────────────────────────── */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+.tilt-card .tilt-inner {
+  transform: translateZ(40px);
+}
+
+.tilt-card .tilt-bg {
+  transform: translateZ(-20px) scale(1.1);
+}
+
+/* ── Glass Morph Enhanced ──────────────────────────────────── */
+.glass-premium {
+  background: rgba(13, 27, 42, 0.45);
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* ── Floating Dot Grid (decorative) ─────────────────────────── */
+.dot-grid-overlay {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(rgba(59,130,246,0.06) 1px, transparent 1px),
+    radial-gradient(rgba(255,107,107,0.04) 1px, transparent 1px);
+  background-size: 40px 40px, 60px 60px;
+  background-position: 0 0, 30px 30px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Animated Border Gradient ──────────────────────────────── */
+.border-gradient {
+  position: relative;
+  border: none !important;
+}
+
+.border-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.4), rgba(255,107,107,0.2), rgba(245,166,35,0.3));
+  background-size: 300% 300%;
+  animation: borderGlow 6s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes borderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Magnetic Button Effect ────────────────────────────────── */
+.btn-magnetic {
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+}
+
+.btn-magnetic:hover {
+  box-shadow: 
+    0 8px 25px rgba(59,130,246,0.4),
+    0 0 0 1px rgba(59,130,246,0.3);
+}
+
+/* ── Stagger Animation Enhancements ─────────────────────────── */
+.gsap-fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.gsap-fade-left {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.gsap-fade-right {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.gsap-scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.gsap-rotate-in {
+  opacity: 0;
+  transform: perspective(800px) rotateY(-15deg);
+}
+
+/* ── Flip Card ──────────────────────────────────────────────── */
+.flip-card-container {
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-card-container:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Hover Lift Effect ──────────────────────────────────────── */
+.hover-lift {
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0,0,0,0.4),
+    0 0 20px rgba(59,130,246,0.1);
+}
+
+/* ── Rotating Decorative Elements ──────────────────────────── */
+.rotate-slow {
+  animation: rotateSlow 30s linear infinite;
+}
+
+.rotate-reverse {
+  animation: rotateSlow 25s linear infinite reverse;
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Shimmer Effect for Premium Cards ──────────────────────── */
+.shimmer-premium::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255,255,255,0.03) 25%,
+    rgba(255,255,255,0.06) 50%,
+    rgba(255,255,255,0.03) 75%,
+    transparent 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmerMove 6s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerMove {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+/* ── 3D Depth Shadow ──────────────────────────────────────── */
+.depth-shadow {
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.3),
+    0 4px 8px rgba(0,0,0,0.25),
+    0 8px 16px rgba(0,0,0,0.2),
+    0 16px 32px rgba(0,0,0,0.15),
+    0 32px 64px rgba(0,0,0,0.1);
+}
+
+/* ── Responsive Adjustments ────────────────────────────────── */
+@media (max-width: 768px) {
+  .globe-3d { width: 120px; height: 120px; }
+  .blob { filter: blur(60px); }
+  .card-3d:hover { transform: none; }
+  .hover-lift:hover { transform: translateY(-4px); }
+}
+
+/* ── Loading Screen ─────────────────────────────────────────── */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+  z-index: 10000;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-logo {
+  width: 80px;
+  height: 80px;
+  background: var(--grad-primary);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  animation: loadPulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(59,130,246,0.4);
+}
+
+@keyframes loadPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(59,130,246,0.4); }
+  50% { transform: scale(1.08); box-shadow: 0 0 60px rgba(59,130,246,0.6); }
+}
+
+.loading-bar {
+  width: 200px;
+  height: 3px;
+  background: var(--bg-elevated);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--grad-primary);
+  border-radius: 99px;
+  animation: loadFill 1.2s ease-out forwards;
+}
+
+@keyframes loadFill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
