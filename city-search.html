@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traveloop — Explore Cities</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .explore-layout { display:grid; grid-template-columns:240px 1fr; gap:var(--space-xl); align-items:start; }
+    .filter-panel { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-lg); position:sticky; top:calc(var(--navbar-h)+20px); }
+    .cities-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:var(--space-md); }
+    .city-detail-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; }
+    .city-detail-hero { height:200px; display:flex; align-items:center; justify-content:center; font-size:5rem; position:relative; }
+    .city-detail-body { padding:var(--space-xl); }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+
+<!-- City Detail Modal -->
+<div class="modal-overlay" id="city-detail-modal">
+  <div class="modal" style="max-width:540px;padding:0;overflow:hidden;">
+    <div id="city-detail-content"></div>
+  </div>
+</div>
+
+<!-- Add to Trip Modal -->
+<div class="modal-overlay" id="add-to-trip-modal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <div class="modal-title">Add to Trip</div>
+      <button class="modal-close" onclick="closeModal('add-to-trip-modal')">✕</button>
+    </div>
+    <div style="font-size:.875rem;color:var(--text-secondary);margin-bottom:var(--space-md);">Select which trip to add <strong id="add-city-name"></strong> to:</div>
+    <div id="trip-picker" style="display:flex;flex-direction:column;gap:var(--space-sm);"></div>
+    <div class="mt-md" style="text-align:center;font-size:.8rem;color:var(--text-muted);">
+      Or <a href="create-trip.html" style="color:var(--primary);">create a new trip</a> first.
+    </div>
+  </div>
+</div>
+
+<main class="page-wrapper">
+  <div class="page-header animate-in">
+    <h1 class="page-title">Explore Destinations</h1>
+    <p class="page-subtitle">Discover 50+ cities across the globe and add them to your itinerary.</p>
+  </div>
+
+  <div class="search-bar animate-in stagger-1" style="margin-bottom:var(--space-xl);max-width:600px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search-input" placeholder="Search cities or countries…" oninput="renderCities()" />
+  </div>
+
+  <div class="explore-layout animate-in stagger-2">
+    <!-- Filters -->
+    <div class="filter-panel">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md);">Filter by Region</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="region-filters"></div>
+      <hr class="divider"/>
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md);">Cost Index</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="cost-filters"></div>
+      <hr class="divider"/>
+      <button class="btn btn-ghost btn-sm btn-full" onclick="resetFilters()">Reset All Filters</button>
+    </div>
+
+    <!-- Grid -->
+    <div>
+      <div id="result-count" class="text-muted body-sm" style="margin-bottom:var(--space-md);"></div>
+      <div class="cities-grid" id="cities-grid"></div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">No cities found</div>
+        <div class="empty-state-desc">Try different search terms or reset your filters.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/cities-data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+let activeRegion = 'all';
+let activeCost   = 'all';
+let selectedCity = null;
+
+const regions = ['all', ...new Set(CITIES.map(c => c.region))];
+const costLabels = { 1:'$ Budget', 2:'$$ Mid-range', 3:'$$$ Premium', 4:'$$$$ Luxury' };
+
+// Build region filter
+document.getElementById('region-filters').innerHTML = regions.map(r => `
+  <button class="chip ${r==='all'?'active':''}" onclick="setRegion('${r}',this)">${r==='all'?'🌐 All Regions':r}</button>
+`).join('');
+
+// Build cost filter
+document.getElementById('cost-filters').innerHTML = ['all',1,2,3,4].map(c => `
+  <button class="chip ${c==='all'?'active':''}" onclick="setCost('${c}',this)">${c==='all'?'Any Price':costLabels[c]||c}</button>
+`).join('');
+
+function setRegion(r, el) {
+  activeRegion = r;
+  document.querySelectorAll('#region-filters .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderCities();
+}
+function setCost(c, el) {
+  activeCost = c;
+  document.querySelectorAll('#cost-filters .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderCities();
+}
+function resetFilters() {
+  activeRegion = 'all'; activeCost = 'all';
+  document.getElementById('search-input').value = '';
+  document.querySelectorAll('#region-filters .chip, #cost-filters .chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('#region-filters .chip').classList.add('active');
+  document.querySelector('#cost-filters .chip').classList.add('active');
+  renderCities();
+}
+
+function renderCities() {
+  const q = (document.getElementById('search-input').value||'').toLowerCase();
+  let cities = CITIES;
+  if (activeRegion !== 'all') cities = cities.filter(c=>c.region===activeRegion);
+  if (activeCost   !== 'all') cities = cities.filter(c=>c.costIndex===+activeCost);
+  if (q) cities = cities.filter(c=>c.name.toLowerCase().includes(q)||c.country.toLowerCase().includes(q));
+
+  document.getElementById('result-count').textContent = `${cities.length} destination${cities.length!==1?'s':''} found`;
+  const grid  = document.getElementById('cities-grid');
+  const empty = document.getElementById('empty-state');
+
+  if (!cities.length) { grid.innerHTML=''; empty.style.display=''; return; }
+  empty.style.display='none';
+
+  grid.innerHTML = cities.map(c => `
+    <div class="city-card animate-in" onclick="openCityDetail('${c.id}')">
+      <div class="city-card-image">
+        <div class="city-card-gradient" style="background:${getCityGradient(c.id)};border-radius:0;position:absolute;inset:0;"></div>
+        <span style="position:relative;z-index:1;font-size:2.8rem;">${c.emoji}</span>
+      </div>
+      <div class="city-card-body">
+        <div class="city-card-name">${c.name}</div>
+        <div class="city-card-country">${c.country} · ${c.region}</div>
+        <div class="city-card-meta">
+          <span class="stars" style="font-size:.7rem;">${'★'.repeat(c.popularity)}${'☆'.repeat(5-c.popularity)}</span>
+          <span style="color:var(--gold);font-size:.75rem;font-weight:600;">${'$'.repeat(c.costIndex)}</span>
+        </div>
+        <button class="btn btn-outline-primary btn-sm btn-full" style="margin-top:8px;" onclick="event.stopPropagation();openAddToTrip('${c.id}')">
+          + Add to Trip
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function openCityDetail(cityId) {
+  const c = getCityById(cityId);
+  if (!c) return;
+  selectedCity = c;
+  document.getElementById('city-detail-content').innerHTML = `
+    <div style="height:180px;display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;background:${getCityGradient(c.id)};">
+      ${c.emoji}
+      <button class="modal-close" style="position:absolute;top:12px;right:12px;" onclick="closeModal('city-detail-modal')">✕</button>
+    </div>
+    <div style="padding:var(--space-xl);">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--space-sm);">
+        <div>
+          <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-serif);">${c.name}</div>
+          <div style="color:var(--text-secondary);font-size:.875rem;">${c.country} · ${c.region}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="stars">${'★'.repeat(c.popularity)}${'☆'.repeat(5-c.popularity)}</div>
+          <div style="color:var(--gold);font-weight:700;">${'$'.repeat(c.costIndex)}</div>
+        </div>
+      </div>
+      <p style="color:var(--text-secondary);font-size:.875rem;margin-bottom:var(--space-lg);">${c.description}</p>
+      <button class="btn btn-accent btn-full btn-lg" onclick="openAddToTrip('${c.id}');closeModal('city-detail-modal')">
+        ✈️ Add to My Trip
+      </button>
+    </div>`;
+  openModal('city-detail-modal');
+}
+
+function openAddToTrip(cityId) {
+  const c = getCityById(cityId);
+  selectedCity = c;
+  document.getElementById('add-city-name').textContent = c.name;
+  const trips = Trips.forUser(user.id);
+  document.getElementById('trip-picker').innerHTML = trips.length
+    ? trips.map(t => `
+        <div class="stop-item" onclick="addCityToTrip('${t.id}','${cityId}')">
+          <span style="font-size:1.4rem;">${t.coverEmoji||'✈️'}</span>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.9rem;">${t.name}</div>
+            <div style="font-size:.75rem;color:var(--text-muted);">${formatDate(t.startDate,{month:'short',day:'numeric'})} — ${formatDate(t.endDate,{month:'short',day:'numeric',year:'numeric'})}</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`)
+      .join('')
+    : '<div class="empty-state" style="padding:var(--space-lg) 0;"><div class="empty-state-icon" style="width:48px;height:48px;font-size:1.2rem;">🧳</div><div class="empty-state-title" style="font-size:.9rem;">No trips yet</div></div>';
+  openModal('add-to-trip-modal');
+}
+
+function addCityToTrip(tripId, cityId) {
+  const trip = Trips.find(tripId);
+  const city = getCityById(cityId);
+  const stops = Stops.forTrip(tripId);
+  Stops.create({ tripId, cityId:city.id, cityName:city.name, country:city.country, countryCode:city.countryCode, emoji:city.emoji, arrivalDate:trip.startDate, departureDate:trip.endDate, order:stops.length });
+  closeModal('add-to-trip-modal');
+  showToast(`${city.emoji} ${city.name} added to ${trip.name}!`,'success');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); });
+});
+
+renderCities();
+</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traveloop — Budget & Cost Breakdown</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .budget-layout { display:grid; grid-template-columns:1fr 400px; gap:var(--space-xl); align-items:start; }
+    .budget-summary { background:var(--grad-hero); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); margin-bottom:var(--space-xl); position:relative; overflow:hidden; }
+    .budget-summary::before { content:''; position:absolute; top:-60px; right:-60px; width:280px; height:280px; background:radial-gradient(circle,rgba(59,130,246,.2) 0%,transparent 70%); }
+    .budget-numbers { display:flex; gap:var(--space-2xl); position:relative; z-index:1; }
+    .budget-big { font-size:2.5rem; font-weight:700; font-family:var(--font-serif); }
+    .budget-big-label { font-size:.8rem; color:var(--text-secondary); margin-top:2px; }
+    .budget-progress-wrap { margin-top:var(--space-lg); position:relative; z-index:1; }
+    .chart-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); }
+    .breakdown-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); }
+    .edit-budget-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md); }
+    .over-budget { color:var(--danger); font-weight:600; }
+    .cat-icon { width:34px; height:34px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1rem; }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+<main class="page-wrapper">
+
+  <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="margin-bottom:4px;"><a id="back-link" href="itinerary.html" class="btn btn-ghost btn-sm">← Back to Itinerary</a></div>
+      <h1 class="page-title">Budget &amp; Cost Breakdown</h1>
+      <p class="page-subtitle" id="trip-name-sub"></p>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('edit-budget-modal')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Edit Budget
+    </button>
+  </div>
+
+  <!-- Summary Banner -->
+  <div class="budget-summary animate-in stagger-1">
+    <div class="budget-numbers">
+      <div>
+        <div class="budget-big" id="total-spent">$0</div>
+        <div class="budget-big-label">Estimated Spend</div>
+      </div>
+      <div>
+        <div class="budget-big" id="total-budget" style="color:var(--gold);">$0</div>
+        <div class="budget-big-label">Total Budget</div>
+      </div>
+      <div>
+        <div class="budget-big" id="remaining" style="color:var(--success);">$0</div>
+        <div class="budget-big-label">Remaining</div>
+      </div>
+      <div>
+        <div class="budget-big" id="per-day">$0</div>
+        <div class="budget-big-label">Per Day</div>
+      </div>
+    </div>
+    <div class="budget-progress-wrap">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--text-secondary);margin-bottom:6px;">
+        <span>Budget Used</span><span id="pct-label">0%</span>
+      </div>
+      <div class="progress-bar-wrap" style="height:10px;">
+        <div class="progress-bar-fill" id="budget-bar" style="width:0%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="budget-layout animate-in stagger-2">
+    <!-- Left: Charts -->
+    <div style="display:flex;flex-direction:column;gap:var(--space-xl);">
+
+      <!-- Donut -->
+      <div class="chart-card">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:var(--space-lg);">Spend by Category</div>
+        <div style="display:flex;align-items:center;gap:var(--space-xl);">
+          <div style="width:220px;height:220px;flex-shrink:0;">
+            <canvas id="donut-chart"></canvas>
+          </div>
+          <div id="donut-legend" style="flex:1;display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+      </div>
+
+      <!-- Category breakdown table -->
+      <div class="breakdown-card">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:var(--space-md);">Category Breakdown</div>
+        <div id="breakdown-rows"></div>
+      </div>
+
+      <!-- Stops cost table -->
+      <div class="breakdown-card">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:var(--space-md);">Cost by Stop</div>
+        <div id="stops-rows"></div>
+      </div>
+    </div>
+
+    <!-- Right: Bar chart + per day -->
+    <div style="display:flex;flex-direction:column;gap:var(--space-xl);position:sticky;top:calc(var(--navbar-h)+20px);">
+      <div class="chart-card">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:var(--space-lg);">Budget vs Spend</div>
+        <canvas id="bar-chart" height="220"></canvas>
+      </div>
+      <div class="chart-card">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:var(--space-md);">Quick Tips</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:.85rem;color:var(--text-secondary);" id="budget-tips"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Edit Budget Modal -->
+<div class="modal-overlay" id="edit-budget-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Set Budget Targets</div>
+      <button class="modal-close" onclick="closeModal('edit-budget-modal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+      <div class="form-group"><label class="form-label">Total Trip Budget ($)</label><input type="number" id="b-total" class="form-input" placeholder="3000" min="0"/></div>
+      <div class="edit-budget-row">
+        <div class="form-group"><label class="form-label">✈️ Transport</label><input type="number" id="b-transport" class="form-input" placeholder="500" min="0"/></div>
+        <div class="form-group"><label class="form-label">🏨 Accommodation</label><input type="number" id="b-accommodation" class="form-input" placeholder="900" min="0"/></div>
+        <div class="form-group"><label class="form-label">🎯 Activities</label><input type="number" id="b-activities" class="form-input" placeholder="400" min="0"/></div>
+        <div class="form-group"><label class="form-label">🍽️ Meals</label><input type="number" id="b-meals" class="form-input" placeholder="600" min="0"/></div>
+        <div class="form-group"><label class="form-label">🛍️ Shopping</label><input type="number" id="b-miscellaneous" class="form-input" placeholder="200" min="0"/></div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="saveBudget()">Save Budget</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+const tripId = getParam('trip');
+if (!tripId) window.location.href = 'trips.html';
+const trip = Trips.find(tripId);
+if (!trip) window.location.href = 'trips.html';
+
+document.getElementById('back-link').href = `itinerary.html?trip=${tripId}`;
+document.getElementById('trip-name-sub').textContent = trip.name;
+
+const CAT_INFO = {
+  transport:      { label:'Transport',     emoji:'✈️', color:'#3B82F6' },
+  accommodation:  { label:'Accommodation', emoji:'🏨', color:'#8B5CF6' },
+  activities:     { label:'Activities',    emoji:'🎯', color:'#10B981' },
+  meals:          { label:'Meals',         emoji:'🍽️', color:'#F59E0B' },
+  miscellaneous:  { label:'Shopping/Misc', emoji:'🛍️', color:'#EC4899' },
+};
+
+let donutChart, barChart;
+
+function loadBudget() {
+  const budget  = Budgets.forTrip(tripId);
+  const actual  = Budgets.computeActual(tripId);
+  const stops   = Stops.forTrip(tripId);
+  const days    = daysBetween(trip.startDate, trip.endDate) || 1;
+  const spent   = actual.total;
+  const total   = budget.totalBudget || 0;
+  const remain  = total - spent;
+  const pct     = total > 0 ? Math.min(100, Math.round((spent/total)*100)) : 0;
+
+  document.getElementById('total-spent').textContent  = formatCurrency(spent);
+  document.getElementById('total-budget').textContent = formatCurrency(total);
+  document.getElementById('remaining').textContent     = formatCurrency(remain);
+  document.getElementById('remaining').style.color    = remain < 0 ? 'var(--danger)' : 'var(--success)';
+  document.getElementById('per-day').textContent      = formatCurrency(Math.round(spent/days));
+  document.getElementById('pct-label').textContent    = pct + '%';
+  const bar = document.getElementById('budget-bar');
+  bar.style.width = pct + '%';
+  bar.className   = 'progress-bar-fill' + (pct >= 100 ? ' accent' : pct >= 80 ? ' gold' : '');
+
+  // Category breakdown
+  const cats = Object.keys(CAT_INFO);
+  const catActual = {};
+  cats.forEach(k => catActual[k] = actual.byCategory[k] || 0);
+  // Also aggregate sightseeing, food, culture, adventure → activities category for display
+  Object.entries(actual.byCategory).forEach(([k,v]) => {
+    if (!cats.includes(k)) catActual.activities = (catActual.activities||0) + v;
+  });
+
+  document.getElementById('breakdown-rows').innerHTML = cats.map(k => {
+    const info   = CAT_INFO[k];
+    const budAmt = budget[k] || 0;
+    const actAmt = catActual[k] || 0;
+    const over   = actAmt > budAmt && budAmt > 0;
+    return `<div class="budget-row">
+      <div class="budget-row-label">
+        <div class="cat-icon" style="background:${info.color}22;border:1px solid ${info.color}44;">${info.emoji}</div>
+        ${info.label}
+      </div>
+      <span style="font-size:.85rem;color:var(--text-secondary);">Budget: ${formatCurrency(budAmt)}</span>
+      <span class="${over?'over-budget':'text-gold'}" style="font-weight:700;font-size:.9rem;">${formatCurrency(actAmt)}</span>
+    </div>`;
+  }).join('');
+
+  // Stops rows
+  document.getElementById('stops-rows').innerHTML = stops.map(s => {
+    const acts = Activities.forStop(s.id);
+    const cost = acts.reduce((a,b) => a+(b.cost||0), 0);
+    return `<div class="budget-row">
+      <div class="budget-row-label">${s.emoji||'📍'} ${s.cityName}</div>
+      <span class="text-muted body-sm">${acts.length} activities</span>
+      <span class="text-gold font-semi">${formatCurrency(cost)}</span>
+    </div>`;
+  }).join('') || '<div class="text-muted body-sm" style="padding:var(--space-md) 0;">No stops yet</div>';
+
+  // Donut chart
+  const donutData = cats.map(k => catActual[k]||0);
+  const donutColors = cats.map(k => CAT_INFO[k].color);
+  if (donutChart) donutChart.destroy();
+  donutChart = new Chart(document.getElementById('donut-chart'), {
+    type:'doughnut',
+    data:{ labels: cats.map(k=>CAT_INFO[k].label), datasets:[{ data:donutData, backgroundColor:donutColors, borderColor:'transparent', borderWidth:3, hoverOffset:6 }] },
+    options:{ cutout:'72%', plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: ctx => ` ${ctx.label}: ${formatCurrency(ctx.raw)}` } } } }
+  });
+  document.getElementById('donut-legend').innerHTML = cats.map((k,i) => `
+    <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;">
+      <span style="width:10px;height:10px;border-radius:50%;background:${donutColors[i]};flex-shrink:0;"></span>
+      <span style="flex:1;color:var(--text-secondary);">${CAT_INFO[k].label}</span>
+      <span style="font-weight:600;">${formatCurrency(donutData[i])}</span>
+    </div>`).join('');
+
+  // Bar chart
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('bar-chart'), {
+    type:'bar',
+    data:{
+      labels: cats.map(k=>CAT_INFO[k].emoji+' '+CAT_INFO[k].label),
+      datasets:[
+        { label:'Budget', data: cats.map(k=>budget[k]||0), backgroundColor:'rgba(59,130,246,.25)', borderColor:'#3B82F6', borderWidth:2, borderRadius:6 },
+        { label:'Actual', data: donutData, backgroundColor: donutColors.map(c=>c+'CC'), borderColor: donutColors, borderWidth:2, borderRadius:6 }
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{ legend:{ labels:{ color:'#94A3B8', font:{size:11} } } },
+      scales:{
+        x:{ ticks:{ color:'#94A3B8', font:{size:10} }, grid:{ color:'rgba(255,255,255,.04)' } },
+        y:{ ticks:{ color:'#94A3B8', callback: v => '$'+v }, grid:{ color:'rgba(255,255,255,.04)' } }
+      }
+    }
+  });
+
+  // Tips
+  const tips = [];
+  if (pct >= 100) tips.push('⚠️ You\'ve exceeded your total budget!');
+  if (pct >= 80)  tips.push('🟡 You\'re close to your budget limit.');
+  if (remain > 0) tips.push(`✅ You have ${formatCurrency(remain)} left to spend.`);
+  if (days > 0)   tips.push(`📅 ${days} days total — averaging ${formatCurrency(Math.round(spent/days))}/day.`);
+  tips.push('💡 Add accommodation costs in "Edit Budget" for a complete picture.');
+  document.getElementById('budget-tips').innerHTML = tips.map(t=>`<div>${t}</div>`).join('');
+
+  // Prefill edit modal
+  document.getElementById('b-total').value         = budget.totalBudget||'';
+  document.getElementById('b-transport').value     = budget.transport||'';
+  document.getElementById('b-accommodation').value = budget.accommodation||'';
+  document.getElementById('b-activities').value    = budget.activities||'';
+  document.getElementById('b-meals').value         = budget.meals||'';
+  document.getElementById('b-miscellaneous').value = budget.miscellaneous||'';
+}
+
+function saveBudget() {
+  Budgets.upsert(tripId, {
+    totalBudget:    +document.getElementById('b-total').value||0,
+    transport:      +document.getElementById('b-transport').value||0,
+    accommodation:  +document.getElementById('b-accommodation').value||0,
+    activities:     +document.getElementById('b-activities').value||0,
+    meals:          +document.getElementById('b-meals').value||0,
+    miscellaneous:  +document.getElementById('b-miscellaneous').value||0,
+  });
+  closeModal('edit-budget-modal');
+  loadBudget();
+  showToast('Budget updated!','success');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); });
+});
+
+Chart.defaults.color = '#94A3B8';
+loadBudget();
+</script>
+</body>
+</html>

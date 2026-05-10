@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traveloop — Itinerary Builder</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .builder-layout { display:grid; grid-template-columns:300px 1fr; gap:0; min-height:calc(100vh - var(--navbar-h)); }
+    .sidebar { background:var(--bg-surface); border-right:1px solid var(--border); padding:var(--space-lg); display:flex; flex-direction:column; gap:var(--space-md); overflow-y:auto; }
+    .sidebar-title { font-size:0.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
+    .main-area { padding:var(--space-xl); overflow-y:auto; }
+    .stop-list { display:flex; flex-direction:column; gap:var(--space-sm); }
+    .act-block { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-md); display:flex; align-items:center; gap:var(--space-md); transition:all .2s; }
+    .act-block:hover { border-color:var(--border-hover); }
+    .act-emoji { width:40px; height:40px; background:var(--bg-elevated); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .act-info { flex:1; min-width:0; }
+    .act-name { font-weight:600; font-size:.875rem; }
+    .act-meta { font-size:.75rem; color:var(--text-secondary); margin-top:2px; }
+    .stop-header { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-md) var(--space-lg); margin-bottom:var(--space-md); display:flex; align-items:center; justify-content:space-between; }
+    .stop-header-left { display:flex; align-items:center; gap:var(--space-sm); }
+    .stop-flag { font-size:1.8rem; }
+    .stop-city { font-size:1.1rem; font-weight:700; }
+    .stop-dates { font-size:.8rem; color:var(--text-secondary); }
+    .activities-area { display:flex; flex-direction:column; gap:var(--space-sm); }
+    .trip-meta-bar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-md) var(--space-lg); display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-lg); }
+    .no-stop { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; gap:var(--space-md); text-align:center; }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+
+<!-- City Search Modal -->
+<div class="modal-overlay" id="city-modal">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <div class="modal-title">Add a City Stop</div>
+      <button class="modal-close" onclick="closeModal('city-modal')">✕</button>
+    </div>
+    <div class="search-bar" style="margin-bottom:var(--space-md);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="city-search-input" placeholder="Search cities…" oninput="renderCityResults()" />
+    </div>
+    <div id="city-results" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm);max-height:360px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- Activity Modal -->
+<div class="modal-overlay" id="act-modal">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <div class="modal-title">Add Activity</div>
+      <button class="modal-close" onclick="closeModal('act-modal')">✕</button>
+    </div>
+    <div class="filter-chips" style="margin-bottom:var(--space-md);" id="cat-filters"></div>
+    <div id="act-results" style="display:flex;flex-direction:column;gap:var(--space-sm);max-height:400px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- Stop Date Modal -->
+<div class="modal-overlay" id="stop-date-modal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <div class="modal-title">Edit Stop Dates</div>
+      <button class="modal-close" onclick="closeModal('stop-date-modal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+      <div class="form-group"><label class="form-label">Arrival Date</label><input type="date" id="stop-arrive" class="form-input"/></div>
+      <div class="form-group"><label class="form-label">Departure Date</label><input type="date" id="stop-depart" class="form-input"/></div>
+      <button class="btn btn-primary btn-full" onclick="saveStopDates()">Save Dates</button>
+    </div>
+  </div>
+</div>
+
+<div class="builder-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-title" style="margin-bottom:var(--space-sm);">Trip</div>
+      <div id="trip-name-sidebar" style="font-weight:700;font-size:1rem;"></div>
+      <div id="trip-dates-sidebar" style="font-size:.8rem;color:var(--text-secondary);margin-top:2px;"></div>
+    </div>
+    <hr class="divider" style="margin:0"/>
+    <div class="sidebar-title">Stops <span id="stop-count" style="color:var(--text-primary);font-style:normal;">(0)</span></div>
+    <div class="stop-list" id="stop-list"></div>
+    <button class="btn btn-outline-primary btn-full" onclick="openModal('city-modal')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Stop
+    </button>
+    <hr class="divider" style="margin:0"/>
+    <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+      <a id="view-link"   href="#" class="btn btn-ghost btn-sm btn-full">👁 View Itinerary</a>
+      <a id="budget-link" href="#" class="btn btn-ghost btn-sm btn-full">💰 Budget</a>
+      <a id="share-link"  href="#" class="btn btn-ghost btn-sm btn-full">🔗 Share Trip</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-area">
+    <div class="trip-meta-bar">
+      <div id="main-trip-name" style="font-weight:700;font-size:1.1rem;"></div>
+      <div style="display:flex;gap:var(--space-sm);">
+        <span class="badge badge-primary" id="meta-stops">0 stops</span>
+        <span class="badge badge-gold"    id="meta-days">0 days</span>
+        <span class="badge badge-success" id="meta-cost">$0 est.</span>
+      </div>
+    </div>
+
+    <div id="no-stop-msg" class="no-stop">
+      <div style="font-size:4rem;">🗺️</div>
+      <div style="font-size:1.1rem;font-weight:700;">Add your first city stop</div>
+      <div style="color:var(--text-muted);font-size:.875rem;">Click "Add Stop" to choose a city and start building your itinerary.</div>
+      <button class="btn btn-primary" onclick="openModal('city-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add First Stop
+      </button>
+    </div>
+
+    <div id="stop-detail"></div>
+  </main>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/cities-data.js"></script>
+<script src="js/activities-data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+const tripId = getParam('trip');
+if (!tripId) window.location.href = 'trips.html';
+const trip = Trips.find(tripId);
+if (!trip || trip.userId !== user.id) window.location.href = 'trips.html';
+
+let activeStopId = null;
+let editingStopId = null;
+let activeCatFilter = 'all';
+
+// Links
+document.getElementById('view-link').href   = `itinerary-view.html?trip=${tripId}`;
+document.getElementById('budget-link').href  = `budget.html?trip=${tripId}`;
+document.getElementById('share-link').href   = `share.html?trip=${tripId}`;
+
+function refreshAll() {
+  const stops = Stops.forTrip(tripId);
+  let totalCost = 0;
+  stops.forEach(s => Activities.forStop(s.id).forEach(a => totalCost += a.cost || 0));
+
+  document.getElementById('trip-name-sidebar').textContent = trip.name;
+  document.getElementById('trip-dates-sidebar').textContent = `${formatDate(trip.startDate,{month:'short',day:'numeric'})} — ${formatDate(trip.endDate,{month:'short',day:'numeric',year:'numeric'})}`;
+  document.getElementById('main-trip-name').textContent = trip.name;
+  document.getElementById('stop-count').textContent = `(${stops.length})`;
+  document.getElementById('meta-stops').textContent = `${stops.length} stop${stops.length!==1?'s':''}`;
+  document.getElementById('meta-days').textContent  = `${daysBetween(trip.startDate,trip.endDate)} days`;
+  document.getElementById('meta-cost').textContent  = formatCurrency(totalCost);
+
+  // Sidebar stops
+  document.getElementById('stop-list').innerHTML = stops.map(s => `
+    <div class="stop-item ${s.id===activeStopId?'active':''}" onclick="selectStop('${s.id}')">
+      <span class="stop-item-flag">${s.emoji||'📍'}</span>
+      <div class="stop-item-info">
+        <div class="stop-item-city">${s.cityName}</div>
+        <div class="stop-item-dates">${formatDate(s.arrivalDate,{month:'short',day:'numeric'})} – ${formatDate(s.departureDate,{month:'short',day:'numeric'})}</div>
+      </div>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="event.stopPropagation();deleteStop('${s.id}')" title="Remove stop">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
+    </div>`).join('');
+
+  if (activeStopId) renderStopDetail(activeStopId);
+  else {
+    document.getElementById('no-stop-msg').style.display = stops.length ? 'none' : '';
+    document.getElementById('stop-detail').innerHTML = stops.length ? '<div class="no-stop"><div style="font-size:3rem">👈</div><div style="font-weight:600">Select a stop to view activities</div></div>' : '';
+  }
+}
+
+function selectStop(id) {
+  activeStopId = id;
+  document.getElementById('no-stop-msg').style.display = 'none';
+  refreshAll();
+}
+
+function renderStopDetail(stopId) {
+  const stop = Stops.find(stopId);
+  if (!stop) return;
+  const acts = Activities.forStop(stopId);
+  const detail = document.getElementById('stop-detail');
+  detail.innerHTML = `
+    <div class="stop-header animate-in">
+      <div class="stop-header-left">
+        <span class="stop-flag">${stop.emoji||'📍'}</span>
+        <div>
+          <div class="stop-city">${stop.cityName}, ${stop.country}</div>
+          <div class="stop-dates">${formatDate(stop.arrivalDate,{month:'long',day:'numeric'})} — ${formatDate(stop.departureDate,{month:'long',day:'numeric',year:'numeric'})} · ${daysBetween(stop.arrivalDate,stop.departureDate)} days</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:var(--space-sm);">
+        <button class="btn btn-ghost btn-sm" onclick="openEditDates('${stopId}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Edit Dates
+        </button>
+        <button class="btn btn-accent btn-sm" onclick="openActModal('${stopId}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Activity
+        </button>
+      </div>
+    </div>
+    <div class="activities-area" id="acts-${stopId}">
+      ${acts.length ? acts.map(a => actBlock(a)).join('') : `<div class="empty-state" style="padding:var(--space-2xl) 0;"><div class="empty-state-icon">🎯</div><div class="empty-state-title">No activities yet</div><div class="empty-state-desc">Add things to do in ${stop.cityName}</div><button class="btn btn-primary mt-md" onclick="openActModal('${stopId}')">Add Activity</button></div>`}
+    </div>`;
+}
+
+function actBlock(a) {
+  const cat = getCategoryInfo(a.category);
+  return `<div class="act-block animate-in">
+    <div class="act-emoji">${a.emoji||cat.emoji}</div>
+    <div class="act-info">
+      <div class="act-name">${a.name}</div>
+      <div class="act-meta">${cat.label} · ${a.duration} min · ${formatCurrency(a.cost)}</div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <span class="badge badge-gold">${formatCurrency(a.cost)}</span>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteActivity('${a.id}')" title="Remove">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+function deleteActivity(id) {
+  Activities.delete(id);
+  refreshAll();
+  showToast('Activity removed','info');
+}
+
+function deleteStop(id) {
+  if (!confirm('Remove this city stop? Activities will also be deleted.')) return;
+  if (activeStopId === id) { activeStopId = null; document.getElementById('stop-detail').innerHTML=''; }
+  Stops.delete(id);
+  refreshAll();
+  showToast('Stop removed','info');
+}
+
+// City search modal
+function renderCityResults() {
+  const q = document.getElementById('city-search-input').value;
+  const results = searchCities(q).slice(0,20);
+  document.getElementById('city-results').innerHTML = results.map(c => `
+    <div class="city-card" onclick="addStop('${c.id}')">
+      <div class="city-card-image" style="height:90px;font-size:2.2rem;">
+        <div class="city-card-gradient" style="background:${getCityGradient(c.id)};border-radius:0;"></div>
+        <span style="position:relative;z-index:1;">${c.emoji}</span>
+      </div>
+      <div class="city-card-body" style="padding:10px;">
+        <div class="city-card-name">${c.name}</div>
+        <div class="city-card-country">${c.country}</div>
+      </div>
+    </div>`).join('');
+}
+
+function addStop(cityId) {
+  const city = getCityById(cityId);
+  if (!city) return;
+  const stops = Stops.forTrip(tripId);
+  const order = stops.length;
+  const arrive = trip.startDate;
+  const depart = trip.endDate;
+  const stop = Stops.create({ tripId, cityId:city.id, cityName:city.name, country:city.country, countryCode:city.countryCode, emoji:city.emoji, arrivalDate:arrive, departureDate:depart, order });
+  closeModal('city-modal');
+  activeStopId = stop.id;
+  refreshAll();
+  showToast(`${city.emoji} ${city.name} added!`,'success');
+}
+
+// Activity modal
+let actStopId = null;
+function openActModal(stopId) {
+  actStopId = stopId;
+  const stop = Stops.find(stopId);
+  activeCatFilter = 'all';
+  document.getElementById('cat-filters').innerHTML =
+    [{ id:'all', label:'All', emoji:'🌐' }, ...ACTIVITY_CATEGORIES].map(c =>
+      `<button class="chip ${c.id==='all'?'active':''}" onclick="setCatFilter('${c.id}',this)">${c.emoji||''} ${c.label}</button>`
+    ).join('');
+  renderActResults(stop.cityId);
+  openModal('act-modal');
+}
+
+function setCatFilter(cat, el) {
+  activeCatFilter = cat;
+  document.querySelectorAll('#cat-filters .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const stop = Stops.find(actStopId);
+  renderActResults(stop.cityId);
+}
+
+function renderActResults(cityId) {
+  const acts = filterActivities(cityId, { category: activeCatFilter === 'all' ? undefined : activeCatFilter });
+  document.getElementById('act-results').innerHTML = acts.map(a => `
+    <div class="activity-card">
+      <div class="activity-card-icon">${a.emoji}</div>
+      <div class="activity-card-body">
+        <div class="activity-card-name">${a.name}</div>
+        <div style="font-size:.78rem;color:var(--text-secondary);">${a.description}</div>
+        <div class="activity-card-meta">
+          <span>${getCategoryInfo(a.category).label}</span>
+          <span>${a.duration} min</span>
+          <span class="activity-card-cost">${formatCurrency(a.avgCost)}</span>
+        </div>
+      </div>
+      <button class="btn btn-outline-primary btn-sm" onclick="addActivity(${JSON.stringify(a).replace(/"/g,'&quot;')})">Add</button>
+    </div>`).join('');
+}
+
+function addActivity(template) {
+  Activities.create({ stopId: actStopId, name:template.name, category:template.category, cost:template.avgCost, duration:template.duration, description:template.description, emoji:template.emoji });
+  closeModal('act-modal');
+  refreshAll();
+  showToast(`${template.emoji} ${template.name} added!`,'success');
+}
+
+// Edit stop dates
+function openEditDates(stopId) {
+  editingStopId = stopId;
+  const stop = Stops.find(stopId);
+  document.getElementById('stop-arrive').value = stop.arrivalDate;
+  document.getElementById('stop-depart').value = stop.departureDate;
+  openModal('stop-date-modal');
+}
+
+function saveStopDates() {
+  const arrive = document.getElementById('stop-arrive').value;
+  const depart = document.getElementById('stop-depart').value;
+  if (!arrive || !depart) return showToast('Please select both dates','warning');
+  Stops.update(editingStopId, { arrivalDate: arrive, departureDate: depart });
+  closeModal('stop-date-modal');
+  refreshAll();
+  showToast('Dates updated','success');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
+});
+
+// Init
+renderCityResults();
+refreshAll();
+</script>
+</body>
+</html>

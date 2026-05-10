@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traveloop — Shared Itinerary</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .share-hero { border-radius:var(--radius-xl); padding:var(--space-2xl); border:1px solid var(--border); position:relative; overflow:hidden; margin-bottom:var(--space-xl); text-align:center; }
+    .share-hero-bg { position:absolute; inset:0; }
+    .share-hero-content { position:relative; z-index:1; }
+    .share-hero-emoji { font-size:4rem; display:block; margin-bottom:var(--space-md); }
+    .share-hero-title { font-size:2rem; font-weight:700; font-family:var(--font-serif); }
+    .share-hero-sub { color:rgba(255,255,255,.7); margin-top:6px; }
+    .share-actions { display:flex; justify-content:center; gap:var(--space-md); margin-top:var(--space-lg); flex-wrap:wrap; }
+    .url-bar { background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-lg); padding:12px 16px; display:flex; align-items:center; gap:10px; margin-bottom:var(--space-xl); }
+    .url-bar input { flex:1; background:none; border:none; font-size:.85rem; color:var(--text-secondary); }
+    .stop-section { margin-bottom:var(--space-xl); }
+    .stop-section-header { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-md) var(--space-lg); background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); margin-bottom:var(--space-md); }
+    .act-item { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-sm) var(--space-md); background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:6px; }
+    .social-btns { display:flex; gap:var(--space-sm); }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar" style="display:none;"></header>
+
+<main style="max-width:860px;margin:0 auto;padding:var(--space-xl);">
+
+  <!-- Public Share Banner (no navbar needed) -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-xl);">
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-size:1.3rem;font-weight:700;">
+      <div style="width:32px;height:32px;background:var(--grad-primary);border-radius:8px;display:flex;align-items:center;justify-content:center;">✈</div>
+      Traveloop
+    </a>
+    <a href="index.html" class="btn btn-primary btn-sm">Plan Your Own Trip →</a>
+  </div>
+
+  <div id="not-found" class="empty-state" style="display:none;">
+    <div class="empty-state-icon">🔍</div>
+    <div class="empty-state-title">Itinerary not found</div>
+    <div class="empty-state-desc">This shared link may be invalid or the trip may have been deleted.</div>
+    <a href="dashboard.html" class="btn btn-primary mt-md">Go to Dashboard</a>
+  </div>
+
+  <div id="share-content" style="display:none;">
+    <!-- Hero -->
+    <div class="share-hero animate-in" id="share-hero">
+      <div class="share-hero-bg" id="share-hero-bg"></div>
+      <div class="share-hero-content">
+        <span class="share-hero-emoji" id="share-emoji">✈️</span>
+        <div class="share-hero-title" id="share-title"></div>
+        <div class="share-hero-sub" id="share-sub"></div>
+        <div style="display:flex;justify-content:center;gap:var(--space-xl);margin-top:var(--space-lg);">
+          <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:700;" id="s-days"></div><div style="font-size:.75rem;color:rgba(255,255,255,.6);">Days</div></div>
+          <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:700;" id="s-cities"></div><div style="font-size:.75rem;color:rgba(255,255,255,.6);">Cities</div></div>
+          <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:700;" id="s-activities"></div><div style="font-size:.75rem;color:rgba(255,255,255,.6);">Activities</div></div>
+          <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:700;" id="s-cost"></div><div style="font-size:.75rem;color:rgba(255,255,255,.6);">Est. Cost</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share URL -->
+    <div class="url-bar animate-in stagger-1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <input type="text" id="share-url" readonly onclick="this.select()" />
+      <button class="btn btn-outline-primary btn-sm" onclick="copyLink()">Copy Link</button>
+    </div>
+
+    <!-- Social Share -->
+    <div class="social-btns animate-in stagger-1" style="margin-bottom:var(--space-xl);">
+      <button onclick="shareTwitter()" class="btn btn-ghost" style="flex:1;justify-content:center;border-color:rgba(29,161,242,.3);color:#1DA1F2;">
+        𝕏 Share on X
+      </button>
+      <button onclick="shareWhatsApp()" class="btn btn-ghost" style="flex:1;justify-content:center;border-color:rgba(37,211,102,.3);color:#25D366;">
+        💬 WhatsApp
+      </button>
+      <button onclick="copyTrip()" class="btn btn-ghost" style="flex:1;justify-content:center;">
+        📋 Copy Trip
+      </button>
+    </div>
+
+    <!-- Itinerary -->
+    <div id="itinerary-view" class="animate-in stagger-2"></div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script>
+// Check for share code in URL
+const code   = getParam('code');
+const tripId = getParam('trip');
+
+// Support both ?code= (public share) and ?trip= (direct link while logged in)
+let trip = null;
+if (code)   trip = Trips.findByShareCode(code);
+if (!trip && tripId) trip = Trips.find(tripId);
+
+if (!trip) {
+  document.getElementById('not-found').style.display = '';
+} else {
+  document.getElementById('share-content').style.display = '';
+  const stops = Stops.forTrip(trip.id);
+  let totalActs = 0, totalCost = 0;
+  stops.forEach(s => {
+    const acts = Activities.forStop(s.id);
+    totalActs += acts.length;
+    acts.forEach(a => totalCost += a.cost||0);
+  });
+
+  // Hero
+  document.getElementById('share-emoji').textContent = trip.coverEmoji || '✈️';
+  document.getElementById('share-title').textContent = trip.name;
+  document.getElementById('share-sub').textContent   = trip.description || `${formatDate(trip.startDate,{month:'long',day:'numeric'})} — ${formatDate(trip.endDate,{month:'long',day:'numeric',year:'numeric'})}`;
+  document.getElementById('share-hero-bg').style.background = `linear-gradient(135deg, #070E1A, #0F2744)`;
+  document.getElementById('s-days').textContent       = daysBetween(trip.startDate, trip.endDate);
+  document.getElementById('s-cities').textContent     = stops.length;
+  document.getElementById('s-activities').textContent = totalActs;
+  document.getElementById('s-cost').textContent       = formatCurrency(totalCost);
+
+  // URL
+  const shareUrl = `${location.origin}${location.pathname}?code=${trip.shareCode}`;
+  document.getElementById('share-url').value = shareUrl;
+  document.title = `${trip.name} — Traveloop`;
+
+  // Itinerary
+  const view = document.getElementById('itinerary-view');
+  if (!stops.length) {
+    view.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🗺️</div><div class="empty-state-title">No stops added yet</div></div>';
+  } else {
+    view.innerHTML = stops.map((stop, i) => {
+      const acts = Activities.forStop(stop.id);
+      const stopCost = acts.reduce((a,b) => a+(b.cost||0), 0);
+      return `
+        <div class="stop-section">
+          <div class="stop-section-header">
+            <div style="width:32px;height:32px;background:var(--grad-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;">${i+1}</div>
+            <span style="font-size:1.6rem;">${stop.emoji||'📍'}</span>
+            <div style="flex:1;">
+              <div style="font-weight:700;">${stop.cityName}, ${stop.country}</div>
+              <div style="font-size:.78rem;color:var(--text-secondary);">${formatDate(stop.arrivalDate,{month:'long',day:'numeric'})} — ${formatDate(stop.departureDate,{month:'long',day:'numeric',year:'numeric'})} · ${daysBetween(stop.arrivalDate,stop.departureDate)} days</div>
+            </div>
+            <span class="badge badge-gold">${formatCurrency(stopCost)}</span>
+          </div>
+          ${acts.length ? acts.map(a => `
+            <div class="act-item">
+              <span style="font-size:1.3rem;">${a.emoji||'⭐'}</span>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:.875rem;">${a.name}</div>
+                <div style="font-size:.75rem;color:var(--text-secondary);">${getCategoryInfo(a.category).label} · ${a.duration} min</div>
+              </div>
+              <span style="color:var(--gold);font-weight:600;font-size:.85rem;">${formatCurrency(a.cost)}</span>
+            </div>`).join('')
+          : '<div style="padding:var(--space-md);color:var(--text-muted);font-size:.85rem;">No activities added</div>'}
+        </div>`;
+    }).join('');
+  }
+}
+
+function copyLink() {
+  const url = document.getElementById('share-url').value;
+  navigator.clipboard.writeText(url).then(() => showToast('Link copied!','success'));
+}
+function shareTwitter() {
+  const url  = document.getElementById('share-url').value;
+  const text = `Check out my trip plan: ${trip?.name}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+}
+function shareWhatsApp() {
+  const url  = document.getElementById('share-url').value;
+  window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
+}
+function copyTrip() {
+  if (!trip) return;
+  const currentUser = Session.get();
+  if (!currentUser) { showToast('Sign in to copy this trip','warning'); return; }
+  const newTrip = Trips.create({ userId:currentUser.id, name:`Copy of ${trip.name}`, description:trip.description||'', startDate:trip.startDate, endDate:trip.endDate, coverEmoji:trip.coverEmoji||'✈️' });
+  const stops = Stops.forTrip(trip.id);
+  stops.forEach((s,i) => {
+    const ns = Stops.create({ tripId:newTrip.id, cityId:s.cityId, cityName:s.cityName, country:s.country, countryCode:s.countryCode, emoji:s.emoji, arrivalDate:s.arrivalDate, departureDate:s.departureDate, order:i });
+    Activities.forStop(s.id).forEach(a => Activities.create({ stopId:ns.id, name:a.name, category:a.category, cost:a.cost, duration:a.duration, emoji:a.emoji }));
+  });
+  showToast('Trip copied to your account!','success');
+  setTimeout(() => { window.location.href = `itinerary.html?trip=${newTrip.id}`; }, 1000);
+}
+
+function getCategoryInfo(id) {
+  const CATS = [{id:'sightseeing',label:'Sightseeing',emoji:'🏛️'},{id:'food',label:'Food',emoji:'🍽️'},{id:'culture',label:'Culture',emoji:'🎨'},{id:'adventure',label:'Adventure',emoji:'🏔️'},{id:'shopping',label:'Shopping',emoji:'🛍️'},{id:'nature',label:'Nature',emoji:'🌿'},{id:'nightlife',label:'Nightlife',emoji:'🎶'},{id:'wellness',label:'Wellness',emoji:'🧘'}];
+  return CATS.find(c=>c.id===id) || { label: id, emoji:'⭐' };
+}
+</script>
+</body>
+</html>

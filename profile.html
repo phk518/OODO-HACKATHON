@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Profile &amp; Settings</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <style>
+    .profile-layout { display:grid; grid-template-columns:300px 1fr; gap:var(--space-xl); align-items:start; }
+    .profile-sidebar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); text-align:center; position:sticky; top:calc(var(--navbar-h)+20px); }
+    .avatar-xl { width:88px; height:88px; border-radius:50%; background:var(--grad-primary); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; color:#fff; margin:0 auto var(--space-md); border:3px solid var(--border-primary); }
+    .profile-name { font-size:1.2rem; font-weight:700; }
+    .profile-email { color:var(--text-secondary); font-size:.85rem; margin-top:4px; }
+    .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md); margin-top:var(--space-lg); }
+    .p-stat { background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-sm) var(--space-md); text-align:center; }
+    .p-stat-val { font-size:1.3rem; font-weight:700; }
+    .p-stat-lab { font-size:.7rem; color:var(--text-muted); }
+    .settings-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); margin-bottom:var(--space-lg); }
+    .settings-section-title { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:var(--space-lg); padding-bottom:var(--space-sm); border-bottom:1px solid var(--border); }
+    .danger-zone { border-color:rgba(239,68,68,.25); }
+    .danger-zone .settings-section-title { color:var(--danger); }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+<main class="page-wrapper">
+
+  <div class="page-header animate-in">
+    <h1 class="page-title">Profile &amp; Settings</h1>
+    <p class="page-subtitle">Manage your account details and preferences.</p>
+  </div>
+
+  <div class="profile-layout animate-in stagger-1">
+    <!-- Sidebar -->
+    <div class="profile-sidebar">
+      <div class="avatar-xl" id="profile-avatar"></div>
+      <div class="profile-name"  id="profile-name"></div>
+      <div class="profile-email" id="profile-email"></div>
+      <div class="profile-stats" id="profile-stats"></div>
+      <div style="margin-top:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-sm);">
+        <a href="dashboard.html" class="btn btn-ghost btn-sm btn-full">🏠 Dashboard</a>
+        <a href="trips.html"     class="btn btn-ghost btn-sm btn-full">✈️ My Trips</a>
+        <button class="btn btn-danger btn-sm btn-full" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div>
+      <!-- Edit Profile -->
+      <div class="settings-card">
+        <div class="settings-section-title">Personal Information</div>
+        <form onsubmit="saveProfile(event)" style="display:flex;flex-direction:column;gap:var(--space-md);">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="edit-name" class="form-input" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="edit-email" class="form-input" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Language</label>
+            <select id="edit-language" class="form-select">
+              <option value="en">🇬🇧 English</option>
+              <option value="es">🇪🇸 Spanish</option>
+              <option value="fr">🇫🇷 French</option>
+              <option value="de">🇩🇪 German</option>
+              <option value="ja">🇯🇵 Japanese</option>
+              <option value="pt">🇧🇷 Portuguese</option>
+            </select>
+          </div>
+          <div style="text-align:right;">
+            <button type="submit" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Change Password -->
+      <div class="settings-card">
+        <div class="settings-section-title">Change Password</div>
+        <form onsubmit="changePassword(event)" style="display:flex;flex-direction:column;gap:var(--space-md);">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" id="old-password" class="form-input" placeholder="Enter current password"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" id="new-password" class="form-input" placeholder="At least 6 characters" minlength="6"/>
+          </div>
+          <div style="text-align:right;">
+            <button type="submit" class="btn btn-ghost">Update Password</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Saved Destinations -->
+      <div class="settings-card">
+        <div class="settings-section-title">Your Travel Stats</div>
+        <div id="travel-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-md);"></div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="settings-card danger-zone">
+        <div class="settings-section-title">Danger Zone</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-weight:600;font-size:.9rem;">Delete Account</div>
+            <div style="color:var(--text-muted);font-size:.8rem;">Permanently delete your account and all trip data. This cannot be undone.</div>
+          </div>
+          <button class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+function loadProfile() {
+  const u = Session.get();
+  document.getElementById('profile-avatar').textContent = getInitials(u.name);
+  document.getElementById('profile-name').textContent   = u.name;
+  document.getElementById('profile-email').textContent  = u.email;
+  document.getElementById('edit-name').value     = u.name;
+  document.getElementById('edit-email').value    = u.email;
+  document.getElementById('edit-language').value = u.language || 'en';
+
+  // Stats
+  const trips = Trips.forUser(u.id);
+  let countries = new Set(), totalDays = 0, totalCities = new Set(), totalActs = 0;
+  trips.forEach(t => {
+    totalDays += daysBetween(t.startDate, t.endDate);
+    Stops.forTrip(t.id).forEach(s => {
+      countries.add(s.country);
+      totalCities.add(s.cityName);
+      totalActs += Activities.forStop(s.id).length;
+    });
+  });
+
+  document.getElementById('profile-stats').innerHTML = `
+    <div class="p-stat"><div class="p-stat-val">${trips.length}</div><div class="p-stat-lab">Trips</div></div>
+    <div class="p-stat"><div class="p-stat-val">${countries.size}</div><div class="p-stat-lab">Countries</div></div>
+    <div class="p-stat"><div class="p-stat-val">${totalDays}</div><div class="p-stat-lab">Days</div></div>
+    <div class="p-stat"><div class="p-stat-val">${totalActs}</div><div class="p-stat-lab">Activities</div></div>`;
+
+  document.getElementById('travel-stats').innerHTML = [
+    { label:'Total Trips',    val:trips.length,      icon:'✈️' },
+    { label:'Countries',      val:countries.size,    icon:'🌍' },
+    { label:'Cities',         val:totalCities.size,  icon:'🏙️' },
+    { label:'Days Planned',   val:totalDays,         icon:'📅' },
+    { label:'Activities',     val:totalActs,         icon:'🎯' },
+    { label:'Trips Shared',   val: trips.filter(t=>t.isPublic).length, icon:'🔗' },
+  ].map(s => `
+    <div class="stat-card" style="flex-direction:column;align-items:center;text-align:center;padding:var(--space-md);">
+      <div style="font-size:1.5rem;">${s.icon}</div>
+      <div class="stat-value" style="font-size:1.4rem;">${s.val}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+}
+
+function saveProfile(e) {
+  e.preventDefault();
+  const name     = document.getElementById('edit-name').value.trim();
+  const email    = document.getElementById('edit-email').value.trim();
+  const language = document.getElementById('edit-language').value;
+  Users.update(user.id, { name, email, language });
+  // Refresh session display
+  loadProfile();
+  renderNavbar(Session.get());
+  showToast('Profile updated!','success');
+}
+
+function changePassword(e) {
+  e.preventDefault();
+  const oldPwd = document.getElementById('old-password').value;
+  const newPwd = document.getElementById('new-password').value;
+  const current = Users.findById(user.id);
+  if (current.password !== btoa(oldPwd)) { showToast('Current password is incorrect','error'); return; }
+  Users.update(user.id, { password: btoa(newPwd) });
+  document.getElementById('old-password').value = '';
+  document.getElementById('new-password').value = '';
+  showToast('Password updated successfully','success');
+}
+
+function deleteAccount() {
+  if (!confirm('Are you absolutely sure? All your trips and data will be permanently deleted.')) return;
+  const trips = Trips.forUser(user.id);
+  trips.forEach(t => Trips.delete(t.id));
+  const users = dbFindAll ? dbFindAll('tl_users') : [];
+  // Simple inline delete
+  const table = JSON.parse(localStorage.getItem('tl_users')||'[]').filter(u=>u.id!==user.id);
+  localStorage.setItem('tl_users', JSON.stringify(table));
+  Session.clear();
+  showToast('Account deleted','info');
+  setTimeout(() => { window.location.href='index.html'; }, 1000);
+}
+
+loadProfile();
+</script>
+</body>
+</html>

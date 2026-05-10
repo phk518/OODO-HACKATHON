@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Admin Dashboard</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .admin-kpi { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-md); margin-bottom:var(--space-xl); }
+    .chart-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-xl); margin-bottom:var(--space-xl); }
+    .admin-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); }
+    .admin-card-title { font-weight:700; font-size:1rem; margin-bottom:var(--space-lg); }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; padding:10px 14px; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); border-bottom:1px solid var(--border); }
+    td { padding:10px 14px; font-size:.85rem; border-bottom:1px solid rgba(255,255,255,.04); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:var(--bg-elevated); }
+    .admin-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:.7rem; font-weight:600; }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+<div id="admin-gate" style="display:none;">
+  <div class="empty-state" style="min-height:80vh;">
+    <div class="empty-state-icon">🚫</div>
+    <div class="empty-state-title">Admin Access Required</div>
+    <div class="empty-state-desc">This page is only accessible to admin@traveloop.com</div>
+    <a href="dashboard.html" class="btn btn-primary mt-md">Go to Dashboard</a>
+  </div>
+</div>
+<main class="page-wrapper" id="admin-content" style="display:none;">
+
+  <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-subtitle">Platform analytics and user management.</p>
+    </div>
+    <span class="badge badge-accent">Admin</span>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="admin-kpi animate-in stagger-1">
+    <div class="stat-card"><div class="stat-icon stat-icon-primary">👥</div><div><div class="stat-value" id="kpi-users">0</div><div class="stat-label">Total Users</div></div></div>
+    <div class="stat-card"><div class="stat-icon stat-icon-gold">✈️</div><div><div class="stat-value" id="kpi-trips">0</div><div class="stat-label">Trips Created</div></div></div>
+    <div class="stat-card"><div class="stat-icon stat-icon-success">🏙️</div><div><div class="stat-value" id="kpi-cities">0</div><div class="stat-label">City Stops</div></div></div>
+    <div class="stat-card"><div class="stat-icon stat-icon-accent">🎯</div><div><div class="stat-value" id="kpi-acts">0</div><div class="stat-label">Activities</div></div></div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="chart-row animate-in stagger-2">
+    <div class="admin-card">
+      <div class="admin-card-title">Top 8 Most Visited Cities</div>
+      <canvas id="cities-chart" height="260"></canvas>
+    </div>
+    <div class="admin-card">
+      <div class="admin-card-title">Activity Categories</div>
+      <canvas id="cats-chart" height="260"></canvas>
+    </div>
+  </div>
+
+  <!-- Tables Row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);margin-bottom:var(--space-xl);" class="animate-in stagger-3">
+    <!-- Top Cities -->
+    <div class="admin-card">
+      <div class="admin-card-title">Top Cities by Usage</div>
+      <table>
+        <thead><tr><th>#</th><th>City</th><th>Country</th><th>Stops</th></tr></thead>
+        <tbody id="top-cities-table"></tbody>
+      </table>
+    </div>
+    <!-- Top Activities -->
+    <div class="admin-card">
+      <div class="admin-card-title">Most Added Activities</div>
+      <table>
+        <thead><tr><th>#</th><th>Activity</th><th>Category</th><th>Count</th></tr></thead>
+        <tbody id="top-acts-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="admin-card animate-in stagger-4">
+    <div class="admin-card-title">All Users</div>
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Trips</th><th>Joined</th><th>Role</th></tr></thead>
+      <tbody id="users-table"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+if (!user.isAdmin) {
+  document.getElementById('admin-gate').style.display='';
+} else {
+  document.getElementById('admin-content').style.display='';
+  loadAdmin();
+}
+
+function loadAdmin() {
+  const allUsers = Users.all();
+  const allTrips = Trips.all();
+  const allStops = dbFindAll('tl_stops');
+  const allActs  = dbFindAll('tl_activities');
+
+  // KPIs
+  document.getElementById('kpi-users').textContent = allUsers.length;
+  document.getElementById('kpi-trips').textContent = allTrips.length;
+  document.getElementById('kpi-cities').textContent = allStops.length;
+  document.getElementById('kpi-acts').textContent   = allActs.length;
+
+  // Top cities
+  const cityCount = {};
+  allStops.forEach(s => { cityCount[s.cityName] = (cityCount[s.cityName]||0)+1; });
+  const sortedCities = Object.entries(cityCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+  // Top activities
+  const actCount = {};
+  allActs.forEach(a => { actCount[a.name] = (actCount[a.name]||0)+1; });
+  const sortedActs = Object.entries(actCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+  // Category counts
+  const catCount = {};
+  allActs.forEach(a => { catCount[a.category||'other'] = (catCount[a.category||'other']||0)+1; });
+
+  // Cities bar chart
+  Chart.defaults.color = '#94A3B8';
+  new Chart(document.getElementById('cities-chart'), {
+    type:'bar',
+    data:{
+      labels: sortedCities.map(c=>c[0]),
+      datasets:[{ data: sortedCities.map(c=>c[1]), backgroundColor:'rgba(59,130,246,.7)', borderColor:'#3B82F6', borderWidth:2, borderRadius:6 }]
+    },
+    options:{ plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#94A3B8',font:{size:11}},grid:{color:'rgba(255,255,255,.04)'}}, y:{ticks:{color:'#94A3B8'},grid:{color:'rgba(255,255,255,.04)'}} } }
+  });
+
+  // Category doughnut
+  const catColors = ['#3B82F6','#F59E0B','#8B5CF6','#10B981','#EC4899','#84CC16','#F97316','#06B6D4'];
+  new Chart(document.getElementById('cats-chart'), {
+    type:'doughnut',
+    data:{
+      labels: Object.keys(catCount),
+      datasets:[{ data: Object.values(catCount), backgroundColor: catColors, borderColor:'transparent', hoverOffset:6 }]
+    },
+    options:{ cutout:'65%', plugins:{ legend:{ position:'right', labels:{color:'#94A3B8',font:{size:11}} } } }
+  });
+
+  // Top cities table
+  document.getElementById('top-cities-table').innerHTML = sortedCities.map(([city, count], i)=>{
+    const stop = allStops.find(s=>s.cityName===city);
+    return `<tr><td><strong>${i+1}</strong></td><td>${stop?.emoji||'📍'} ${city}</td><td style="color:var(--text-secondary);">${stop?.country||'—'}</td><td><span class="badge badge-primary">${count}</span></td></tr>`;
+  }).join('');
+
+  // Top acts table
+  document.getElementById('top-acts-table').innerHTML = sortedActs.map(([name, count], i)=>{
+    const act = allActs.find(a=>a.name===name);
+    return `<tr><td><strong>${i+1}</strong></td><td>${act?.emoji||'⭐'} ${name}</td><td style="color:var(--text-secondary);">${act?.category||'—'}</td><td><span class="badge badge-gold">${count}</span></td></tr>`;
+  }).join('');
+
+  // Users table
+  document.getElementById('users-table').innerHTML = allUsers.map(u=>{
+    const trips = Trips.forUser(u.id).length;
+    const joined = new Date(u.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px;">
+        <div class="avatar avatar-sm" style="background:var(--grad-primary);">${getInitials(u.name)}</div>
+        <span style="font-weight:600;">${u.name}</span>
+      </div></td>
+      <td style="color:var(--text-secondary);">${u.email}</td>
+      <td><span class="badge badge-muted">${trips}</span></td>
+      <td style="color:var(--text-muted);font-size:.78rem;">${joined}</td>
+      <td>${u.isAdmin ? '<span class="badge badge-accent">Admin</span>' : '<span class="badge badge-muted">User</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function dbFindAll(key) {
+  try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch { return []; }
+}
+</script>
+</body>
+</html>

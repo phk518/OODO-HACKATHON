@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traveloop — Dashboard</title>
+  <meta name="description" content="Your Traveloop dashboard — see upcoming trips, popular destinations, and start planning." />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .dashboard-hero {
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl) var(--space-2xl);
+      background: var(--grad-hero);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: var(--space-2xl);
+    }
+    .dashboard-hero::before {
+      content:'';
+      position:absolute;
+      top:-80px;right:-80px;
+      width:400px;height:400px;
+      background:radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .dashboard-hero::after {
+      content:'';
+      position:absolute;
+      bottom:-60px;left:200px;
+      width:300px;height:300px;
+      background:radial-gradient(circle,rgba(255,107,107,0.1) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .dashboard-hero-content { position:relative;z-index:1; }
+    .dashboard-hero-emoji {
+      font-size:3rem;
+      margin-bottom:var(--space-md);
+      display:block;
+      animation:float 4s ease-in-out infinite;
+    }
+    .dashboard-hero h1 { font-size:clamp(1.4rem,3vw,2rem); margin-bottom:6px; }
+    .dashboard-hero p  { color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-lg); }
+    .hero-actions { display:flex;gap:var(--space-sm);flex-wrap:wrap; }
+
+    .stats-grid {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:var(--space-md);
+      margin-bottom:var(--space-2xl);
+    }
+
+    .section-trip-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:var(--space-lg);
+    }
+
+    .destinations-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:var(--space-md);
+    }
+
+    /* Inspiration city mini card */
+    .insp-card {
+      border-radius:var(--radius-xl);
+      overflow:hidden;
+      border:1px solid var(--border);
+      cursor:pointer;
+      transition:all var(--duration-normal) var(--ease);
+      position:relative;
+    }
+    .insp-card:hover { transform:translateY(-4px);box-shadow:var(--shadow-md); }
+    .insp-card-img {
+      height:130px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:2.8rem;position:relative;
+    }
+    .insp-card-img-bg {
+      position:absolute;inset:0;
+    }
+    .insp-card-img span { position:relative;z-index:1; }
+    .insp-card-body {padding:var(--space-sm) var(--space-md) var(--space-md);}
+    .insp-card-name {font-weight:700;font-size:0.9rem;}
+    .insp-card-country {font-size:0.75rem;color:var(--text-secondary);}
+    .insp-card-meta {
+      display:flex;justify-content:space-between;align-items:center;
+      margin-top:6px;font-size:0.75rem;
+    }
+
+    .quick-actions {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:var(--space-md);
+      margin-bottom:var(--space-2xl);
+    }
+    .quick-action-btn {
+      padding:var(--space-md);
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      cursor:pointer;
+      transition:all var(--duration-normal) var(--ease);
+      text-decoration:none;
+      color:var(--text-secondary);
+      font-size:0.8rem;font-weight:500;
+    }
+    .quick-action-btn:hover {
+      border-color:var(--border-primary);
+      background:var(--primary-dim);
+      color:var(--text-primary);
+      transform:translateY(-2px);
+    }
+    .quick-action-icon {
+      width:42px;height:42px;
+      border-radius:var(--radius-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.2rem;
+      background:var(--bg-elevated);
+      border:1px solid var(--border);
+      transition:all var(--duration-normal) var(--ease);
+    }
+    .quick-action-btn:hover .quick-action-icon {
+      background:var(--primary-dim);
+      border-color:var(--border-primary);
+    }
+
+    .tips-card {
+      background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.03));
+      border:1px solid rgba(245,166,35,0.2);
+      border-radius:var(--radius-lg);
+      padding:var(--space-md) var(--space-lg);
+      display:flex;align-items:center;gap:var(--space-md);
+      font-size:0.875rem;
+    }
+  </style>
+</head>
+<body class="bg-dots">
+  <header id="main-navbar" class="navbar"></header>
+
+  <main class="page-wrapper">
+
+    <!-- Hero -->
+    <div class="dashboard-hero animate-in">
+      <div class="dashboard-hero-content">
+        <span class="dashboard-hero-emoji" id="hero-emoji">✈️</span>
+        <h1 id="hero-greeting">Good morning, Traveller!</h1>
+        <p id="hero-sub">You have <strong id="upcoming-count">0</strong> upcoming trips. Where will you go next?</p>
+        <div class="hero-actions">
+          <a href="create-trip.html" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Plan New Trip
+          </a>
+          <a href="trips.html" class="btn btn-ghost btn-lg">View All Trips</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid animate-in stagger-1" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-primary">✈️</div>
+        <div><div class="stat-value" id="stat-total-trips">0</div><div class="stat-label">Total Trips</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-gold">🌍</div>
+        <div><div class="stat-value" id="stat-countries">0</div><div class="stat-label">Countries</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-accent">📅</div>
+        <div><div class="stat-value" id="stat-days">0</div><div class="stat-label">Days Planned</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-success">🏙️</div>
+        <div><div class="stat-value" id="stat-cities">0</div><div class="stat-label">Cities</div></div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section animate-in stagger-2">
+      <div class="section-header">
+        <div class="section-title">Quick Actions</div>
+      </div>
+      <div class="quick-actions">
+        <a href="create-trip.html" class="quick-action-btn">
+          <div class="quick-action-icon">✈️</div>
+          New Trip
+        </a>
+        <a href="city-search.html" class="quick-action-btn">
+          <div class="quick-action-icon">🔍</div>
+          Explore Cities
+        </a>
+        <a href="trips.html" class="quick-action-btn">
+          <div class="quick-action-icon">🗂️</div>
+          My Trips
+        </a>
+        <a href="profile.html" class="quick-action-btn">
+          <div class="quick-action-icon">👤</div>
+          Profile
+        </a>
+      </div>
+    </div>
+
+    <!-- Upcoming Trips -->
+    <div class="section animate-in stagger-3">
+      <div class="section-header">
+        <div class="section-title">Your Trips</div>
+        <a href="trips.html" class="btn btn-ghost btn-sm">View All</a>
+      </div>
+      <div class="section-trip-grid" id="upcoming-trips">
+        <div class="empty-state" id="trips-empty" style="display:none;">
+          <div class="empty-state-icon">🧳</div>
+          <div class="empty-state-title">No trips yet</div>
+          <div class="empty-state-desc">Create your first trip to get started!</div>
+          <a href="create-trip.html" class="btn btn-primary mt-md">Plan New Trip</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Destinations -->
+    <div class="section animate-in stagger-4">
+      <div class="section-header">
+        <div class="section-title">Popular Destinations</div>
+        <a href="city-search.html" class="btn btn-ghost btn-sm">Browse All</a>
+      </div>
+      <div class="destinations-grid" id="destinations-grid"></div>
+    </div>
+
+    <!-- Travel Tip -->
+    <div class="tips-card animate-in stagger-5">
+      <span style="font-size:1.5rem;">💡</span>
+      <div>
+        <strong>Travel Tip:</strong> <span id="travel-tip">Book accommodation at least 3 months in advance for European summer travel to get the best rates.</span>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast-container"></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/cities-data.js"></script>
+  <script src="js/activities-data.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const TIPS = [
+      'Book accommodation at least 3 months in advance for European summer travel to get the best rates.',
+      'Always purchase travel insurance — it costs less than 5% of your trip budget and covers everything.',
+      'Use local SIM cards instead of international roaming — save up to 90% on data costs abroad.',
+      'Pack a power bank — museums and airports drain phone batteries faster than you expect.',
+      'Learn 5 words in the local language: hello, please, thank you, excuse me, and where. Locals love it.',
+      'Book airport-to-hotel transfers in advance. Arriving exhausted in an unfamiliar city is rough.',
+      'Keep a digital and printed copy of all travel documents in your email and a folder.',
+      'Visit major tourist attractions first thing in the morning or late afternoon to avoid crowds.',
+    ];
+
+    const user = Session.require();
+    renderNavbar(user);
+
+    function loadDashboard() {
+      // Greeting
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+      const emojis = ['✈️','🌍','🗺️','🧳','🌅'];
+      document.getElementById('hero-greeting').textContent = `${greeting}, ${user.name.split(' ')[0]}!`;
+      document.getElementById('hero-emoji').textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      document.getElementById('travel-tip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+
+      // Load trips
+      const trips = Trips.forUser(user.id);
+      const upcoming = trips.filter(t => tripStatus(t.startDate, t.endDate) !== 'past');
+      document.getElementById('upcoming-count').textContent = upcoming.length;
+
+      // Stats
+      let countries = new Set(), totalDays = 0, allCities = new Set();
+      trips.forEach(trip => {
+        totalDays += daysBetween(trip.startDate, trip.endDate);
+        const stops = Stops.forTrip(trip.id);
+        stops.forEach(s => { countries.add(s.country); allCities.add(s.cityName); });
+      });
+      document.getElementById('stat-total-trips').textContent = trips.length;
+      document.getElementById('stat-countries').textContent = countries.size;
+      document.getElementById('stat-days').textContent = totalDays;
+      document.getElementById('stat-cities').textContent = allCities.size;
+
+      // Render recent trips (max 3)
+      const container = document.getElementById('upcoming-trips');
+      const emptyEl   = document.getElementById('trips-empty');
+      const displayed = trips.slice(0, 3);
+      if (displayed.length === 0) {
+        emptyEl.style.display = '';
+      } else {
+        emptyEl.style.display = 'none';
+        container.innerHTML = displayed.map(trip => {
+          const stops = Stops.forTrip(trip.id);
+          return renderTripCard(trip, stops);
+        }).join('');
+      }
+
+      // Recommended destinations (popular cities)
+      const popular = CITIES.filter(c => c.popularity >= 5).slice(0, 8);
+      document.getElementById('destinations-grid').innerHTML = popular.map(city => `
+        <div class="insp-card animate-in" onclick="window.location='city-search.html?city=${city.id}'">
+          <div class="insp-card-img">
+            <div class="insp-card-img-bg" style="background:${getCityGradient(city.id)};"></div>
+            <span>${city.emoji}</span>
+          </div>
+          <div class="insp-card-body">
+            <div class="insp-card-name">${city.name}</div>
+            <div class="insp-card-country">${city.country}</div>
+            <div class="insp-card-meta">
+              <span class="stars">${'★'.repeat(city.popularity)}${'☆'.repeat(5 - city.popularity)}</span>
+              <span class="text-gold body-xs">$${'$'.repeat(city.costIndex - 1)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
