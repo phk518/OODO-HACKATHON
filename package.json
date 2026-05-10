@@ -1,0 +1,23 @@
+{
+  "name": "oodo-hackathon",
+  "version": "1.0.0",
+  "description": "**Personalized Travel Planning Made Easy**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phk518/OODO-HACKATHON.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phk518/OODO-HACKATHON/issues"
+  },
+  "homepage": "https://github.com/phk518/OODO-HACKATHON#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
+}
