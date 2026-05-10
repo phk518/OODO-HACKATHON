@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traveloop | Activity Search</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#38485a",
+                    "secondary": "#4f6073",
+                    "inverse-on-surface": "#f0f1f1",
+                    "outline": "#897362",
+                    "secondary-fixed": "#d2e4fb",
+                    "background": "#f9f9f9",
+                    "on-secondary-container": "#556679",
+                    "on-surface": "#1a1c1c",
+                    "surface-tint": "#875200",
+                    "on-primary-fixed": "#2b1700",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#d2e4fb",
+                    "on-tertiary-fixed": "#171c1f",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#a6aaae",
+                    "surface-dim": "#dadada",
+                    "on-primary-fixed-variant": "#673d00",
+                    "on-primary-container": "#5b3600",
+                    "primary-fixed": "#ffddba",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#dfe3e7",
+                    "surface-container-highest": "#e2e2e2",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "tertiary": "#5a5f62",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f3f3f3",
+                    "surface-bright": "#f9f9f9",
+                    "on-surface-variant": "#564334",
+                    "inverse-primary": "#ffb865",
+                    "primary-container": "#ef9500",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e2e2e2",
+                    "inverse-surface": "#2f3131",
+                    "on-tertiary-container": "#3a3f42",
+                    "outline-variant": "#ddc1ae",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "secondary-fixed-dim": "#b7c8de",
+                    "primary-fixed-dim": "#ffb865",
+                    "on-secondary-fixed": "#0b1d2d",
+                    "surface": "#f9f9f9",
+                    "surface-container-high": "#e8e8e8",
+                    "primary": "#875200",
+                    "on-background": "#1a1c1c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-gap": "48px",
+                    "unit": "4px",
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "gutter-desktop": "24px",
+                    "gutter-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Montserrat"],
+                    "display-lg": ["Montserrat"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Montserrat"],
+                    "headline-lg": ["Montserrat"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary">menu</span>
+</button>
+<h1 class="font-display-lg text-headline-md text-primary dark:text-inverse-primary tracking-tight">Traveloop</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:opacity-80 transition-opacity font-label-md text-label-md" href="#">Home</a>
+<a class="text-on-surface-variant hover:opacity-80 transition-opacity font-label-md text-label-md" href="#">My Trips</a>
+<a class="text-primary font-bold hover:opacity-80 transition-opacity font-label-md text-label-md" href="#">Discovery</a>
+<a class="text-on-surface-variant hover:opacity-80 transition-opacity font-label-md text-label-md" href="#">Profile</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant">search</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/30">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Search & Filter Header -->
+<section class="mb-section-gap">
+<div class="flex flex-col gap-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Discovery</h2>
+<p class="text-secondary font-body-lg">Find the perfect activities for your Tokyo stopover.</p>
+</div>
+<div class="flex flex-col md:flex-row gap-4">
+<div class="flex-1 relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-white border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary-container focus:border-primary-container outline-none transition-all shadow-sm" placeholder="Search activities, locations..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+<button class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-label-md text-label-md shadow-md active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+                            Filters
+                        </button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-outline-variant/30 text-secondary rounded-xl font-label-md text-label-md hover:bg-surface-container-low transition-colors whitespace-nowrap">
+                            Type: Adventure
+                        </button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-outline-variant/30 text-secondary rounded-xl font-label-md text-label-md hover:bg-surface-container-low transition-colors whitespace-nowrap">
+                            Cost: $$
+                        </button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-outline-variant/30 text-secondary rounded-xl font-label-md text-label-md hover:bg-surface-container-low transition-colors whitespace-nowrap">
+                            Duration: 2-4h
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Categories & Results -->
+<section class="space-y-section-gap">
+<!-- Category: Sightseeing (Bento Layout) -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Sightseeing Essentials</h3>
+<button class="text-primary font-label-md text-label-md hover:underline decoration-2 underline-offset-4">View All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter-desktop h-auto md:h-[500px]">
+<!-- Large Feature Card -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] bg-white">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A cinematic, wide-angle photograph of Tokyo at twilight, showing the vibrant neon lights of the Shibuya Crossing from an elevated perspective. The scene is filled with a soft golden glow from the streetlights, blending with deep blue sky. The lighting is premium and high-contrast, emphasizing the modern explorer aesthetic with rich oranges and deep navies." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWCXd9Np4Mj9mLGfcHfA0ZBkhXe-Joqd_26RIKk7mtuY6GHUyjwMTRayk8lAq0_9zqSrJhMhYYKLlh87avE_wMB-GcJdV2Bf9fpHcGOYjzeX1UTvurRzrz3trEGbroDXYWM4XoRSIDuBY4MQyyJUf3Wbp4oRMrCXnLIfx0JGnTFDV074RX3bkmA-74901jjYeave-gIK_gexSJYVrKrfbshgjbHCtFOW0zlf8yyGZP711Sd-h0PiJNIMLYmt8zGf8ddF8zA1IhlME"/>
+<div class="absolute bottom-0 left-0 p-8 z-20 w-full">
+<div class="flex items-center gap-2 mb-3">
+<span class="px-3 py-1 bg-primary text-white text-[12px] font-bold rounded-full tracking-wider">TOP RATED</span>
+<span class="flex items-center gap-1 text-white text-[14px] font-semibold"><span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span> 4.9</span>
+</div>
+<h4 class="text-white font-headline-lg text-headline-lg mb-2">Senso-ji Temple Morning Walk</h4>
+<p class="text-white/80 font-body-md mb-6 max-w-xl">Experience the tranquility of Tokyo's oldest temple before the crowds arrive. Guided sunrise tour included.</p>
+<div class="flex gap-4">
+<button class="px-8 py-3 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">Add to Trip</button>
+<button class="px-8 py-3 bg-white/20 backdrop-blur-md text-white border border-white/30 font-label-md text-label-md rounded-xl hover:bg-white/30 transition-all">Quick View</button>
+</div>
+</div>
+</div>
+<!-- Vertical Stack -->
+<div class="md:col-span-4 flex flex-col gap-gutter-desktop">
+<div class="flex-1 group relative overflow-hidden rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] bg-white">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/60 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A serene close-up of traditional Japanese architecture, featuring a red torii gate surrounded by lush green maple leaves under soft morning sunlight. The colors are crisp and natural, highlighting the amber and deep green tones of the modern explorer brand palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+<div class="absolute bottom-0 left-0 p-6 z-20">
+<h5 class="text-white font-headline-md text-headline-md">Imperial Palace</h5>
+<p class="text-white/90 text-label-md">Historic • 2h • Free</p>
+</div>
+</div>
+<div class="flex-1 group relative overflow-hidden rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] bg-white">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/60 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A night view of the Tokyo Tower glowing in warm orange light against a deep navy blue sky. Minimalist urban aesthetic with soft focus on surrounding city lights, creating a sophisticated and premium travel atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+<div class="absolute bottom-0 left-0 p-6 z-20">
+<h5 class="text-white font-headline-md text-headline-md">Tokyo Tower Sunset</h5>
+<p class="text-white/90 text-label-md">Observation • 1h • $25</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Category: Adventure & Food (Horizontal Scroller) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-section-gap">
+<!-- Food Column -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Foodie Experiences</h3>
+<span class="material-symbols-outlined text-primary cursor-pointer">arrow_forward</span>
+</div>
+<div class="space-y-4">
+<!-- Activity Card -->
+<div class="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10 group">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A top-down professional food photograph of fresh, colorful sushi pieces arranged on a minimalist dark slate platter. Soft, directional window lighting highlights the texture of the fish. The color scheme is clean and high-end, focusing on natural tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHIxo26D9BFiibXt5UoWv8DQwU_DHv-W3WGH_W5i2-0QhGyacNH-rA0i2XoNTa0qCg6BzzumI9w4l1744cb1boeJ-OLUqqUP_0POWo9OCMOZ_kWmNkIsrJ07ZxD7N2MkAGuJ5a6u97U8ESjzfenzCAoCbwQQ35piAvPX7W9HOcXg5Ql2MrNZTPtBOmT1xzopibV0T66bJRZGxb5P5KLD20Lrll1gSumFDuhnNHpaWobj-Apo_aF7n2LTpyGXw_A6Xu0_jVSS_W8n0"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h6 class="font-headline-md text-[18px] text-on-surface group-hover:text-primary transition-colors">Tsukiji Market Breakfast</h6>
+<p class="text-on-surface-variant text-label-md line-clamp-1">Fresh sushi tour and chef workshop.</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">$45 / person</span>
+<button class="material-symbols-outlined p-2 rounded-full bg-secondary-container/20 text-primary hover:bg-primary-container hover:text-white transition-all">add</button>
+</div>
+</div>
+</div>
+<div class="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10 group">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A warm, inviting interior of a traditional Japanese ramen shop at night. Steam rises from a bowl in the foreground, with soft amber bokeh lighting from paper lanterns in the background. The atmosphere is cozy and authentic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h6 class="font-headline-md text-[18px] text-on-surface group-hover:text-primary transition-colors">Ramen Masterclass</h6>
+<p class="text-on-surface-variant text-label-md line-clamp-1">Learn to make broth from scratch.</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">$60 / person</span>
+<button class="material-symbols-outlined p-2 rounded-full bg-secondary-container/20 text-primary hover:bg-primary-container hover:text-white transition-all">add</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Adventure Column -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Adventure Seekers</h3>
+<span class="material-symbols-outlined text-primary cursor-pointer">arrow_forward</span>
+</div>
+<div class="space-y-4">
+<!-- Activity Card -->
+<div class="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10 group">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A dynamic shot of a person go-karting through the neon-lit streets of Akihabara, Tokyo, at night. The motion blur of city lights creates streaks of color, emphasizing speed and excitement. The style is modern and high-energy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h6 class="font-headline-md text-[18px] text-on-surface group-hover:text-primary transition-colors">Street Go-Karting</h6>
+<p class="text-on-surface-variant text-label-md line-clamp-1">Cosplay through Tokyo's neon streets.</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">$75 / person</span>
+<button class="material-symbols-outlined p-2 rounded-full bg-secondary-container/20 text-primary hover:bg-primary-container hover:text-white transition-all">add</button>
+</div>
+</div>
+</div>
+<div class="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10 group">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A peaceful panoramic view of Mt. Fuji seen from a mountain hiking trail. The foreground features a rugged path and pine trees, while the snow-capped peak dominates the horizon under a clear morning sky. Pristine, minimalist nature photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-E5ppeXKIgAIrVfDOPoJAPmN_hZ4e89pr0aJFK4R9Hy-c_5HZJoZVkcbddA7x2ggIHntrIu4P99zbJ4Gb-1kxb4TE9GuejyRa99tP3FfjVDxPYdkVqDMuO_lAW9ePeaXxtQ4QAzmrblCiUI3W6ljnD6gmeMWsWvHaEhvCFMIEcT1lTWuyIwBuxiKLZpfBnT83FbqKitgs8WV49GIcuB3KAFlhW7Mc1kFv0J81BXLp8Nq5eY06zOo1Y0kDnt3oWuv5g3RNkwSPNAU"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h6 class="font-headline-md text-[18px] text-on-surface group-hover:text-primary transition-colors">Mount Mitake Hike</h6>
+<p class="text-on-surface-variant text-label-md line-clamp-1">Day trip to the sacred mountains.</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">$120 / person</span>
+<button class="material-symbols-outlined p-2 rounded-full bg-secondary-container/20 text-primary hover:bg-primary-container hover:text-white transition-all">add</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Map View Callout -->
+<div class="relative w-full h-[400px] rounded-3xl overflow-hidden shadow-xl border-4 border-white">
+<div class="absolute inset-0 bg-surface-container-highest flex items-center justify-center">
+<!-- Map Placeholder -->
+<div class="w-full h-full bg-[#f2f2f2] relative" data-location="Tokyo" style="">
+<div class="absolute top-1/4 left-1/3">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute top-1/2 left-1/2">
+<span class="material-symbols-outlined text-secondary text-4xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute top-1/3 right-1/4">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+<!-- Float Panel -->
+<div class="absolute top-8 right-8 glass-panel p-6 rounded-2xl max-w-xs shadow-lg border border-white/50">
+<h4 class="font-headline-md text-on-surface mb-2">Explore the Area</h4>
+<p class="text-secondary text-label-md mb-4">View 15+ activities nearby your current stop in Shibuya.</p>
+<button class="w-full py-3 bg-inverse-surface text-inverse-on-surface font-label-md text-label-md rounded-xl active:scale-95 transition-all">Open Interactive Map</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-xl border-t border-outline-variant/30 flex justify-around items-center px-gutter-mobile pb-safe z-50">
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-md text-label-md">My Trips</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-md text-label-md">Discovery</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</div>
+</nav>
+<!-- Floating Action Button (Contextual) -->
+<button class="fixed bottom-24 right-8 md:bottom-12 md:right-12 w-16 h-16 bg-primary text-white rounded-full shadow-[0px_8px_20px_rgba(135,82,0,0.3)] flex items-center justify-center hover:scale-105 active:scale-90 transition-all z-40">
+<span class="material-symbols-outlined text-[32px]">shopping_bag</span>
+<div class="absolute -top-1 -right-1 bg-error text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-background">3</div>
+</button>
+</body></html>

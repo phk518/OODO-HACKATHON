@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packing Checklist - Traveloop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+        }
+        .font-display-lg { font-family: 'Montserrat', sans-serif; }
+        .font-headline-md { font-family: 'Montserrat', sans-serif; }
+        .font-headline-lg { font-family: 'Montserrat', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#38485a",
+                        "secondary": "#4f6073",
+                        "inverse-on-surface": "#f0f1f1",
+                        "outline": "#897362",
+                        "secondary-fixed": "#d2e4fb",
+                        "background": "#f9f9f9",
+                        "on-secondary-container": "#556679",
+                        "on-surface": "#1a1c1c",
+                        "surface-tint": "#875200",
+                        "on-primary-fixed": "#2b1700",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#d2e4fb",
+                        "on-tertiary-fixed": "#171c1f",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#a6aaae",
+                        "surface-dim": "#dadada",
+                        "on-primary-fixed-variant": "#673d00",
+                        "on-primary-container": "#5b3600",
+                        "primary-fixed": "#ffddba",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#dfe3e7",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "tertiary": "#5a5f62",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-bright": "#f9f9f9",
+                        "on-surface-variant": "#564334",
+                        "inverse-primary": "#ffb865",
+                        "primary-container": "#ef9500",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e2e2e2",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary-container": "#3a3f42",
+                        "outline-variant": "#ddc1ae",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#b7c8de",
+                        "primary-fixed-dim": "#ffb865",
+                        "on-secondary-fixed": "#0b1d2d",
+                        "surface": "#f9f9f9",
+                        "surface-container-high": "#e8e8e8",
+                        "primary": "#875200",
+                        "on-background": "#1a1c1c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "section-gap": "48px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "gutter-desktop": "24px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-display-lg text-headline-md text-primary tracking-tight">Traveloop</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-secondary hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">restart_alt</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-outline-variant/30">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Hero Section / Trip Info -->
+<section class="mb-section-gap">
+<div class="relative h-48 md:h-64 rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A premium travel scene featuring a leather suitcase resting on a light wood floor in a sun-drenched, minimalist boutique hotel room. Soft morning light streams through sheer linen curtains, casting gentle shadows. The color palette is composed of warm ochres, creamy whites, and deep navy accents, reflecting a sophisticated 'Modern Explorer' aesthetic. High-resolution photography with a clean, airy atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md mb-2 inline-block">SWISS ALPS EXPEDITION</span>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg">Packing Checklist</h2>
+</div>
+</div>
+</section>
+<!-- Progress Card -->
+<section class="mb-8">
+<div class="bg-white p-6 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] flex flex-col md:flex-row md:items-center justify-between gap-6 border border-outline-variant/10">
+<div class="flex-1">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-md text-label-md text-secondary">Packing Progress</span>
+<span class="font-headline-md text-primary">65%</span>
+</div>
+<div class="w-full h-3 bg-secondary-container/30 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[65%] rounded-full"></div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md text-label-md shadow-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Add Item
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-secondary text-secondary rounded-xl font-label-md text-label-md hover:bg-secondary-container/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        Filter
+                    </button>
+</div>
+</div>
+</section>
+<!-- Bento Grid Checklist -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter-desktop">
+<!-- Documents Category (Bento Large) -->
+<section class="md:col-span-4 space-y-4">
+<div class="flex items-center gap-2 px-2">
+<span class="material-symbols-outlined text-primary">description</span>
+<h3 class="font-headline-md text-secondary">Documents</h3>
+</div>
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] border border-outline-variant/10 overflow-hidden">
+<!-- Item 1 -->
+<div class="group flex items-center justify-between p-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container/40 flex items-center justify-center cursor-pointer group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface line-through opacity-50">Passport &amp; Visa</p>
+<p class="text-[12px] text-secondary">Required for entry</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Item 2 -->
+<div class="group flex items-center justify-between p-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container flex items-center justify-center cursor-pointer group-active:scale-90 transition-transform"></div>
+<div>
+<p class="font-body-md text-on-surface">Travel Insurance</p>
+<p class="text-[12px] text-secondary">Digital copy saved</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Item 3 -->
+<div class="group flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container flex items-center justify-center cursor-pointer group-active:scale-90 transition-transform"></div>
+<div>
+<p class="font-body-md text-on-surface">Hotel Bookings</p>
+<p class="text-[12px] text-secondary">Confirmation #3920</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+</div>
+</section>
+<!-- Clothing Category (Bento Wide) -->
+<section class="md:col-span-8 space-y-4">
+<div class="flex items-center gap-2 px-2">
+<span class="material-symbols-outlined text-primary">apparel</span>
+<h3 class="font-headline-md text-secondary">Clothing</h3>
+</div>
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] border border-outline-variant/10 grid grid-cols-1 md:grid-cols-2">
+<!-- Item 1 -->
+<div class="group flex items-center justify-between p-4 border-b md:border-r border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container/40 flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="font-body-md text-on-surface line-through opacity-50">Thermal Base Layers (x3)</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group flex items-center justify-between p-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container flex items-center justify-center cursor-pointer"></div>
+<p class="font-body-md text-on-surface">Waterproof Shell Jacket</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="group flex items-center justify-between p-4 border-b md:border-b-0 md:border-r border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container/40 flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="font-body-md text-on-surface line-through opacity-50">Hiking Boots</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="group flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-primary-container flex items-center justify-center cursor-pointer"></div>
+<p class="font-body-md text-on-surface">Wool Socks (x5 pairs)</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Electronics (Asymmetric Layout) -->
+<section class="md:col-span-12 mt-4 space-y-4">
+<div class="flex items-center gap-2 px-2">
+<span class="material-symbols-outlined text-primary">devices</span>
+<h3 class="font-headline-md text-secondary">Electronics &amp; Tech</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop">
+<div class="bg-white p-6 rounded-xl border border-outline-variant/10 shadow-[0px_4px_10px_rgba(26,43,60,0.08)] flex flex-col justify-between group hover:border-primary-container/50 transition-all">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary-container text-[32px]">camera_enhance</span>
+<div class="w-6 h-6 rounded border-2 border-primary-container flex items-center justify-center cursor-pointer"></div>
+</div>
+<div>
+<h4 class="font-headline-md text-on-surface mb-1">Mirrorless Camera</h4>
+<p class="text-secondary font-body-md">Plus extra SD cards &amp; batteries</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl border border-outline-variant/10 shadow-[0px_4px_10px_rgba(26,43,60,0.08)] flex flex-col justify-between group hover:border-primary-container/50 transition-all">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary-container text-[32px]">power</span>
+<div class="w-6 h-6 rounded border-2 border-primary-container flex items-center justify-center cursor-pointer"></div>
+</div>
+<div>
+<h4 class="font-headline-md text-on-surface mb-1">Universal Adapter</h4>
+<p class="text-secondary font-body-md">Type C &amp; G for Europe</p>
+</div>
+</div>
+<div class="bg-primary/5 p-6 rounded-xl border-2 border-dashed border-primary-container/30 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary mb-2">add_circle</span>
+<p class="font-label-md text-primary">Add Tech Item</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Spacer -->
+<div class="h-16"></div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 bg-surface/90 backdrop-blur-xl flex justify-around items-center px-gutter-mobile pb-safe shadow-[0px_-4px_25px_rgba(26,43,60,0.12)] border-t border-outline-variant/30 z-50">
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-md text-[10px]">My Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-[10px]">Discovery</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-[10px]">Profile</span>
+</a>
+</nav>
+<!-- Web Navigation (Responsive Top Nav) -->
+<div class="hidden md:flex fixed top-0 right-margin-desktop h-16 items-center gap-8 z-50">
+<a class="font-label-md text-label-md text-secondary hover:text-primary transition-colors" href="#">Home</a>
+<a class="font-label-md text-label-md text-primary font-bold" href="#">My Trips</a>
+<a class="font-label-md text-label-md text-secondary hover:text-primary transition-colors" href="#">Discovery</a>
+<a class="font-label-md text-label-md text-secondary hover:text-primary transition-colors" href="#">Profile</a>
+</div>
+</body></html>

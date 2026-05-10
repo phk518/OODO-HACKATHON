@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#38485a",
+                    "secondary": "#4f6073",
+                    "inverse-on-surface": "#f0f1f1",
+                    "outline": "#897362",
+                    "secondary-fixed": "#d2e4fb",
+                    "background": "#f9f9f9",
+                    "on-secondary-container": "#556679",
+                    "on-surface": "#1a1c1c",
+                    "surface-tint": "#875200",
+                    "on-primary-fixed": "#2b1700",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#d2e4fb",
+                    "on-tertiary-fixed": "#171c1f",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#a6aaae",
+                    "surface-dim": "#dadada",
+                    "on-primary-fixed-variant": "#673d00",
+                    "on-primary-container": "#5b3600",
+                    "primary-fixed": "#ffddba",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#dfe3e7",
+                    "surface-container-highest": "#e2e2e2",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "tertiary": "#5a5f62",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f3f3f3",
+                    "surface-bright": "#f9f9f9",
+                    "on-surface-variant": "#564334",
+                    "inverse-primary": "#ffb865",
+                    "primary-container": "#ef9500",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e2e2e2",
+                    "inverse-surface": "#2f3131",
+                    "on-tertiary-container": "#3a3f42",
+                    "outline-variant": "#ddc1ae",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "secondary-fixed-dim": "#b7c8de",
+                    "primary-fixed-dim": "#ffb865",
+                    "on-secondary-fixed": "#0b1d2d",
+                    "surface": "#f9f9f9",
+                    "surface-container-high": "#e8e8e8",
+                    "primary": "#875200",
+                    "on-background": "#1a1c1c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-gap": "48px",
+                    "unit": "4px",
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "gutter-desktop": "24px",
+                    "gutter-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Montserrat"],
+                    "display-lg": ["Montserrat"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Montserrat"],
+                    "headline-lg": ["Montserrat"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(12px);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)] h-16">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-full w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-inverse-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-lg text-headline-md text-primary dark:text-inverse-primary tracking-tight">Traveloop</h1>
+</div>
+<div class="flex items-center gap-6">
+<!-- Desktop Nav -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Home</a>
+<a class="font-label-md text-label-md text-primary font-bold hover:opacity-80 transition-opacity" href="#">My Trips</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Discovery</a>
+</nav>
+<div class="w-10 h-10 rounded-full bg-secondary-container overflow-hidden border border-outline-variant/30">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a modern traveler in their late 20s, styled with a minimalist and premium aesthetic. The lighting is soft and natural, suggesting a bright morning in an urban environment. The background is slightly blurred with warm, neutral tones that complement the Traveloop brand palette of amber and deep navy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Header Section -->
+<section class="mb-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="font-label-md text-label-md text-primary uppercase tracking-widest">Financial Overview</span>
+<h2 class="font-headline-lg text-headline-lg mt-1">Trip to Santorini &amp; Crete</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-white border border-outline-variant/30 rounded-xl shadow-sm hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+<span class="font-label-md text-label-md">Export PDF</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-2 bg-primary-container text-white rounded-xl shadow-sm hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="font-label-md text-label-md">Add Expense</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Financial Summary Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter-desktop">
+<!-- Total Cost Card -->
+<div class="md:col-span-4 bg-white p-8 rounded-full shadow-[0px_4px_10px_rgba(26,43,60,0.08)] flex flex-col justify-between border border-outline-variant/10 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[80px]">payments</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-secondary uppercase tracking-wider">Estimated Total</h3>
+<p class="font-display-lg text-[42px] text-on-surface mt-2">$4,850.00</p>
+</div>
+<div class="mt-8 flex items-center gap-2">
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[72%]"></div>
+</div>
+<span class="font-label-md text-label-md text-primary">72% of budget</span>
+</div>
+</div>
+<!-- Stats Bar -->
+<div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-gutter-desktop">
+<div class="bg-white p-6 rounded-full shadow-[0px_4px_10px_rgba(26,43,60,0.08)] flex items-center gap-6 border border-outline-variant/10">
+<div class="w-14 h-14 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[32px]">calendar_today</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-secondary uppercase tracking-wider">Avg. Cost / Day</h3>
+<p class="font-headline-md text-headline-md text-on-surface">$485.00</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-full shadow-[0px_4px_10px_rgba(26,43,60,0.08)] flex items-center gap-6 border border-outline-variant/10 border-l-4 border-l-error">
+<div class="w-14 h-14 rounded-xl bg-error-container/30 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[32px]">warning</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-error uppercase tracking-wider">Over Budget Days</h3>
+<p class="font-headline-md text-headline-md text-on-surface">2 Days Identified</p>
+</div>
+</div>
+</div>
+<!-- Visualization: Category Breakdown -->
+<div class="md:col-span-7 bg-white p-8 rounded-full shadow-[0px_4px_10px_rgba(26,43,60,0.08)] border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<h3 class="font-headline-md text-headline-md">Category Breakdown</h3>
+<select class="bg-surface-container-low border-none rounded-lg text-label-md font-label-md focus:ring-primary">
+<option>Total Trip</option>
+<option>Week 1</option>
+<option>Week 2</option>
+</select>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Custom Bar Chart UI -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">hotel</span> Stay</span>
+<span>$1,940 (40%)</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[40%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">flight</span> Transport</span>
+<span>$1,455 (30%)</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[30%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">restaurant</span> Meals</span>
+<span>$727 (15%)</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[15%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">local_activity</span> Activities</span>
+<span>$727 (15%)</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-on-secondary-fixed-variant w-[15%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Visualization: Daily Trends (Asymmetric) -->
+<div class="md:col-span-5 bg-white p-8 rounded-full shadow-[0px_4px_10px_rgba(26,43,60,0.08)] border border-outline-variant/10 overflow-hidden relative">
+<h3 class="font-headline-md text-headline-md mb-8">Daily Spending Trend</h3>
+<div class="flex items-end justify-between h-48 gap-2">
+<div class="flex-1 bg-secondary-container/40 rounded-t-lg h-[40%] relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">Day 1</div>
+</div>
+<div class="flex-1 bg-secondary-container/40 rounded-t-lg h-[60%]"></div>
+<div class="flex-1 bg-secondary-container/40 rounded-t-lg h-[55%]"></div>
+<div class="flex-1 bg-error/20 rounded-t-lg h-[95%] border-t-2 border-error relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-error text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">Alert: Over Budget</div>
+</div>
+<div class="flex-1 bg-secondary-container/40 rounded-t-lg h-[70%]"></div>
+<div class="flex-1 bg-secondary-container/40 rounded-t-lg h-[45%]"></div>
+<div class="flex-1 bg-error/20 rounded-t-lg h-[85%] border-t-2 border-error"></div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/20 flex justify-between text-[10px] font-label-md text-secondary uppercase tracking-tighter">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+</div>
+<!-- Recent Transactions Section -->
+<section class="mt-section-gap">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md">Recent Transactions</h3>
+<a class="font-label-md text-label-md text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="space-y-3">
+<!-- Transaction Item -->
+<div class="bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Ammoudi Fish Tavern</p>
+<p class="text-xs text-secondary">Santorini • Dinner • Today</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-headline-md text-headline-md text-on-surface">-$142.50</p>
+<span class="text-[10px] px-2 py-0.5 bg-secondary-container/50 text-on-secondary-container rounded-full font-label-md">Meals</span>
+</div>
+</div>
+<!-- Transaction Item -->
+<div class="bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">hotel</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Canaves Oia Epitome</p>
+<p class="text-xs text-secondary">Santorini • Accommodation • Yesterday</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-headline-md text-headline-md text-on-surface">-$850.00</p>
+<span class="text-[10px] px-2 py-0.5 bg-secondary-container/50 text-on-secondary-container rounded-full font-label-md">Stay</span>
+</div>
+</div>
+<!-- Transaction Item (Over Budget Alert) -->
+<div class="bg-white p-4 rounded-xl shadow-sm border-2 border-error/20 flex items-center justify-between hover:border-error/40 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined">local_activity</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Private Catamaran Sunset Cruise</p>
+<p class="text-xs text-secondary">Santorini • Activities • 2 Days Ago</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-headline-md text-headline-md text-error">-$1,200.00</p>
+<div class="flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-xs text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="text-[10px] font-label-md text-error">Exceeded daily cap</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-xl border-t border-outline-variant/30 flex justify-around items-center px-gutter-mobile pb-safe z-50 rounded-t-xl shadow-[0px_-4px_25px_rgba(26,43,60,0.12)]">
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-md text-label-md">My Trips</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Discovery</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<!-- FAB (Suppressed based on context rules, but present on Trip screens as per specific mandate) -->
+<button class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-[28px]">receipt_long</span>
+</button>
+</body></html>

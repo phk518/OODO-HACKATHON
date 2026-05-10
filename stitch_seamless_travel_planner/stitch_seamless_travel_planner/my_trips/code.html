@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traveloop - My Trips</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-tertiary": "#ffffff", "inverse-surface": "#2f3131", "inverse-primary": "#ffb865", "on-primary-container": "#5b3600", "primary-fixed-dim": "#ffb865", "secondary-fixed": "#d2e4fb", "on-primary": "#ffffff", outline: "#897362", background: "#f9f9f9", "surface-container-high": "#e8e8e8", "tertiary-container": "#a6aaae", "tertiary-fixed": "#dfe3e7", error: "#ba1a1a", "surface-container-lowest": "#ffffff", secondary: "#4f6073", "on-secondary-fixed-variant": "#38485a", "surface-bright": "#f9f9f9", "on-error": "#ffffff", "on-secondary": "#ffffff", "on-surface-variant": "#564334", "surface-container": "#eeeeee", "secondary-container": "#d2e4fb", "surface-dim": "#dadada", primary: "#875200", tertiary: "#5a5f62", "on-background": "#1a1c1c", "inverse-on-surface": "#f0f1f1", "on-tertiary-fixed-variant": "#43474b", "primary-container": "#ef9500", "surface-container-low": "#f3f3f3", "on-primary-fixed": "#2b1700", "on-error-container": "#93000a", "secondary-fixed-dim": "#b7c8de", "on-surface": "#1a1c1c", "on-secondary-fixed": "#0b1d2d", "primary-fixed": "#ffddba", "on-secondary-container": "#556679", "surface-container-highest": "#e2e2e2", "surface-variant": "#e2e2e2", "outline-variant": "#ddc1ae", "on-primary-fixed-variant": "#673d00", "on-tertiary-fixed": "#171c1f", "surface-tint": "#875200", surface: "#f9f9f9", "error-container": "#ffdad6", "on-tertiary-container": "#3a3f42", "tertiary-fixed-dim": "#c3c7cb"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, spacing: {unit: "4px", "gutter-mobile": "16px", "margin-desktop": "64px", "section-gap": "48px", "margin-mobile": "20px", "gutter-desktop": "24px"}, fontFamily: {"label-md": ["Inter"], "body-lg": ["Inter"], "display-lg": ["Montserrat"], "headline-lg-mobile": ["Montserrat"], "headline-lg": ["Montserrat"], "body-md": ["Inter"], "headline-md": ["Montserrat"]}, fontSize: {"label-md": ["14px", {lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "600"}], "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}], "display-lg": ["48px", {lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700"}], "headline-lg-mobile": ["28px", {lineHeight: "1.2", fontWeight: "700"}], "headline-lg": ["32px", {lineHeight: "1.2", fontWeight: "700"}], "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}], "headline-md": ["24px", {lineHeight: "1.3", fontWeight: "600"}]}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { background-color: #f9f9f9; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display-lg text-headline-md text-primary tracking-tight">Traveloop</h1>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-on-surface-variant hover:opacity-80 font-label-md text-label-md" href="#">Home</a>
+<a class="text-primary font-bold font-label-md text-label-md" href="#">My Trips</a>
+<a class="text-on-surface-variant hover:opacity-80 font-label-md text-label-md" href="#">Discovery</a>
+<a class="text-on-surface-variant hover:opacity-80 font-label-md text-label-md" href="#">Profile</a>
+</nav>
+</div>
+<div class="h-10 w-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border-2 border-primary/10">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a smiling young man in his late 20s, set against a soft, out-of-focus urban background with warm sunset lighting. The image has a clean, premium digital aesthetic with natural skin tones and a high-key brightness that fits a luxury travel application's light-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAua-zPSKIh2zcXIBtO7OVZZsel57c0Wy7m1fUGn9OYirK5e_8vSHkLiQBEyUYEYGfJ9hXJwTjBPeE1ww9VNBygZpe1ynS605ZPh-rNnOk2NZ2BARzoKTx2MM-CF69orfitLTbAFG-nlzMumZdZG8l1wUhQLlBXni6G_LTcuixaa21P2O0hLQ6jmwCEg-3qZ23aTczPQawepqGrOmSa9973NCvPc7GxL_gBdF5Eg6oQ9sIm4cTuf3L-SVBVarw85mNx-jxRHR-Uweo"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Search & Filter Bar -->
+<section class="mb-section-gap">
+<div class="flex flex-col md:flex-row gap-4 items-center">
+<div class="relative w-full md:flex-1">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary-container focus:border-primary-container outline-none transition-all shadow-sm" placeholder="Search your adventures..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-outline-variant/30 rounded-xl text-secondary font-label-md text-label-md hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+<span>Filters</span>
+</button>
+</div>
+</section>
+<!-- Ongoing Trip (Bento Highlight) -->
+<section class="mb-section-gap">
+<h2 class="font-headline-lg text-headline-lg mb-6 text-on-surface">Ongoing</h2>
+<div class="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-[0px_4px_25px_rgba(26,43,60,0.12)] group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A breathtaking panoramic view of a pristine tropical beach at sunset, with turquoise waters gently lapping against white sand. The sky is a gradient of deep navy and sunset orange, perfectly reflecting the brand colors. The lighting is soft and cinematic, creating a premium, aspirational atmosphere for a luxury travel experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM6-n5Pry4ijYuAgGwUiD8W8kvLiodXCwLeVlm7598erXETlb12jmiE-Ox1Y3f0z88VhRIQoj4sAe32qxY9kkHqqtaFOXQzwA11w9ObSHrbGq4lcpju33DSGyur_iw2bcG1gAQD_LSv4tTmMKLkXs_Rqpc8y8ygoIukSJjNM90yLSYza7EYsh6L7dPJ7DVsbk0OSRw8Bup4xSt16anZ-DZ5JRI4rYVhBIK916e5gmA80PtVyxr3HDA5RjiMswWC5qpEK2ESoru7cY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-secondary-fixed/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 md:p-10 w-full flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="inline-block px-3 py-1 bg-primary-container text-on-primary-container rounded-full font-label-md text-label-md mb-3">Live Now</span>
+<h3 class="font-display-lg text-display-lg text-white mb-2">Amalfi Coast Escape</h3>
+<p class="text-white/90 font-body-lg text-body-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="calendar_today">calendar_today</span>
+                            Oct 12 - Oct 24, 2023
+                        </p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-tertiary-fixed flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary-fixed flex items-center justify-center text-[10px] font-bold">AS</div>
+</div>
+<button class="px-8 py-3 bg-primary-container text-on-primary-container rounded-xl font-label-md text-label-md hover:bg-primary transition-colors active:scale-95">View Live Itinerary</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Trips -->
+<section class="mb-section-gap">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Upcoming</h2>
+<button class="text-primary font-label-md text-label-md hover:underline">See all</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-desktop">
+<!-- Trip Card 1 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0px_4px_10px_rgba(26,43,60,0.08)] hover:shadow-[0px_10px_25px_rgba(26,43,60,0.12)] transition-shadow group">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A majestic landscape of Yosemite Valley with granite cliffs and lush evergreen forests under a bright, clear blue sky. The lighting is crisp and natural, highlighting the rugged textures of the mountains. The aesthetic is clean and expansive, evoking a sense of adventure and premium exploration." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwRP28ZweBfj8vCc0lP94R8J1G3xeQyb-t5riF1O80bWKQF_cQ6Yw6c25ZpH7h2qH7WFzx2p0XHJ_qMPo8LXKMCFfGuz2XHrAfFM6Go-p9ldClyafsl8lBu0TDCjoAnf0qXAp0Wj0gzDO6E5UWPkI_BtXq2-7X_gvDVGI6-NVAVP0ZXLb5GOSgsPF_0EMUAxATlYFhMoiKqXJzMrxj_Ma767kkMzUmESDEcFeh8biLZVid-kO5i4YnqXfaWyqiv-ppL1zW6vZbF-0"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-lg text-secondary font-label-md text-label-md shadow-sm">
+                            4 Destinations
+                        </div>
+</div>
+<div class="p-6">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Wild West Adventure</h3>
+<p class="text-on-surface-variant font-body-md text-body-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="event">event</span>
+                            Nov 15 - Nov 28, 2023
+                        </p>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="flight">flight</span>
+<span class="material-symbols-outlined text-primary" data-icon="hotel">hotel</span>
+</div>
+<button class="text-primary font-label-md text-label-md">Details</button>
+</div>
+</div>
+</div>
+<!-- Trip Card 2 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0px_4px_10px_rgba(26,43,60,0.08)] hover:shadow-[0px_10px_25px_rgba(26,43,60,0.12)] transition-shadow group">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A picturesque view of Venice canals with historic architecture and a gondola gliding through the water. The sunlight is warm and golden, casting soft shadows and highlighting the rich terracotta and cream colors of the buildings. The mood is romantic, serene, and quintessentially European." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnHTyk7VrolBxPOhNcLL4D05NtED--5iNog30DbTF_2EF4oWELwURw4YB9vuIYf1GBBLeVv8Ik41iPhGthp4AUgX9ivsFFrGGlGZx8NVt6hcojLkx83zh93zWux7OBCF-GN27m-J-iXh2UcZUQoyReU1v9H3CqzhsADptIVo2CnhbFyuw04ezj3FUx190stksPSHrAgHPyqg0ci2A3yDOpqUX-356F-XsAneaRlcjAotRSaHnFDYXb1qgKyaV_5g90YHrdz3ZB9-8"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-lg text-secondary font-label-md text-label-md shadow-sm">
+                            2 Destinations
+                        </div>
+</div>
+<div class="p-6">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Venetian Serenades</h3>
+<p class="text-on-surface-variant font-body-md text-body-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="event">event</span>
+                            Dec 05 - Dec 12, 2023
+                        </p>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="directions_boat">directions_boat</span>
+<span class="material-symbols-outlined text-primary" data-icon="restaurant">restaurant</span>
+</div>
+<button class="text-primary font-label-md text-label-md">Details</button>
+</div>
+</div>
+</div>
+<!-- Add New Trip Card -->
+<div class="border-2 border-dashed border-outline-variant/50 rounded-xl flex flex-col items-center justify-center p-8 bg-surface-container-lowest/50 hover:bg-primary-container/5 transition-colors group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined !text-4xl" data-icon="add">add</span>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface-variant">Plan New Trip</p>
+<p class="text-on-surface-variant/70 font-body-md text-body-md text-center mt-2">Start your next great adventure</p>
+</div>
+</div>
+</section>
+<!-- Completed Trips -->
+<section>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">Completed</h2>
+<div class="space-y-4">
+<div class="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of the Eiffel Tower in Paris, framed by spring blossoms under a soft, overcast morning sky. The lighting is diffused and gentle, giving the scene a timeless, elegant feel that aligns with a high-end traveler's memory of a completed trip." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvbRi46mDfNQXUKrYMpe1_LZrX_XpCKv1k0QegLx6b4AGJEslo_6aGlBfDCG-PfGI9Qmea7XfMECsrkvoOW8PlYkYUHMPuxtyRt3ioR3-UY7bJJeS9U1U0HGwza73YptDBCNTyZ61s8olT6wU15HBo0R4en630wLIdsFcg2lga_ZxH0hg6wk5gE875x1KhqO7gEo2W4w1_AT75ylHvPtnW447l7-lLX3vVj8lHmmYw7dmGUX54uAwXJhaH-KYD91UFuijkBWL17SU"/>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-on-surface">Parisian Highlights</h4>
+<p class="text-on-surface-variant text-sm">August 2023 • 3 Destinations</p>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<button class="p-2 text-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="The crystal-clear turquoise waters and dramatic mountain peaks of Moraine Lake in the Canadian Rockies. The image is captured in bright, midday light, emphasizing the vivid colors of nature. It represents a completed mountain adventure with a premium, high-definition quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDABO5EOWa6HPtQCRzJhUBEd9iPKAmtioPCbpIvVIoeCB0l6xOHhPeHr3XJADlJXW2xxE49QUjGySNeMhaP1TYrMI4-iucLuNhuW4_7dHGRZ_32OjyWOOKMbCOZS1rQ2lmD0XkvUpK_3aC9vcnhCCHUe2XehtkjO1VnReWng5sAMVSnA1KAcYnhrs7buPPmg69FXmQpoQL7BNQD02uYNLrBiLxLxfuHvHEOxmU5EIFOZ7v_mtMlvU0AQSGqad9n7PbQIu_7xKPmgiQ"/>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-on-surface">Canadian Rockies Tour</h4>
+<p class="text-on-surface-variant text-sm">June 2023 • 5 Destinations</p>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" data-icon="star_outline">star_outline</span>
+</div>
+</div>
+<button class="p-2 text-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-gutter-mobile pb-safe bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-xl border-t border-outline-variant/30 shadow-[0px_-4px_25px_rgba(26,43,60,0.12)] z-50 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-md text-label-md">My Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md text-label-md">Discovery</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container/30 transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traveloop - Trip Itinerary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-tertiary": "#ffffff", "inverse-surface": "#2f3131", "inverse-primary": "#ffb865", "on-primary-container": "#5b3600", "primary-fixed-dim": "#ffb865", "secondary-fixed": "#d2e4fb", "on-primary": "#ffffff", outline: "#897362", background: "#f9f9f9", "surface-container-high": "#e8e8e8", "tertiary-container": "#a6aaae", "tertiary-fixed": "#dfe3e7", error: "#ba1a1a", "surface-container-lowest": "#ffffff", secondary: "#4f6073", "on-secondary-fixed-variant": "#38485a", "surface-bright": "#f9f9f9", "on-error": "#ffffff", "on-secondary": "#ffffff", "on-surface-variant": "#564334", "surface-container": "#eeeeee", "secondary-container": "#d2e4fb", "surface-dim": "#dadada", primary: "#875200", tertiary: "#5a5f62", "on-background": "#1a1c1c", "inverse-on-surface": "#f0f1f1", "on-tertiary-fixed-variant": "#43474b", "primary-container": "#ef9500", "surface-container-low": "#f3f3f3", "on-primary-fixed": "#2b1700", "on-error-container": "#93000a", "secondary-fixed-dim": "#b7c8de", "on-surface": "#1a1c1c", "on-secondary-fixed": "#0b1d2d", "primary-fixed": "#ffddba", "on-secondary-container": "#556679", "surface-container-highest": "#e2e2e2", "surface-variant": "#e2e2e2", "outline-variant": "#ddc1ae", "on-primary-fixed-variant": "#673d00", "on-tertiary-fixed": "#171c1f", "surface-tint": "#875200", surface: "#f9f9f9", "error-container": "#ffdad6", "on-tertiary-container": "#3a3f42", "tertiary-fixed-dim": "#c3c7cb"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, spacing: {unit: "4px", "gutter-mobile": "16px", "margin-desktop": "64px", "section-gap": "48px", "margin-mobile": "20px", "gutter-desktop": "24px"}, fontFamily: {"label-md": ["Inter"], "body-lg": ["Inter"], "display-lg": ["Montserrat"], "headline-lg-mobile": ["Montserrat"], "headline-lg": ["Montserrat"], "body-md": ["Inter"], "headline-md": ["Montserrat"]}, fontSize: {"label-md": ["14px", {lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "600"}], "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}], "display-lg": ["48px", {lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700"}], "headline-lg-mobile": ["28px", {lineHeight: "1.2", fontWeight: "700"}], "headline-lg": ["32px", {lineHeight: "1.2", fontWeight: "700"}], "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}], "headline-md": ["24px", {lineHeight: "1.3", fontWeight: "600"}]}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased mb-24">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-display-lg text-headline-md text-primary tracking-tight">Traveloop</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant text-primary font-label-md active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">share</span>
+<span class="hidden md:inline">Share Trip</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="Profile" data-alt="A professional headshot of a traveler with a friendly expression, set against a blurred urban background with warm sunset lighting. The style is high-end digital photography with soft bokeh and natural skin tones, adhering to a sophisticated and modern explorer aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoxua8cA2l3l3q3eRLGVxJlefG92A_8L9x5jmJJ2VW-Yyi94yKi6MttfajDos4t9yH-TfDEHvYmBp1l6NrmDAPwvJourZl6hIP7WvsTgprena_TNlCPvSPmYZYtk2CU5RO3jMq6ZU6JIEsLA-Q3nNRdMNicoGnSfSZ2vBNnHj3eWZOg_a3DJDJvNx4Y9Lt3wgMIfCbVoyTDI6Xhnj7v_uR_oWDvOTj9xmu2E0X2dRZnOyH9ntn3vdPdDotQiX_mOVvPcXnLZkrZyc"/>
+</div>
+</div>
+</div>
+</header>
+<main class="mt-20 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Hero Header -->
+<section class="mb-section-gap relative rounded-xl overflow-hidden h-[300px] flex items-end p-8">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="A wide-angle, cinematic view of Sydney Opera House at sunset, reflecting warm orange and soft purple hues in the surrounding harbor water. The lighting is high-key and serene, capturing a sense of high-end luxury travel. The composition emphasizes clean lines and expansive horizons in a minimalist, modern explorer style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZbXDOnsS8OjdfkJp9KH3GpK3KMVHKTELECNNEF7spC8uQJGqCYNHnJNmQNIx6rK-Bkn6M6WPAPMy-Ks_gOcimNwPRcESyCplr3ekdM0J-36aw7s37ycMWxnS6xKBb8hlDX4vnQaS2hHFS4PJ5vejQxEeWhc0LqI4HD-RCBDABhlMRe2nQVYZPdEhAhAQU3MI_xGYTw1lIsEOL9FM8-dzDnQRYg_Nny7sAXjXyAVplPEonfLtxdme7I3eAcNhY4PFd_lLmrTDmpnU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-secondary-fixed/80 to-transparent"></div>
+</div>
+<div class="relative z-10 text-white">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-label-md">7 DAYS</span>
+<span class="text-on-tertiary/80 text-label-md">OCT 12 - OCT 18</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg mb-2">Coastal Escape: Sydney &amp; Beyond</h2>
+<p class="font-body-lg text-body-lg opacity-90 max-w-xl">A curated journey through Australia's most iconic harbor city and the rugged beauty of the Blue Mountains.</p>
+</div>
+</section>
+<!-- View Controls -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div class="flex items-center p-1 bg-surface-container rounded-xl self-start">
+<button class="px-6 py-2 rounded-lg bg-surface shadow-sm text-primary font-label-md flex items-center gap-2">
+<span class="material-symbols-outlined">list</span> List
+                </button>
+<button class="px-6 py-2 rounded-lg text-on-surface-variant font-label-md flex items-center gap-2 hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined">calendar_month</span> Calendar
+                </button>
+</div>
+<div class="flex gap-2">
+<span class="bg-surface-container-high px-4 py-2 rounded-full text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">payments</span> Total: $1,420
+                </span>
+<span class="bg-surface-container-high px-4 py-2 rounded-full text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">distance</span> 45km covered
+                </span>
+</div>
+</div>
+<!-- Itinerary Timeline -->
+<div class="relative">
+<!-- Central Line (Desktop) -->
+<div class="hidden md:block absolute left-[31px] top-0 bottom-0 w-[2px] bg-outline-variant/30"></div>
+<!-- Day 1 -->
+<div class="relative mb-12">
+<div class="flex items-center gap-6 mb-6">
+<div class="relative z-10 flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white font-headline-md shadow-lg">01</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Harbor Arrival</h3>
+<p class="text-on-surface-variant font-body-md">Circular Quay, Sydney</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-[64px_1fr] gap-6">
+<div class="hidden md:block"></div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+<!-- Activity Card -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/20 shadow-[0px_4px_10px_rgba(26,43,60,0.05)] hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider">Morning</span>
+<span class="text-primary font-label-md">$0</span>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary">flight_land</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Arrival at SYD</h4>
+<p class="text-sm text-on-surface-variant mb-3">10:30 AM • Terminal 1 International</p>
+<div class="flex items-center gap-2 text-[12px] text-secondary">
+<span class="material-symbols-outlined text-[16px]">info</span> Check-in at Hyatt Regency
+                                    </div>
+</div>
+</div>
+</div>
+<!-- Activity Card -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/20 shadow-[0px_4px_10px_rgba(26,43,60,0.05)] hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider">Afternoon</span>
+<span class="text-primary font-label-md">$85</span>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary">sailing</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Harbor Sunset Cruise</h4>
+<p class="text-sm text-on-surface-variant mb-3">05:00 PM • Wharf 6</p>
+<div class="flex items-center gap-2 text-[12px] text-secondary">
+<span class="material-symbols-outlined text-[16px]">confirmation_number</span> Booking #AZ-992
+                                    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="relative mb-12">
+<div class="flex items-center gap-6 mb-6">
+<div class="relative z-10 flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-container-highest text-primary font-headline-md shadow-sm border border-outline-variant/20">02</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Mountain Peaks</h3>
+<p class="text-on-surface-variant font-body-md">Katoomba, Blue Mountains</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-[64px_1fr] gap-6">
+<div class="hidden md:block"></div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Activity Card Full Width on Mobile -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/20 shadow-[0px_4px_10px_rgba(26,43,60,0.05)]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider">Full Day</span>
+<span class="text-primary font-label-md">$120</span>
+</div>
+<div class="flex flex-col md:flex-row gap-6">
+<div class="w-full md:w-1/3 h-32 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="The Three Sisters rock formation in the Blue Mountains, Australia, seen under a soft, hazy blue atmospheric light. The composition is minimalist and grand, reflecting the rugged yet sophisticated aesthetic of the Modern Explorer design language. Soft shadows and clean natural textures dominate the frame." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMqSr2UuwS1sC9AQEXl2QKpUfTXOzHIEdvCB8tNwtEwVpPxLNXvBSgVZv45e29kf05iWOOwi_bedy81WhGqMWSFM7L88Ox9SJXfNAecxjjbmrfFbmcPdkHwwRSAxtAgdGxjwzBLMMvc6VCEwqu8sUYao9NiVSqgS8luR2FOpd1uSuO7pHp4-PsJiZk1XeoIXFxt5X6Q7guwyVCwLe6nAC8QRpA09JcMyeOTy4TabH-DakIG4ux337ebY2-Oyc0PKNYFQPY2cNKB1A"/>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface">Guided Echo Point Trek</h4>
+<p class="text-sm text-on-surface-variant mb-4">09:00 AM • Meet at Katoomba Station</p>
+<p class="text-sm text-on-surface-variant line-clamp-2 mb-4">Explore the historic Giant Stairway and witness the majestic Three Sisters formation from hidden viewpoints known only to locals.</p>
+<div class="flex gap-4">
+<div class="flex items-center gap-1 text-[12px] text-secondary">
+<span class="material-symbols-outlined text-[16px]">hiking</span> Challenging
+                                        </div>
+<div class="flex items-center gap-1 text-[12px] text-secondary">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 6 Hours
+                                        </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mini Card -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/20 shadow-[0px_4px_10px_rgba(26,43,60,0.05)]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider">Dinner</span>
+<span class="text-primary font-label-md">$65</span>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary">restaurant</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Mountain Hearth</h4>
+<p class="text-sm text-on-surface-variant mb-2">07:30 PM • Katoomba St.</p>
+<span class="text-[12px] text-primary bg-primary-container/10 px-2 py-0.5 rounded">Local Cuisine</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 bg-surface/90 backdrop-blur-xl border-t border-outline-variant/30 flex justify-around items-center px-gutter-mobile pb-safe z-50">
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-md text-label-md">My Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Discovery</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+</body></html>

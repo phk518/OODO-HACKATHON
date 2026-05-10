@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traveloop - Alpine Serenity Itinerary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#38485a",
+                        "secondary": "#4f6073",
+                        "inverse-on-surface": "#f0f1f1",
+                        "outline": "#897362",
+                        "secondary-fixed": "#d2e4fb",
+                        "background": "#f9f9f9",
+                        "on-secondary-container": "#556679",
+                        "on-surface": "#1a1c1c",
+                        "surface-tint": "#875200",
+                        "on-primary-fixed": "#2b1700",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#d2e4fb",
+                        "on-tertiary-fixed": "#171c1f",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#a6aaae",
+                        "surface-dim": "#dadada",
+                        "on-primary-fixed-variant": "#673d00",
+                        "on-primary-container": "#5b3600",
+                        "primary-fixed": "#ffddba",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#dfe3e7",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "tertiary": "#5a5f62",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-bright": "#f9f9f9",
+                        "on-surface-variant": "#564334",
+                        "inverse-primary": "#ffb865",
+                        "primary-container": "#ef9500",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e2e2e2",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary-container": "#3a3f42",
+                        "outline-variant": "#ddc1ae",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#b7c8de",
+                        "primary-fixed-dim": "#ffb865",
+                        "on-secondary-fixed": "#0b1d2d",
+                        "surface": "#f9f9f9",
+                        "surface-container-high": "#e8e8e8",
+                        "primary": "#875200",
+                        "on-background": "#1a1c1c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "section-gap": "48px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "gutter-desktop": "24px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform" data-icon="menu">menu</span>
+<span class="font-display-lg text-headline-md text-primary tracking-tight">Traveloop</span>
+</div>
+<!-- Desktop Nav Links -->
+<div class="hidden md:flex items-center gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Home</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="#">My Trips</a>
+<a class="font-label-md text-label-md text-primary font-bold" href="#">Discovery</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Profile</a>
+</div>
+<div class="flex items-center gap-3">
+<button class="hidden md:flex items-center gap-2 bg-primary-container text-on-primary-container px-4 py-2 rounded-xl font-label-md active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+                    Copy Trip
+                </button>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border-2 border-surface shadow-sm">
+<img alt="User" data-alt="A professional headshot of a smiling modern traveler with a minimalist aesthetic, softly lit by golden hour sunlight. The background is a blurred high-end lounge with neutral tones and clean lines, emphasizing a premium lifestyle and sophisticated persona. High-key lighting creates a bright and welcoming atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-16 pb-24 md:pb-12 max-w-[1440px] mx-auto">
+<!-- Hero Section: Itinerary Header -->
+<section class="relative w-full h-[442px] min-h-[400px] flex items-end overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img alt="Swiss Alps" class="w-full h-full object-cover" data-alt="A breathtaking wide-angle panoramic view of the snow-capped Swiss Alps under a clear, expansive blue sky during early morning. The sunlight hits the peaks with a soft golden glow, creating long shadows across the rugged textures of the mountains. The aesthetic is clean, majestic, and minimalist, with a cool color palette of whites, blues, and granite greys." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/20 to-transparent"></div>
+</div>
+<div class="relative z-10 px-margin-mobile md:px-margin-desktop pb-12 w-full">
+<div class="flex flex-wrap items-center gap-2 mb-4">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wider">Adventure</span>
+<span class="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wider">7 Days</span>
+</div>
+<h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-white mb-2">Alpine Serenity &amp; Peaks</h1>
+<p class="font-body-lg text-white/90 max-w-2xl">A curated journey through the heart of the Swiss Alps, balancing high-altitude trekking with boutique luxury retreats.</p>
+<div class="mt-8 flex flex-wrap gap-4">
+<button class="bg-primary-container text-on-primary-container px-6 py-3 rounded-xl font-label-md flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+                        Copy to My Trips
+                    </button>
+<div class="flex items-center gap-2">
+<button class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 p-3 rounded-full text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+<button class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 p-3 rounded-full text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary & Bento Grid Layout -->
+<section class="px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-12 gap-gutter-desktop">
+<!-- Left Column: Summary & Itinerary Details -->
+<div class="md:col-span-8 space-y-12">
+<!-- Quick Info Chips -->
+<div class="flex flex-wrap gap-4">
+<div class="flex items-center gap-3 bg-surface-container rounded-xl p-4 flex-1 min-w-[150px]">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_month">calendar_month</span>
+<div>
+<p class="text-[12px] text-on-surface-variant font-label-md uppercase">Best Time</p>
+<p class="font-headline-md text-[16px]">June - Sept</p>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-surface-container rounded-xl p-4 flex-1 min-w-[150px]">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+<div>
+<p class="text-[12px] text-on-surface-variant font-label-md uppercase">Budget</p>
+<p class="font-headline-md text-[16px]">Premium</p>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-surface-container rounded-xl p-4 flex-1 min-w-[150px]">
+<span class="material-symbols-outlined text-primary" data-icon="hiking">hiking</span>
+<div>
+<p class="text-[12px] text-on-surface-variant font-label-md uppercase">Intensity</p>
+<p class="font-headline-md text-[16px]">Moderate</p>
+</div>
+</div>
+</div>
+<!-- Itinerary Timeline -->
+<div class="space-y-8">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">The Journey</h2>
+<div class="relative pl-8 space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant/50">
+<!-- Day 1 -->
+<div class="relative">
+<div class="absolute -left-[27px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-primary-container/30"></div>
+<div class="bg-white p-6 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] border border-surface-variant">
+<p class="font-label-md text-primary uppercase text-[12px] mb-1">Day 01 — Arrival</p>
+<h3 class="font-headline-md text-headline-md mb-4">Touchdown in Zurich &amp; Train to Lucerne</h3>
+<p class="text-on-surface-variant mb-6">Arrive at ZRH and take the scenic rail route directly to Lucerne. Check into the lakeside boutique hotel and enjoy a sunset dinner overlooking the Chapel Bridge.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="rounded-lg overflow-hidden h-32">
+<img alt="Lucerne" class="w-full h-full object-cover" data-alt="A serene morning view of Lucerne, Switzerland, with the historic Chapel Bridge crossing the calm Reuss river. The architecture is traditional Swiss, with clean pastel buildings and the distant mountains reflecting in the water. The mood is peaceful and high-end, using a soft, natural daylight palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</div>
+<div class="rounded-lg overflow-hidden h-32">
+<img alt="Zurich Train" class="w-full h-full object-cover" data-alt="The interior of a first-class Swiss train cabin, featuring large panoramic windows that frame a lush green valley and distant mountains. The design is modern, clean, and minimalist, emphasizing the premium travel experience through the Swiss countryside. Lighting is bright and airy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAyELHaf_YNklY9gUgrSTdNF8MX_R3AUWIbbw5NFBs3r8jpz1-v9SJ7iTylxlf8-zV_FlNA3iDB-J3VSKSrgJrnvysB3qTCXJyW2HJ2VKn59KWxCncUWMUFQ3PCOzCV3nvCcw7vE8hOKisXjfvSrqpfWeOwhYjXHfS6HvObpKDsGOGwliuH1XWTtZOObV0Lk23ywma26EiguCdg3Q4ygeYZbSlQLlgFMbD0plggIHx75rzrP_jvgY4uOnLvAiHfaoihechp0tZY94"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="relative">
+<div class="absolute -left-[27px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-primary-container/30"></div>
+<div class="bg-white p-6 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] border border-surface-variant">
+<p class="font-label-md text-primary uppercase text-[12px] mb-1">Day 02 — Peaks</p>
+<h3 class="font-headline-md text-headline-md mb-4">Mount Pilatus Dragon Ride</h3>
+<p class="text-on-surface-variant">Ascend via the world's steepest cogwheel railway. Spend the afternoon hiking the Tomlishorn trail for 360-degree views of the Central Alps.</p>
+<div class="mt-4 flex gap-2">
+<span class="inline-flex items-center gap-1 text-[13px] font-label-md text-secondary bg-secondary-container/20 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px]" data-icon="hiking">hiking</span> Trekking
+                                    </span>
+<span class="inline-flex items-center gap-1 text-[13px] font-label-md text-secondary bg-secondary-container/20 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px]" data-icon="photo_camera">photo_camera</span> Photography
+                                    </span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full py-4 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant font-label-md hover:bg-surface-container-low transition-colors">
+                        View remaining 5 days
+                    </button>
+</div>
+</div>
+<!-- Right Column: Map & Author & Social -->
+<div class="md:col-span-4 space-y-gutter-desktop">
+<!-- Map Card -->
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] overflow-hidden border border-surface-variant">
+<div class="h-64 bg-surface-container relative">
+<img alt="Map" class="w-full h-full object-cover" data-location="Lucerne, Switzerland" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-primary p-2 rounded-full shadow-lg ring-4 ring-white">
+<span class="material-symbols-outlined text-white" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline-md text-[18px] mb-2">Route Overview</h4>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-[14px]">
+<span class="text-on-surface-variant">Total Distance</span>
+<span class="font-label-md">245 km</span>
+</div>
+<div class="flex items-center justify-between text-[14px]">
+<span class="text-on-surface-variant">Transit Type</span>
+<span class="font-label-md">Rail &amp; Cable Car</span>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-primary text-primary rounded-lg font-label-md hover:bg-primary/5 transition-colors">Open in Maps</button>
+</div>
+</div>
+<!-- Author Card -->
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] p-6 border border-surface-variant">
+<div class="flex items-center gap-4 mb-6">
+<img alt="Elena Smith" class="w-12 h-12 rounded-full object-cover" data-alt="A portrait of Elena Smith, a high-end travel influencer with a minimalist and professional look. She is standing against a backdrop of a clean, modern architecture with neutral tones. The lighting is soft and flattering, emphasizing a premium and trustworthy brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+<div>
+<h4 class="font-headline-md text-[18px]">Elena Smith</h4>
+<p class="text-[13px] text-on-surface-variant">Verified Explorer • 42 Trips</p>
+</div>
+</div>
+<p class="text-[14px] text-on-surface-variant mb-6">"I designed this trip for those who want to see the best of Switzerland without the tourist traps. Follow my lead for the best hidden viewpoints!"</p>
+<div class="flex gap-4">
+<button class="flex-1 bg-surface-container py-2 rounded-lg font-label-md text-on-surface-variant hover:text-primary transition-colors">Follow</button>
+<button class="flex-1 bg-surface-container py-2 rounded-lg font-label-md text-on-surface-variant hover:text-primary transition-colors">Contact</button>
+</div>
+</div>
+<!-- Share Link -->
+<div class="bg-secondary-container/10 border border-secondary-container/30 rounded-xl p-6">
+<h4 class="font-label-md text-secondary uppercase text-[12px] mb-3">Share this Trip</h4>
+<div class="flex items-center gap-2 bg-white border border-outline-variant rounded-lg p-2 mb-4">
+<input class="bg-transparent border-none focus:ring-0 text-[13px] flex-1 text-on-surface-variant font-body-md" readonly="" type="text" value="traveloop.io/itinerary/alpine-serenity-24"/>
+<button class="text-primary p-1 hover:bg-primary/5 rounded-md transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<div class="flex justify-between gap-2">
+<button class="bg-white w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant hover:border-primary transition-colors">
+<img alt="X" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</button>
+<button class="bg-white w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant hover:border-primary transition-colors">
+<img alt="FB" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</button>
+<button class="bg-white w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant hover:border-primary transition-colors">
+<img alt="WA" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7EKCQnT5yuP1vFipA84sTSwwXDTv9dOKfvbuRu-gCUToDt1_KU47DJbNZXVj_Ig9zMgvE9wv68fafiPPDDgAvlJ9Nnm9OZoM094Ki7qz_SqjzStN2B-YOhPI4yik2uLiXxDLo_2LC5eLmfpUKz25HS-vn7WITU8kL4BB5ZGIIX2xpyDVVo9t_EHPalDdt0UC6QepOvPbQs4Lru4WOnlJUDMWusWFlct9Bhm1eiGC6YnYW1H7PIuH4ZhbcPuFxv1_LFWpsz0ruYvQ"/>
+</button>
+<button class="bg-white w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant hover:border-primary transition-colors">
+<img alt="IN" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ4HtoG4irb59Nt6HFb_yQ1nnZZd954LlxMCJe0Q73TC9Nc5vHrOrS1LfFRFdUYvcoZCuHwxxwAHxcIDz2uofGdB4VMRyZnFphOoN2chf9dsx5gz1h0iZKdFN_h4qXHcGPiC-ceRi7FmGqHo-QOxQyCPbTyf2Mn3gS55R_Hy2YW6AKa95DAAyXEMbSZdqAd_g78YdJ_oq5aSIzS5ordPhyfoUp-pNlgkTGWVkJnX8X3Xr6jqjroVyhu-Ix5ESOd_M1Yi_AaQvIuio"/>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-xl flex justify-around items-center px-gutter-mobile pb-safe z-50 border-t border-outline-variant/30 shadow-[0px_-4px_25px_rgba(26,43,60,0.12)]">
+<button class="flex flex-col items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-md text-label-md">My Trips</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-md text-label-md">Discovery</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<!-- Contextual FAB for Mobile (Primary Action) -->
+<button class="md:hidden fixed bottom-24 right-6 bg-primary-container text-on-primary-container w-14 h-14 rounded-full shadow-xl flex items-center justify-center active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</body></html>

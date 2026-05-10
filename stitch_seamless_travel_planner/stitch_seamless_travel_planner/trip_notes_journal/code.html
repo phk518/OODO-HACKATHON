@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traveloop - Trip Journal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Inter:wght@400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#38485a",
+                        "secondary": "#4f6073",
+                        "inverse-on-surface": "#f0f1f1",
+                        "outline": "#897362",
+                        "secondary-fixed": "#d2e4fb",
+                        "background": "#f9f9f9",
+                        "on-secondary-container": "#556679",
+                        "on-surface": "#1a1c1c",
+                        "surface-tint": "#875200",
+                        "on-primary-fixed": "#2b1700",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#d2e4fb",
+                        "on-tertiary-fixed": "#171c1f",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#a6aaae",
+                        "surface-dim": "#dadada",
+                        "on-primary-fixed-variant": "#673d00",
+                        "on-primary-container": "#5b3600",
+                        "primary-fixed": "#ffddba",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#dfe3e7",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "tertiary": "#5a5f62",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-bright": "#f9f9f9",
+                        "on-surface-variant": "#564334",
+                        "inverse-primary": "#ffb865",
+                        "primary-container": "#ef9500",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e2e2e2",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary-container": "#3a3f42",
+                        "outline-variant": "#ddc1ae",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#b7c8de",
+                        "primary-fixed-dim": "#ffb865",
+                        "on-secondary-fixed": "#0b1d2d",
+                        "surface": "#f9f9f9",
+                        "surface-container-high": "#e8e8e8",
+                        "primary": "#875200",
+                        "on-background": "#1a1c1c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "section-gap": "48px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "gutter-desktop": "24px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+<button class="text-primary active:scale-95 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-lg text-headline-md text-primary tracking-tight">Traveloop</h1>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant shadow-sm">
+<img alt="User profile avatar" data-alt="A high-quality professional portrait of a modern explorer with a friendly expression. The lighting is bright and natural, reflecting a premium light-mode aesthetic. The background is a soft-focus urban environment with warm golden hour tones that complement the Amber Sunset brand colors. The overall style is clean, sophisticated, and minimalist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvkqS7ZouV_X-YwMekrk9K6lgD8l5xacSE2ai-NPWUvt2nQTvXdjNU2yZEc5iHfXl2Y-R5FU0QVtbdv21zAMYasFTnui82XoEZ5r6Ep-oRwjq56rDpOq1-kzUfQLSrg9maXrE9jYH-JmtRUJcLixRqlC20OgHRIRNAoWZbrHELNxI-fzMObLWto8IrlEES4xoc6PvE1jk0v2RaCJWtwCwUA9nHpq6tW003fbQoCKwcTd_EuScoYgLcDnWlHwgpx_nZAb5sjAvEi_A"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Hero Header Section -->
+<section class="mb-section-gap flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<nav class="flex gap-2 mb-2 text-on-surface-variant font-label-md text-label-md">
+<span>Trips</span>
+<span>/</span>
+<span class="text-primary">Amalfi Coast Journal</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Trip Notes &amp; Reminders</h2>
+<p class="text-on-surface-variant max-w-2xl mt-2 font-body-lg text-body-lg">Capture the moments that matter. From hidden beach coordinates to that perfect pasta recipe in Positano.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container flex items-center gap-2 px-6 py-3 rounded-xl font-label-md text-label-md shadow-sm hover:opacity-80 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add_notes</span>
+                New Journal Entry
+            </button>
+</section>
+<!-- Bento Grid Layout for Notes -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter-desktop">
+<!-- Sidebar: Trip Summary / Map Pin -->
+<aside class="md:col-span-4 lg:col-span-3 space-y-gutter-desktop">
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] overflow-hidden">
+<div class="h-48 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCvkqS7ZouV_X-YwMekrk9K6lgD8l5xacSE2ai-NPWUvt2nQTvXdjNU2yZEc5iHfXl2Y-R5FU0QVtbdv21zAMYasFTnui82XoEZ5r6Ep-oRwjq56rDpOq1-kzUfQLSrg9maXrE9jYH-JmtRUJcLixRqlC20OgHRIRNAoWZbrHELNxI-fzMObLWto8IrlEES4xoc6PvE1jk0v2RaCJWtwCwUA9nHpq6tW003fbQoCKwcTd_EuScoYgLcDnWlHwgpx_nZAb5sjAvEi_A');">
+<div class="w-full h-full bg-gradient-to-t from-[#1A2B3C]/60 to-transparent flex items-end p-4">
+<h3 class="text-white font-headline-md text-headline-md">Positano, Italy</h3>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Sept 12 - Sept 20</span>
+<span class="text-xs text-on-surface-variant">8 Days Remaining</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="font-label-md text-label-md text-on-surface">Amalfi Drive, Campania</span>
+</div>
+</div>
+</div>
+<div class="bg-secondary-container/20 border border-secondary-container p-6 rounded-xl space-y-4">
+<h4 class="font-headline-md text-[18px] text-secondary">Quick Stats</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white p-4 rounded-lg shadow-sm">
+<p class="text-xs text-on-surface-variant font-label-md">ENTRIES</p>
+<p class="text-xl font-bold text-primary">12</p>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm">
+<p class="text-xs text-on-surface-variant font-label-md">PHOTOS</p>
+<p class="text-xl font-bold text-primary">45</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Journal List -->
+<div class="md:col-span-8 lg:col-span-9 space-y-8">
+<!-- Journal Entry Group: Today -->
+<div>
+<div class="flex items-center gap-4 mb-4">
+<div class="h-[2px] flex-grow bg-outline-variant/30"></div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Today — Sept 14</span>
+<div class="h-[2px] flex-grow bg-outline-variant/30"></div>
+</div>
+<!-- Active Note Editor (Focused Task Pattern) -->
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] p-6 mb-6 border-l-4 border-primary">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-label-md text-primary bg-primary-fixed px-2 py-1 rounded">DRAFT</span>
+<span class="ml-2 text-xs text-on-surface-variant font-label-md">11:42 AM</span>
+</div>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">attach_file</span></button>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</div>
+<input class="w-full font-headline-md text-headline-md border-none p-0 focus:ring-0 placeholder:text-surface-dim mb-2 text-on-surface" placeholder="Entry Title..." type="text" value="Sunset at Bagni Regina Giovanna"/>
+<textarea class="w-full font-body-md text-body-md border-none p-0 focus:ring-0 placeholder:text-surface-dim resize-none text-on-surface-variant" placeholder="Write your thoughts here..." rows="3">Walked down the steep stone steps to reach the natural pool. The water was emerald green. Remember to bring water shoes next time—the rocks are quite sharp!</textarea>
+<div class="flex justify-end gap-3 mt-4">
+<button class="px-4 py-2 text-secondary font-label-md text-label-md hover:bg-secondary-container/20 rounded-lg transition-colors">Discard</button>
+<button class="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 transition-opacity">Save Entry</button>
+</div>
+</div>
+<!-- List Item -->
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] p-6 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex-grow cursor-pointer">
+<div class="flex items-center gap-3 mb-2">
+<span class="text-xs text-on-surface-variant font-label-md uppercase">08:15 AM</span>
+<span class="h-1 w-1 rounded-full bg-outline-variant"></span>
+<span class="text-xs text-primary font-label-md">RESTAURANT</span>
+</div>
+<h4 class="font-headline-md text-[20px] text-on-surface mb-2">Da Adolfo - Lunch Reservations</h4>
+<p class="text-on-surface-variant line-clamp-2">The boat leaves from the main pier. Look for the red fish on the mast. Ordered the mussels and the house white with peaches.</p>
+</div>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined">edit</span></button>
+</div>
+</div>
+</div>
+<!-- Journal Entry Group: Yesterday -->
+<div>
+<div class="flex items-center gap-4 mb-4">
+<div class="h-[2px] flex-grow bg-outline-variant/30"></div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Yesterday — Sept 13</span>
+<div class="h-[2px] flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="space-y-4">
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] p-6 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex-grow">
+<div class="flex items-center gap-3 mb-2">
+<span class="text-xs text-on-surface-variant font-label-md uppercase">09:30 PM</span>
+<span class="h-1 w-1 rounded-full bg-outline-variant"></span>
+<span class="text-xs text-secondary font-label-md">REMINDER</span>
+</div>
+<h4 class="font-headline-md text-[20px] text-on-surface mb-2">Check Ferry Schedule</h4>
+<p class="text-on-surface-variant">The morning ferry to Capri fills up fast. Buy tickets at the kiosk by 8:30 AM to avoid the tour groups.</p>
+</div>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+<div class="bg-white rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)] p-6 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex-grow">
+<div class="flex items-center gap-3 mb-2">
+<span class="text-xs text-on-surface-variant font-label-md uppercase">02:00 PM</span>
+<span class="h-1 w-1 rounded-full bg-outline-variant"></span>
+<span class="text-xs text-primary font-label-md">SIGHTSEEING</span>
+</div>
+<h4 class="font-headline-md text-[20px] text-on-surface mb-2">Villa Cimbrone Gardens</h4>
+<p class="text-on-surface-variant">The Infinity Terrace is breathtaking. Spend more time in the tea room area next time. Admission was 10 Euros.</p>
+</div>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 bg-surface/90 backdrop-blur-xl border-t border-outline-variant/30 flex justify-around items-center px-gutter-mobile pb-safe z-50 shadow-[0px_-4px_25px_rgba(26,43,60,0.12)]">
+<button class="flex flex-col items-center justify-center text-secondary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-md text-label-md">My Trips</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Discovery</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+</body></html>
