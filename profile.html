@@ -1,216 +1,350 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Traveloop — Profile &amp; Settings</title>
-  <link rel="stylesheet" href="css/main.css"/>
-  <link rel="stylesheet" href="css/components.css"/>
-  <link rel="stylesheet" href="css/gsap-3d.css"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Traveloop - Profile</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "on-secondary-fixed": "#0b1d2d",
+                  "primary-fixed": "#ffddba",
+                  "surface-container-high": "#e8e8e8",
+                  "tertiary-fixed-dim": "#c3c7cb",
+                  "inverse-surface": "#2f3131",
+                  "on-tertiary": "#ffffff",
+                  "on-primary-fixed": "#2b1700",
+                  "secondary-fixed": "#d2e4fb",
+                  "error-container": "#ffdad6",
+                  "tertiary": "#5a5f62",
+                  "on-surface": "#1a1c1c",
+                  "surface-bright": "#f9f9f9",
+                  "on-secondary-fixed-variant": "#38485a",
+                  "secondary": "#4f6073",
+                  "on-tertiary-container": "#3a3f42",
+                  "secondary-fixed-dim": "#b7c8de",
+                  "on-background": "#1a1c1c",
+                  "on-tertiary-fixed": "#171c1f",
+                  "tertiary-fixed": "#dfe3e7",
+                  "surface-container-lowest": "#ffffff",
+                  "primary": "#875200",
+                  "inverse-primary": "#ffb865",
+                  "background": "#f9f9f9",
+                  "secondary-container": "#d2e4fb",
+                  "surface": "#f9f9f9",
+                  "surface-variant": "#e2e2e2",
+                  "on-tertiary-fixed-variant": "#43474b",
+                  "inverse-on-surface": "#f0f1f1",
+                  "surface-container-highest": "#e2e2e2",
+                  "tertiary-container": "#a6aaae",
+                  "primary-container": "#ef9500",
+                  "surface-container": "#eeeeee",
+                  "surface-dim": "#dadada",
+                  "on-error": "#ffffff",
+                  "surface-tint": "#875200",
+                  "outline": "#897362",
+                  "on-secondary": "#ffffff",
+                  "on-error-container": "#93000a",
+                  "error": "#ba1a1a",
+                  "on-primary-fixed-variant": "#673d00",
+                  "on-primary": "#ffffff",
+                  "surface-container-low": "#f3f3f3",
+                  "on-primary-container": "#5b3600",
+                  "on-surface-variant": "#564334",
+                  "primary-fixed-dim": "#ffb865",
+                  "outline-variant": "#ddc1ae",
+                  "on-secondary-container": "#556679"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "spacing": {
+                  "margin-mobile": "20px",
+                  "gutter-mobile": "16px",
+                  "section-gap": "48px",
+                  "margin-desktop": "64px",
+                  "unit": "4px",
+                  "gutter-desktop": "24px"
+          },
+          "fontFamily": {
+                  "display-lg": ["Montserrat"],
+                  "headline-lg": ["Montserrat"],
+                  "body-lg": ["Inter"],
+                  "headline-lg-mobile": ["Montserrat"],
+                  "headline-md": ["Montserrat"],
+                  "label-md": ["Inter"],
+                  "body-md": ["Inter"]
+          },
+          "fontSize": {
+                  "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                  "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                  "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                  "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                  "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                  "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
   <style>
-    .profile-layout { display:grid; grid-template-columns:300px 1fr; gap:var(--space-xl); align-items:start; }
-    .profile-sidebar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); text-align:center; position:sticky; top:calc(var(--navbar-h)+20px); }
-    .avatar-xl { width:88px; height:88px; border-radius:50%; background:var(--grad-primary); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; color:#fff; margin:0 auto var(--space-md); border:3px solid var(--border-primary); }
-    .profile-name { font-size:1.2rem; font-weight:700; }
-    .profile-email { color:var(--text-secondary); font-size:.85rem; margin-top:4px; }
-    .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md); margin-top:var(--space-lg); }
-    .p-stat { background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-sm) var(--space-md); text-align:center; }
-    .p-stat-val { font-size:1.3rem; font-weight:700; }
-    .p-stat-lab { font-size:.7rem; color:var(--text-muted); }
-    .settings-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); margin-bottom:var(--space-lg); }
-    .settings-section-title { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:var(--space-lg); padding-bottom:var(--space-sm); border-bottom:1px solid var(--border); }
-    .danger-zone { border-color:rgba(239,68,68,.25); }
-    .danger-zone .settings-section-title { color:var(--danger); }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-nav {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
   </style>
 </head>
-<body class="bg-dots">
-<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
-<canvas id="particles-canvas"></canvas>
-<header id="main-navbar" class="navbar"></header>
-<main class="page-wrapper">
+<body class="bg-background text-on-background min-h-screen font-body-md">
 
-  <div class="page-header animate-in">
-    <h1 class="page-title">Profile &amp; Settings</h1>
-    <p class="page-subtitle">Manage your account details and preferences.</p>
-  </div>
-
-  <div class="profile-layout animate-in stagger-1">
-    <!-- Sidebar -->
-    <div class="profile-sidebar">
-      <div class="avatar-xl" id="profile-avatar"></div>
-      <div class="profile-name"  id="profile-name"></div>
-      <div class="profile-email" id="profile-email"></div>
-      <div class="profile-stats" id="profile-stats"></div>
-      <div style="margin-top:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-sm);">
-        <a href="dashboard.html" class="btn btn-ghost btn-sm btn-full">🏠 Dashboard</a>
-        <a href="trips.html"     class="btn btn-ghost btn-sm btn-full">✈️ My Trips</a>
-        <button class="btn btn-danger btn-sm btn-full" onclick="logout()">Sign Out</button>
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+    <div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-[1440px] mx-auto">
+      <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-primary cursor-pointer hover:opacity-80 transition-opacity">menu</span>
+        <h1 class="font-display-lg text-headline-md text-primary tracking-tight">Traveloop</h1>
+      </div>
+      <div class="hidden md:flex items-center gap-gutter-desktop">
+        <a class="font-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="dashboard.html">Home</a>
+        <a class="font-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="trips.html">My Trips</a>
+        <a class="font-label-md text-on-surface-variant hover:opacity-80 transition-opacity" href="city-search.html">Discovery</a>
+        <a class="font-label-md text-primary font-bold hover:opacity-80 transition-opacity" href="profile.html">Profile</a>
+      </div>
+      <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed cursor-pointer active:scale-95 transition-transform">
+        <img
+          alt="Julianne Deville profile"
+          class="w-full h-full object-cover"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkCkqbg7N4bM3nOX7zlDNMDE7iRv56ZJqX2Ts7J0cfNFDv1W45bYNCg9oReOb6WG2kWEZcFVsBQDJOYxHEbmWhH7ZwggWsNyIvF5SVZORu-XMWHhRb9loRI3oRJiUqY4duYCXiXvOGpkNvEMa8_L9EA-VIQqnCTDoBVt_pZMINxVzFuVoNQVxY2FY3G8q6hEaPkBon3xJBwHn5kUJ7N-6CsznZck9FLwCNVlSX1pkpPnI0tV2Y9x86C9-3PomCdeRpp1U5UXA_pDU"
+        />
       </div>
     </div>
+  </header>
 
-    <!-- Settings -->
-    <div>
-      <!-- Edit Profile -->
-      <div class="settings-card">
-        <div class="settings-section-title">Personal Information</div>
-        <form onsubmit="saveProfile(event)" style="display:flex;flex-direction:column;gap:var(--space-md);">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" id="edit-name" class="form-input" required/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" id="edit-email" class="form-input" required/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Language</label>
-            <select id="edit-language" class="form-select">
-              <option value="en">🇬🇧 English</option>
-              <option value="es">🇪🇸 Spanish</option>
-              <option value="fr">🇫🇷 French</option>
-              <option value="de">🇩🇪 German</option>
-              <option value="ja">🇯🇵 Japanese</option>
-              <option value="pt">🇧🇷 Portuguese</option>
-            </select>
-          </div>
-          <div style="text-align:right;">
-            <button type="submit" class="btn btn-primary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              Save Changes
-            </button>
-          </div>
-        </form>
+  <main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+
+    <!-- Profile Header Section -->
+    <section class="mb-section-gap flex flex-col md:flex-row items-center gap-8 bg-surface-container-lowest p-8 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+      <div class="relative group">
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-primary/20 p-1">
+          <img
+            alt="Julianne Deville"
+            class="w-full h-full object-cover rounded-full"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0rLYjdftstH7UXa4dLTFC4BrrQBRPAtu3n8RsjYyGGYBbqTpzLeoLX519804Dokj83bY9cIC4NREMTxE7gqyJi46dPqqb_7-kAhnsMnqs-A7s5pLXLOP4dkaAfGObXG2bWgUul0ZmPVEX5q7Apbv1C9RJkRix9rCpqeONSY9pv-RRG6aHHdiri5D-IX42T6gFI1lApLs1Jir_StLc9hUBrsAuw5dVTrLraz5ioVq5MPm4eBvo01w1-yEOpWwdcHxfmehkaIsppUk"
+          />
+        </div>
+        <button class="absolute bottom-2 right-2 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-95 transition-transform">
+          <span class="material-symbols-outlined text-[20px]">edit</span>
+        </button>
       </div>
-
-      <!-- Change Password -->
-      <div class="settings-card">
-        <div class="settings-section-title">Change Password</div>
-        <form onsubmit="changePassword(event)" style="display:flex;flex-direction:column;gap:var(--space-md);">
-          <div class="form-group">
-            <label class="form-label">Current Password</label>
-            <input type="password" id="old-password" class="form-input" placeholder="Enter current password"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">New Password</label>
-            <input type="password" id="new-password" class="form-input" placeholder="At least 6 characters" minlength="6"/>
-          </div>
-          <div style="text-align:right;">
-            <button type="submit" class="btn btn-ghost">Update Password</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Saved Destinations -->
-      <div class="settings-card">
-        <div class="settings-section-title">Your Travel Stats</div>
-        <div id="travel-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-md);"></div>
-      </div>
-
-      <!-- Danger Zone -->
-      <div class="settings-card danger-zone">
-        <div class="settings-section-title">Danger Zone</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-weight:600;font-size:.9rem;">Delete Account</div>
-            <div style="color:var(--text-muted);font-size:.8rem;">Permanently delete your account and all trip data. This cannot be undone.</div>
-          </div>
-          <button class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
+      <div class="text-center md:text-left">
+        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-1">Julianne Deville</h2>
+        <div class="flex items-center justify-center md:justify-start gap-2 text-secondary">
+          <span class="material-symbols-outlined text-[18px]">location_on</span>
+          <span class="font-label-md">Lyon, France</span>
+        </div>
+        <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
+          <span class="px-4 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[12px] font-semibold">Elite Traveler</span>
+          <span class="px-4 py-1 rounded-full bg-primary-fixed text-on-primary-fixed text-[12px] font-semibold">Adventure Seeker</span>
         </div>
       </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop">
+
+      <!-- Left Column: Personal Info & Preferences -->
+      <div class="lg:col-span-4 space-y-gutter-desktop">
+        <!-- Personal Information -->
+        <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">badge</span>
+            Personal Information
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="font-label-md text-on-surface-variant block mb-1">Full Name</label>
+              <p class="font-body-md text-on-surface font-semibold">Julianne Deville</p>
+            </div>
+            <div>
+              <label class="font-label-md text-on-surface-variant block mb-1">Email Address</label>
+              <p class="font-body-md text-on-surface font-semibold">julianne.d@explorer.com</p>
+            </div>
+            <div>
+              <label class="font-label-md text-on-surface-variant block mb-1">Phone Number</label>
+              <p class="font-body-md text-on-surface font-semibold">+33 6 12 34 56 78</p>
+            </div>
+            <div>
+              <label class="font-label-md text-on-surface-variant block mb-1">Home Address</label>
+              <p class="font-body-md text-on-surface font-semibold">12 Rue de la République, Lyon, 69002 France</p>
+            </div>
+          </div>
+          <button class="mt-8 w-full py-3 border border-outline text-on-surface-variant font-label-md rounded-xl hover:bg-surface-variant/20 transition-colors">
+            Update Information
+          </button>
+        </div>
+
+        <!-- Account Settings -->
+        <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">settings</span>
+            Preferences
+          </h3>
+          <div class="space-y-1">
+            <a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-variant/30 transition-colors group" href="#">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary">payments</span>
+                <span class="font-body-md text-on-surface">Payment Methods</span>
+              </div>
+              <span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+            </a>
+            <a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-variant/30 transition-colors group" href="#">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary">notifications</span>
+                <span class="font-body-md text-on-surface">Notifications</span>
+              </div>
+              <span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+            </a>
+            <a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-variant/30 transition-colors group" href="#">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary">security</span>
+                <span class="font-body-md text-on-surface">Security</span>
+              </div>
+              <span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+            </a>
+            <a class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-variant/30 transition-colors group text-error" href="login.html">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="font-body-md">Log Out</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Trip History -->
+      <div class="lg:col-span-8">
+        <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_10px_rgba(26,43,60,0.08)]">
+          <div class="flex items-center justify-between mb-8">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">history</span>
+              Trip History
+            </h3>
+            <button class="text-primary font-label-md hover:underline">View All</button>
+          </div>
+
+          <!-- History List: Asymmetric/Card layout -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Trip Card 1 -->
+            <div class="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div class="h-40 overflow-hidden">
+                <img
+                  alt="Parisian Highlights"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-WA253F3_G2974O_Crgn-C6JCjjakMYIcFLeIWZfLyfge0DxpWzMAjLTPPiaUzP4v7MiZy_-ClxVJXhLifOZ0vFFqJiYNCYeKMJ59hAmidJo1iCy9CYl9DdJ19ucrVHlMzIaCXLmd8ol4Wi1qmiHDSwvcigSO3VxoyFQ9abEyGin78jblp-wlbCWaCDButOYWNRFaoIfwvZkJ_lCx8DmlQrvBD-h_bldozF2HXvn_4A-i1Un3LhUhA5b24A5DorsU0Rv07RyOq80"
+                />
+                <div class="absolute top-4 right-4 px-3 py-1 bg-surface/90 backdrop-blur-md rounded-full">
+                  <span class="font-label-md text-on-surface text-[12px]">Completed</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h4 class="font-headline-md text-body-lg text-on-surface mb-2">Parisian Highlights</h4>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+                    <span class="text-[13px] font-medium">May 12 - May 19, 2023</span>
+                  </div>
+                  <div class="flex items-center gap-1 text-primary">
+                    <span class="material-symbols-outlined text-[16px]">location_on</span>
+                    <span class="text-[13px] font-bold">12 Stops</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trip Card 2 -->
+            <div class="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div class="h-40 overflow-hidden">
+                <img
+                  alt="Swiss Alps Expedition"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO--lTjsTXlrRrdn_KTqiMsNh3VgRvWdG6I8rrhpKC-5xcn0Afh5XWqEUTAYSwMje93JB0qeh6Mt2N0PB7G7OnMRg68YIcOnIsq9xTvaozEujq0Zs-Qwhk4Jtj1WWQnhLe1ji9qLGaNwaBRDGNhk4_ht88Q77keCI_1RWXznct2R2LJxllLsa6MjdFzXHEiK6PUaOdK84fC_DOjdMyDuPlUyfgRq93oPG5fEZlx4AO6oS4pUepPff4rCkM_y-FZIe-TZodfVl4wXQ"
+                />
+                <div class="absolute top-4 right-4 px-3 py-1 bg-surface/90 backdrop-blur-md rounded-full">
+                  <span class="font-label-md text-on-surface text-[12px]">Completed</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h4 class="font-headline-md text-body-lg text-on-surface mb-2">Swiss Alps Expedition</h4>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+                    <span class="text-[13px] font-medium">Aug 05 - Aug 15, 2023</span>
+                  </div>
+                  <div class="flex items-center gap-1 text-primary">
+                    <span class="material-symbols-outlined text-[16px]">location_on</span>
+                    <span class="text-[13px] font-bold">8 Stops</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trip Card 3 -->
+            <div class="md:col-span-2 group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div class="h-56 overflow-hidden relative">
+                <img
+                  alt="Coastal Retreat"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrE9RxM40z2t0qZwsZsObhQ3FQVJVICFGdqu9w39R_14_5UwPu54vfnXC0oX8qs6sRt2FvwZBDroODzKXH6Q64zCs0t4oFZOEKtgsSN25Qb5tTBVdt_uebAlmfOHKidwIyKoZXxRhX2isBmtG_byOx-CaBqkHEwOJTHLNVRmXEXGHWG8UVYT-tZq9Xkxi5e0ylCkvAWY_0G71tXrJV7pajk5oX2pMSeRik0OSIjWT1efjufDLpnVlU7JSeuXBmX0pZbX0iTScLOnI"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-on-secondary-fixed/60 to-transparent"></div>
+                <div class="absolute bottom-4 left-6 text-white">
+                  <h4 class="font-headline-lg text-headline-md text-white mb-1">Amalfi Coast Retreat</h4>
+                  <p class="font-label-md text-white/80">October 2023 • 5 Destinations</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
-</main>
+  </main>
 
-<div id="toast-container"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/db.js"></script>
-<script src="js/utils.js"></script>
-<script>
-const user = Session.require();
-renderNavbar(user);
+  <!-- BottomNavBar -->
+  <nav class="md:hidden fixed bottom-0 left-0 w-full h-20 bg-surface/90 backdrop-blur-xl flex justify-around items-center px-gutter-mobile pb-safe z-50 border-t border-outline-variant/30 shadow-[0px_-4px_25px_rgba(26,43,60,0.12)]">
+    <a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container/30 transition-colors px-4 py-1 rounded-xl" href="dashboard.html">
+      <span class="material-symbols-outlined">home</span>
+      <span class="font-label-md text-label-md">Home</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container/30 transition-colors px-4 py-1 rounded-xl" href="trips.html">
+      <span class="material-symbols-outlined">explore</span>
+      <span class="font-label-md text-label-md">My Trips</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container/30 transition-colors px-4 py-1 rounded-xl" href="city-search.html">
+      <span class="material-symbols-outlined">map</span>
+      <span class="font-label-md text-label-md">Discovery</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1" href="profile.html">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+      <span class="font-label-md text-label-md">Profile</span>
+    </a>
+  </nav>
 
-function loadProfile() {
-  const u = Session.get();
-  document.getElementById('profile-avatar').textContent = getInitials(u.name);
-  document.getElementById('profile-name').textContent   = u.name;
-  document.getElementById('profile-email').textContent  = u.email;
-  document.getElementById('edit-name').value     = u.name;
-  document.getElementById('edit-email').value    = u.email;
-  document.getElementById('edit-language').value = u.language || 'en';
-
-  // Stats
-  const trips = Trips.forUser(u.id);
-  let countries = new Set(), totalDays = 0, totalCities = new Set(), totalActs = 0;
-  trips.forEach(t => {
-    totalDays += daysBetween(t.startDate, t.endDate);
-    Stops.forTrip(t.id).forEach(s => {
-      countries.add(s.country);
-      totalCities.add(s.cityName);
-      totalActs += Activities.forStop(s.id).length;
-    });
-  });
-
-  document.getElementById('profile-stats').innerHTML = `
-    <div class="p-stat"><div class="p-stat-val">${trips.length}</div><div class="p-stat-lab">Trips</div></div>
-    <div class="p-stat"><div class="p-stat-val">${countries.size}</div><div class="p-stat-lab">Countries</div></div>
-    <div class="p-stat"><div class="p-stat-val">${totalDays}</div><div class="p-stat-lab">Days</div></div>
-    <div class="p-stat"><div class="p-stat-val">${totalActs}</div><div class="p-stat-lab">Activities</div></div>`;
-
-  document.getElementById('travel-stats').innerHTML = [
-    { label:'Total Trips',    val:trips.length,      icon:'✈️' },
-    { label:'Countries',      val:countries.size,    icon:'🌍' },
-    { label:'Cities',         val:totalCities.size,  icon:'🏙️' },
-    { label:'Days Planned',   val:totalDays,         icon:'📅' },
-    { label:'Activities',     val:totalActs,         icon:'🎯' },
-    { label:'Trips Shared',   val: trips.filter(t=>t.isPublic).length, icon:'🔗' },
-  ].map(s => `
-    <div class="stat-card" style="flex-direction:column;align-items:center;text-align:center;padding:var(--space-md);">
-      <div style="font-size:1.5rem;">${s.icon}</div>
-      <div class="stat-value" style="font-size:1.4rem;">${s.val}</div>
-      <div class="stat-label">${s.label}</div>
-    </div>`).join('');
-}
-
-function saveProfile(e) {
-  e.preventDefault();
-  const name     = document.getElementById('edit-name').value.trim();
-  const email    = document.getElementById('edit-email').value.trim();
-  const language = document.getElementById('edit-language').value;
-  Users.update(user.id, { name, email, language });
-  // Refresh session display
-  loadProfile();
-  renderNavbar(Session.get());
-  showToast('Profile updated!','success');
-}
-
-function changePassword(e) {
-  e.preventDefault();
-  const oldPwd = document.getElementById('old-password').value;
-  const newPwd = document.getElementById('new-password').value;
-  const current = Users.findById(user.id);
-  if (current.password !== btoa(oldPwd)) { showToast('Current password is incorrect','error'); return; }
-  Users.update(user.id, { password: btoa(newPwd) });
-  document.getElementById('old-password').value = '';
-  document.getElementById('new-password').value = '';
-  showToast('Password updated successfully','success');
-}
-
-function deleteAccount() {
-  if (!confirm('Are you absolutely sure? All your trips and data will be permanently deleted.')) return;
-  const trips = Trips.forUser(user.id);
-  trips.forEach(t => Trips.delete(t.id));
-  const users = dbFindAll ? dbFindAll('tl_users') : [];
-  // Simple inline delete
-  const table = JSON.parse(localStorage.getItem('tl_users')||'[]').filter(u=>u.id!==user.id);
-  localStorage.setItem('tl_users', JSON.stringify(table));
-  Session.clear();
-  showToast('Account deleted','info');
-  setTimeout(() => { window.location.href='index.html'; }, 1000);
-}
-
-loadProfile();
-</script>
-<script src="js/gsap-3d.js"></script>
 </body>
 </html>
