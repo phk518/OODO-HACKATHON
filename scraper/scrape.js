@@ -14,8 +14,10 @@ async function scrapeApp() {
   };
 
   try {
-    console.log('🌐 Navigating to Dashboard (http://localhost:5173)...');
-    await page.goto('http://localhost:5173');
+    const path = require('path');
+    const indexUrl = `file://${path.resolve(__dirname, '../app/dist/index.html')}`;
+    console.log(`🌐 Navigating to: ${indexUrl}`);
+    await page.goto(indexUrl);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000); // Wait for animations
 
