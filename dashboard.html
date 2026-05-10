@@ -1,326 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traveloop — Dashboard</title>
-  <meta name="description" content="Your Traveloop dashboard — see upcoming trips, popular destinations, and start planning." />
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <style>
-    .dashboard-hero {
-      border-radius: var(--radius-xl);
-      padding: var(--space-2xl) var(--space-2xl);
-      background: var(--grad-hero);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      margin-bottom: var(--space-2xl);
-    }
-    .dashboard-hero::before {
-      content:'';
-      position:absolute;
-      top:-80px;right:-80px;
-      width:400px;height:400px;
-      background:radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .dashboard-hero::after {
-      content:'';
-      position:absolute;
-      bottom:-60px;left:200px;
-      width:300px;height:300px;
-      background:radial-gradient(circle,rgba(255,107,107,0.1) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .dashboard-hero-content { position:relative;z-index:1; }
-    .dashboard-hero-emoji {
-      font-size:3rem;
-      margin-bottom:var(--space-md);
-      display:block;
-      animation:float 4s ease-in-out infinite;
-    }
-    .dashboard-hero h1 { font-size:clamp(1.4rem,3vw,2rem); margin-bottom:6px; }
-    .dashboard-hero p  { color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-lg); }
-    .hero-actions { display:flex;gap:var(--space-sm);flex-wrap:wrap; }
-
-    .stats-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:var(--space-md);
-      margin-bottom:var(--space-2xl);
-    }
-
-    .section-trip-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-      gap:var(--space-lg);
-    }
-
-    .destinations-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-      gap:var(--space-md);
-    }
-
-    /* Inspiration city mini card */
-    .insp-card {
-      border-radius:var(--radius-xl);
-      overflow:hidden;
-      border:1px solid var(--border);
-      cursor:pointer;
-      transition:all var(--duration-normal) var(--ease);
-      position:relative;
-    }
-    .insp-card:hover { transform:translateY(-4px);box-shadow:var(--shadow-md); }
-    .insp-card-img {
-      height:130px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:2.8rem;position:relative;
-    }
-    .insp-card-img-bg {
-      position:absolute;inset:0;
-    }
-    .insp-card-img span { position:relative;z-index:1; }
-    .insp-card-body {padding:var(--space-sm) var(--space-md) var(--space-md);}
-    .insp-card-name {font-weight:700;font-size:0.9rem;}
-    .insp-card-country {font-size:0.75rem;color:var(--text-secondary);}
-    .insp-card-meta {
-      display:flex;justify-content:space-between;align-items:center;
-      margin-top:6px;font-size:0.75rem;
-    }
-
-    .quick-actions {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:var(--space-md);
-      margin-bottom:var(--space-2xl);
-    }
-    .quick-action-btn {
-      padding:var(--space-md);
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      border-radius:var(--radius-lg);
-      display:flex;flex-direction:column;align-items:center;gap:8px;
-      cursor:pointer;
-      transition:all var(--duration-normal) var(--ease);
-      text-decoration:none;
-      color:var(--text-secondary);
-      font-size:0.8rem;font-weight:500;
-    }
-    .quick-action-btn:hover {
-      border-color:var(--border-primary);
-      background:var(--primary-dim);
-      color:var(--text-primary);
-      transform:translateY(-2px);
-    }
-    .quick-action-icon {
-      width:42px;height:42px;
-      border-radius:var(--radius-md);
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.2rem;
-      background:var(--bg-elevated);
-      border:1px solid var(--border);
-      transition:all var(--duration-normal) var(--ease);
-    }
-    .quick-action-btn:hover .quick-action-icon {
-      background:var(--primary-dim);
-      border-color:var(--border-primary);
-    }
-
-    .tips-card {
-      background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.03));
-      border:1px solid rgba(245,166,35,0.2);
-      border-radius:var(--radius-lg);
-      padding:var(--space-md) var(--space-lg);
-      display:flex;align-items:center;gap:var(--space-md);
-      font-size:0.875rem;
-    }
-  </style>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Dashboard — Traveloop</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#031632","primary-container":"#1a2b48","on-primary":"#ffffff","on-primary-container":"#8293b5","secondary":"#ac3509","secondary-container":"#fe6f42","on-secondary":"#ffffff","surface":"#fbf9fb","surface-container":"#efedf0","surface-container-low":"#f5f3f6","surface-container-lowest":"#ffffff","surface-container-highest":"#e4e2e5","on-surface":"#1b1b1e","on-surface-variant":"#44474d","outline":"#75777e","outline-variant":"#c5c6ce","background":"#fbf9fb"},fontFamily:{sans:["Plus Jakarta Sans","sans-serif"]}}}}
+</script>
+<style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.city-card img{transition:transform .5s}.city-card:hover img{transform:scale(1.05)}
+.trip-card:hover{border-color:#ac3509}
+</style>
 </head>
-<body class="bg-dots">
-  <header id="main-navbar" class="navbar"></header>
+<body class="bg-background text-on-surface font-sans">
 
-  <main class="page-wrapper">
+<!-- NAV -->
+<header class="sticky top-0 z-50 bg-white shadow-sm h-16" id="main-navbar"></header>
 
-    <!-- Hero -->
-    <div class="dashboard-hero animate-in">
-      <div class="dashboard-hero-content">
-        <span class="dashboard-hero-emoji" id="hero-emoji">✈️</span>
-        <h1 id="hero-greeting">Good morning, Traveller!</h1>
-        <p id="hero-sub">You have <strong id="upcoming-count">0</strong> upcoming trips. Where will you go next?</p>
-        <div class="hero-actions">
-          <a href="create-trip.html" class="btn btn-primary btn-lg">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Plan New Trip
-          </a>
-          <a href="trips.html" class="btn btn-ghost btn-lg">View All Trips</a>
+<main>
+<!-- HERO -->
+<section class="relative w-full h-[540px] overflow-hidden">
+  <div class="absolute inset-0 bg-primary/50 z-10"></div>
+  <img class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmEfTvkWmNhfzO8nan9Y8yHiyLT72HI0ax09u_egGNmdxousHW2ZX2fvD1INvVREcGJCF0uUTwpV7wqCYcRKrBSJyAt3pVSRy_OCqfmFs2N4WgUEAHTlDlpI6Azz8znK4eKKJtzHRBNJdmcsIa5gu3x8XmKGXjvB0kzqW0wNmlF7nZKeaKEsLqRmZIPFB2-rluIP3TXiGTpSQcZyHpzkY9BZTcfwzF3kbVnNypvBsOr4Pey9GAAa-HlcQhdITFMjWoGR18y3BSvH8" alt="Travel hero"/>
+  <div class="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
+    <h1 id="hero-greeting" class="text-white text-4xl font-extrabold mb-3 drop-shadow-lg">Where to next?</h1>
+    <p class="text-white/90 text-lg max-w-2xl mb-8">Plan, track, and share your perfect journey.</p>
+    <div class="w-full max-w-3xl bg-white rounded-xl p-2 shadow-2xl flex flex-col md:flex-row gap-2 items-center">
+      <div class="flex-1 flex items-center gap-2 px-3 border-r border-gray-200 w-full">
+        <span class="material-symbols-outlined text-gray-400">location_on</span>
+        <input id="search-dest" class="w-full border-none focus:ring-0 bg-transparent py-3 text-sm" placeholder="Search destination..." type="text"/>
+      </div>
+      <div class="flex-1 flex items-center gap-2 px-3 border-r border-gray-200 w-full">
+        <span class="material-symbols-outlined text-gray-400">calendar_today</span>
+        <input id="search-date" class="w-full border-none focus:ring-0 bg-transparent py-3 text-sm" placeholder="Travel dates" type="text"/>
+      </div>
+      <div class="flex-1 flex items-center gap-2 px-3 w-full">
+        <span class="material-symbols-outlined text-gray-400">group</span>
+        <input class="w-full border-none focus:ring-0 bg-transparent py-3 text-sm" placeholder="Travelers" type="text"/>
+      </div>
+      <button onclick="doSearch()" class="bg-secondary text-white px-8 py-3 rounded-lg font-bold text-sm w-full md:w-auto hover:opacity-90 transition-opacity">Search</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="bg-primary text-white">
+  <div class="max-w-6xl mx-auto px-8 py-5 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div><div id="st-trips" class="text-2xl font-bold">0</div><div class="text-xs text-white/60 uppercase tracking-wider mt-1">Total Trips</div></div>
+    <div><div id="st-countries" class="text-2xl font-bold">0</div><div class="text-xs text-white/60 uppercase tracking-wider mt-1">Countries</div></div>
+    <div><div id="st-days" class="text-2xl font-bold">0</div><div class="text-xs text-white/60 uppercase tracking-wider mt-1">Days Planned</div></div>
+    <div><div id="st-acts" class="text-2xl font-bold">0</div><div class="text-xs text-white/60 uppercase tracking-wider mt-1">Activities</div></div>
+  </div>
+</div>
+
+<!-- TOP REGIONAL SELECTIONS -->
+<section class="max-w-6xl mx-auto px-8 py-12">
+  <div class="flex justify-between items-end mb-6">
+    <div>
+      <h2 class="text-primary text-3xl font-bold">Top Regional Selections</h2>
+      <p class="text-on-surface-variant mt-1">Hand-picked destinations with live weather.</p>
+    </div>
+    <a href="city-search.html" class="text-secondary font-bold text-sm flex items-center gap-1 hover:underline">
+      View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+    </a>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 md:h-[480px]">
+    <!-- Paris - large -->
+    <div class="city-card md:col-span-2 md:row-span-2 relative rounded-xl overflow-hidden shadow cursor-pointer" onclick="window.location='city-search.html'">
+      <img class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR2VW5N3wErlf0jBxfeNpyX9e2w6B5hIPov6HndXthgFQDPy_4LXTwBqAh9t1LrUoTaFEvAIddMxKiQkyVdDLOB6vZw_e81ynN-5lpq0wvVNMXsEfIvhDC4svqXvtOqzOl0aH3CyA79WdnV5nX2dftbzQnxld9LJWtm9pwYyuGVtbUm9WsgInutqPFkUXCGvddA-qbxwNE4XEOOMFXZRBB-RhosFpjsW9T6VXDv7KMEgpXpXTcVFT_TA0ewWUlB6YTZgxvgo_JvV0" alt="Paris"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-6">
+        <span class="bg-secondary text-white px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase w-fit mb-2">POPULAR</span>
+        <h3 class="text-white text-2xl font-bold">Paris, France</h3>
+        <div class="flex items-center justify-between mt-1">
+          <p class="text-white/80 text-sm">City of light, reimagined.</p>
+          <span id="w-paris" class="text-white/90 text-sm font-semibold bg-white/20 px-2 py-0.5 rounded-full">…°C</span>
         </div>
       </div>
     </div>
-
-    <!-- Stats -->
-    <div class="stats-grid animate-in stagger-1" id="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-primary">✈️</div>
-        <div><div class="stat-value" id="stat-total-trips">0</div><div class="stat-label">Total Trips</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-gold">🌍</div>
-        <div><div class="stat-value" id="stat-countries">0</div><div class="stat-label">Countries</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-accent">📅</div>
-        <div><div class="stat-value" id="stat-days">0</div><div class="stat-label">Days Planned</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-success">🏙️</div>
-        <div><div class="stat-value" id="stat-cities">0</div><div class="stat-label">Cities</div></div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="section animate-in stagger-2">
-      <div class="section-header">
-        <div class="section-title">Quick Actions</div>
-      </div>
-      <div class="quick-actions">
-        <a href="create-trip.html" class="quick-action-btn">
-          <div class="quick-action-icon">✈️</div>
-          New Trip
-        </a>
-        <a href="city-search.html" class="quick-action-btn">
-          <div class="quick-action-icon">🔍</div>
-          Explore Cities
-        </a>
-        <a href="trips.html" class="quick-action-btn">
-          <div class="quick-action-icon">🗂️</div>
-          My Trips
-        </a>
-        <a href="profile.html" class="quick-action-btn">
-          <div class="quick-action-icon">👤</div>
-          Profile
-        </a>
-      </div>
-    </div>
-
-    <!-- Upcoming Trips -->
-    <div class="section animate-in stagger-3">
-      <div class="section-header">
-        <div class="section-title">Your Trips</div>
-        <a href="trips.html" class="btn btn-ghost btn-sm">View All</a>
-      </div>
-      <div class="section-trip-grid" id="upcoming-trips">
-        <div class="empty-state" id="trips-empty" style="display:none;">
-          <div class="empty-state-icon">🧳</div>
-          <div class="empty-state-title">No trips yet</div>
-          <div class="empty-state-desc">Create your first trip to get started!</div>
-          <a href="create-trip.html" class="btn btn-primary mt-md">Plan New Trip</a>
+    <!-- Tokyo -->
+    <div class="city-card relative rounded-xl overflow-hidden shadow cursor-pointer h-56 md:h-full" onclick="window.location='city-search.html'">
+      <img class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAimwvp9Yi5-sCHMc14CzN_7mULxhT1KUjWoUFmK8t-302YNHSMS6kgZuUHkFQ-f4bYwdf9e4N_b1jcG_QPIDfj3YepU-nHXZ_u0livW3N-MCbqomWec3iJ5fV0eduGa2p6ZhlLhxx5_1nCEq3kdBs0_WY7eZKacpkti-7JSHXwCvdfW21Ll3WctlqCRN0UQHoUGt7lnuPbOJLs23EZWCN-7lkDEJszqwcOI730XQiVfQStC643AFZ2LqNzvbNcE-TPV7y6rgFbdGo" alt="Tokyo"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-4">
+        <h3 class="text-white font-bold">Tokyo, Japan</h3>
+        <div class="flex items-center justify-between">
+          <p class="text-white/80 text-xs">Tech-forward city.</p>
+          <span id="w-tokyo" class="text-white/90 text-xs font-semibold bg-white/20 px-2 py-0.5 rounded-full">…°C</span>
         </div>
       </div>
     </div>
-
-    <!-- Recommended Destinations -->
-    <div class="section animate-in stagger-4">
-      <div class="section-header">
-        <div class="section-title">Popular Destinations</div>
-        <a href="city-search.html" class="btn btn-ghost btn-sm">Browse All</a>
-      </div>
-      <div class="destinations-grid" id="destinations-grid"></div>
-    </div>
-
-    <!-- Travel Tip -->
-    <div class="tips-card animate-in stagger-5">
-      <span style="font-size:1.5rem;">💡</span>
-      <div>
-        <strong>Travel Tip:</strong> <span id="travel-tip">Book accommodation at least 3 months in advance for European summer travel to get the best rates.</span>
+    <!-- Bali -->
+    <div class="city-card relative rounded-xl overflow-hidden shadow cursor-pointer h-56 md:h-full" onclick="window.location='city-search.html'">
+      <img class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr-TLFjsKs9uG4rtHve8LWnI5R-0Jh6VMaz6iwGJ1LnZR6LObJmQGuimuMpNm85qjvgu-VXyatZpBi-y92ctqw8UhrMUIGeyBRIRkfF1BFXYhIMeKDBfnHxL1W2WPmdFI8RSMCX2zYokJrR2AYqJOLKGhUupL3WJWjembgP2yMGuqFTpDgA2GeF2Iia_1fl1filc0ovBNR5LCyz3yqOZmTODMyi32s2qQVKi6Ng66EbqO_OEgtZSfbdVTQ8_FWVeHB8wETkYioxj0" alt="Bali"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-4">
+        <h3 class="text-white font-bold">Bali, Indonesia</h3>
+        <div class="flex items-center justify-between">
+          <p class="text-white/80 text-xs">Nature retreats.</p>
+          <span id="w-bali" class="text-white/90 text-xs font-semibold bg-white/20 px-2 py-0.5 rounded-full">…°C</span>
+        </div>
       </div>
     </div>
+    <!-- Dubai -->
+    <div class="city-card md:col-span-2 relative rounded-xl overflow-hidden shadow cursor-pointer h-56 md:h-full" onclick="window.location='city-search.html'">
+      <img class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIybabTL3VSlyszOZQ3c0mkOUk3P6xbyahCSrPjXTGm3q7VkdlqOYQDd-LugHGKG6YfMiSA_SKZgmPu4F0lHw8GM4K8jSTfWk6Y0uYKrgHuJAKmolAM_62qjXtLHVKU1qLkPPYLoxCrtfae4MP0G29F6QIC8DRvjw2tWNNtbWjpf87F1pyBrRcMjzNvLye3UK6NEZX6c3LhW07Xvhh8WXwbOWun3ziLI2afpX50hyYKX1NII1VKXdd31TgGtW3hELPg1o2LeVl-ZM" alt="Dubai"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-4">
+        <h3 class="text-white text-xl font-bold">Dubai, UAE</h3>
+        <div class="flex items-center justify-between">
+          <p class="text-white/80 text-sm">Modern luxury.</p>
+          <span id="w-dubai" class="text-white/90 text-sm font-semibold bg-white/20 px-2 py-0.5 rounded-full">…°C</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  </main>
+<!-- YOUR TRIPS -->
+<section class="bg-surface-container-low py-12">
+  <div class="max-w-6xl mx-auto px-8">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-primary text-3xl font-bold">Your Journey History</h2>
+      <a href="trips.html" class="text-secondary font-bold text-sm flex items-center gap-1 hover:underline">
+        All Trips <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </a>
+    </div>
+    <div id="trips-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    <div id="no-trips" class="hidden text-center py-16">
+      <div class="text-6xl mb-4">✈️</div>
+      <div class="text-xl font-bold text-primary mb-2">No trips yet</div>
+      <p class="text-on-surface-variant mb-6">Start planning your first adventure!</p>
+      <a href="create-trip.html" class="bg-primary text-white px-8 py-3 rounded-lg font-bold inline-block hover:opacity-90">Create Trip</a>
+    </div>
+  </div>
+</section>
 
-  <div id="toast-container"></div>
+<!-- CTA -->
+<section class="max-w-6xl mx-auto px-8 py-12">
+  <div class="bg-primary-container rounded-xl p-10 flex flex-col md:flex-row items-center justify-between gap-8">
+    <div class="max-w-xl">
+      <h2 class="text-white text-3xl font-bold mb-2">Ready for your next adventure?</h2>
+      <p class="text-on-primary-container">Join travellers who trust Traveloop for seamless planning and exploration.</p>
+    </div>
+    <div class="flex gap-4 w-full md:w-auto">
+      <a href="create-trip.html" class="flex-1 md:flex-none px-8 py-3 bg-secondary text-white rounded-lg font-bold text-sm hover:opacity-90 text-center">Create New Trip</a>
+      <a href="city-search.html" class="flex-1 md:flex-none px-8 py-3 bg-transparent border border-white/40 text-white rounded-lg font-bold text-sm hover:bg-white/10 text-center">Explore Cities</a>
+    </div>
+  </div>
+</section>
+</main>
 
-  <script src="js/db.js"></script>
-  <script src="js/cities-data.js"></script>
-  <script src="js/activities-data.js"></script>
-  <script src="js/utils.js"></script>
-  <script>
-    const TIPS = [
-      'Book accommodation at least 3 months in advance for European summer travel to get the best rates.',
-      'Always purchase travel insurance — it costs less than 5% of your trip budget and covers everything.',
-      'Use local SIM cards instead of international roaming — save up to 90% on data costs abroad.',
-      'Pack a power bank — museums and airports drain phone batteries faster than you expect.',
-      'Learn 5 words in the local language: hello, please, thank you, excuse me, and where. Locals love it.',
-      'Book airport-to-hotel transfers in advance. Arriving exhausted in an unfamiliar city is rough.',
-      'Keep a digital and printed copy of all travel documents in your email and a folder.',
-      'Visit major tourist attractions first thing in the morning or late afternoon to avoid crowds.',
-    ];
+<!-- FOOTER -->
+<footer class="bg-surface-container-highest py-12">
+  <div class="max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div>
+      <span class="text-primary font-bold text-lg block mb-3">Traveloop</span>
+      <p class="text-on-surface-variant text-sm">Plan, track, and share your adventures with precision and ease.</p>
+    </div>
+    <div>
+      <h4 class="text-primary font-bold text-xs uppercase tracking-wider mb-3">Navigate</h4>
+      <ul class="flex flex-col gap-2 text-sm text-on-surface-variant">
+        <li><a href="dashboard.html" class="hover:text-primary">Dashboard</a></li>
+        <li><a href="trips.html" class="hover:text-primary">My Trips</a></li>
+        <li><a href="city-search.html" class="hover:text-primary">Explore</a></li>
+        <li><a href="community.html" class="hover:text-primary">Community</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-primary font-bold text-xs uppercase tracking-wider mb-3">Tools</h4>
+      <ul class="flex flex-col gap-2 text-sm text-on-surface-variant">
+        <li><a href="packing.html" class="hover:text-primary">Packing List</a></li>
+        <li><a href="notes.html" class="hover:text-primary">Notes & Journal</a></li>
+        <li><a href="preferences.html" class="hover:text-primary">Travel Quiz</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-primary font-bold text-xs uppercase tracking-wider mb-3">Stay Updated</h4>
+      <div class="flex gap-2">
+        <input class="bg-white border border-outline-variant rounded-lg px-3 py-2 text-sm flex-1 focus:border-primary outline-none" placeholder="Email address" type="email"/>
+        <button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-xs">Join</button>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto px-8 mt-8 pt-6 border-t border-outline-variant flex justify-between items-center">
+    <span class="text-on-surface-variant text-sm">© 2025 Traveloop. All rights reserved.</span>
+    <div class="flex gap-3">
+      <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-secondary">public</span>
+      <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-secondary">rss_feed</span>
+    </div>
+  </div>
+</footer>
 
-    const user = Session.require();
-    renderNavbar(user);
+<!-- FAB (mobile) -->
+<a href="create-trip.html" class="fixed bottom-6 right-6 w-14 h-14 bg-secondary text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all md:hidden z-50">
+  <span class="material-symbols-outlined">add</span>
+</a>
 
-    function loadDashboard() {
-      // Greeting
-      const hour = new Date().getHours();
-      const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-      const emojis = ['✈️','🌍','🗺️','🧳','🌅'];
-      document.getElementById('hero-greeting').textContent = `${greeting}, ${user.name.split(' ')[0]}!`;
-      document.getElementById('hero-emoji').textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      document.getElementById('travel-tip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
 
-      // Load trips
-      const trips = Trips.forUser(user.id);
-      const upcoming = trips.filter(t => tripStatus(t.startDate, t.endDate) !== 'past');
-      document.getElementById('upcoming-count').textContent = upcoming.length;
+// Render navbar using existing util
+renderNavbar(user);
 
-      // Stats
-      let countries = new Set(), totalDays = 0, allCities = new Set();
-      trips.forEach(trip => {
-        totalDays += daysBetween(trip.startDate, trip.endDate);
-        const stops = Stops.forTrip(trip.id);
-        stops.forEach(s => { countries.add(s.country); allCities.add(s.cityName); });
-      });
-      document.getElementById('stat-total-trips').textContent = trips.length;
-      document.getElementById('stat-countries').textContent = countries.size;
-      document.getElementById('stat-days').textContent = totalDays;
-      document.getElementById('stat-cities').textContent = allCities.size;
+// Greeting
+const hr = new Date().getHours();
+const greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+document.getElementById('hero-greeting').textContent = `${greet}, ${user.name.split(' ')[0]}! ✈️`;
 
-      // Render recent trips (max 3)
-      const container = document.getElementById('upcoming-trips');
-      const emptyEl   = document.getElementById('trips-empty');
-      const displayed = trips.slice(0, 3);
-      if (displayed.length === 0) {
-        emptyEl.style.display = '';
-      } else {
-        emptyEl.style.display = 'none';
-        container.innerHTML = displayed.map(trip => {
-          const stops = Stops.forTrip(trip.id);
-          return renderTripCard(trip, stops);
-        }).join('');
-      }
+// Stats
+const trips   = Trips.forUser(user.id);
+let countries = new Set(), totalDays = 0, totalActs = 0;
+trips.forEach(t => {
+  totalDays += daysBetween(t.startDate, t.endDate);
+  Stops.forTrip(t.id).forEach(s => {
+    countries.add(s.country);
+    totalActs += Activities.forStop(s.id).length;
+  });
+});
+document.getElementById('st-trips').textContent     = trips.length;
+document.getElementById('st-countries').textContent = countries.size;
+document.getElementById('st-days').textContent      = totalDays;
+document.getElementById('st-acts').textContent      = totalActs;
 
-      // Recommended destinations (popular cities)
-      const popular = CITIES.filter(c => c.popularity >= 5).slice(0, 8);
-      document.getElementById('destinations-grid').innerHTML = popular.map(city => `
-        <div class="insp-card animate-in" onclick="window.location='city-search.html?city=${city.id}'">
-          <div class="insp-card-img">
-            <div class="insp-card-img-bg" style="background:${getCityGradient(city.id)};"></div>
-            <span>${city.emoji}</span>
+// Trip cards
+const grid   = document.getElementById('trips-grid');
+const noTrip = document.getElementById('no-trips');
+const recent = trips.slice(0,3);
+if (!recent.length) { noTrip.classList.remove('hidden'); }
+else {
+  const GRADS = ['linear-gradient(135deg,#1a4a8a,#3B82F6)','linear-gradient(135deg,#7c2d12,#ea580c)','linear-gradient(135deg,#14532d,#16a34a)','linear-gradient(135deg,#4c1d95,#7c3aed)'];
+  const hashGrad = id => GRADS[(id||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0)%GRADS.length];
+  const status = t => {
+    const now=new Date(); const s=new Date(t.startDate); const e=new Date(t.endDate);
+    if(now<s) return {label:'Upcoming',cls:'bg-blue-100 text-blue-700'};
+    if(now>e) return {label:'Completed',cls:'bg-green-100 text-green-700'};
+    return {label:'Ongoing',cls:'bg-orange-100 text-orange-700'};
+  };
+  grid.innerHTML = recent.map(t => {
+    const st   = status(t);
+    const stops = Stops.forTrip(t.id);
+    const acts  = stops.flatMap(s => Activities.forStop(s.id));
+    return `
+    <div class="trip-card bg-white rounded-xl overflow-hidden shadow border border-outline-variant transition-colors cursor-pointer" onclick="window.location='itinerary.html?trip=${t.id}'">
+      <div class="h-48 relative flex items-center justify-center" style="background:${hashGrad(t.id)}">
+        <span style="font-size:4rem;">${t.coverEmoji||'✈️'}</span>
+        <div class="absolute top-3 right-3 ${st.cls} px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">${st.label==='Completed'?'check_circle':st.label==='Ongoing'?'timer':'schedule'}</span>
+          ${st.label}
+        </div>
+      </div>
+      <div class="p-5">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-primary font-bold text-lg">${t.name}</h3>
+          <span class="text-on-surface-variant text-xs">${formatDate(t.startDate,{month:'short',year:'numeric'})}</span>
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+          <div class="flex items-center gap-1 text-sm text-on-surface-variant">
+            <span class="material-symbols-outlined text-[16px]">location_on</span>${stops.length} ${stops.length===1?'stop':'stops'}
           </div>
-          <div class="insp-card-body">
-            <div class="insp-card-name">${city.name}</div>
-            <div class="insp-card-country">${city.country}</div>
-            <div class="insp-card-meta">
-              <span class="stars">${'★'.repeat(city.popularity)}${'☆'.repeat(5 - city.popularity)}</span>
-              <span class="text-gold body-xs">$${'$'.repeat(city.costIndex - 1)}</span>
-            </div>
+          <div class="flex items-center gap-1 text-sm text-on-surface-variant">
+            <span class="material-symbols-outlined text-[16px]">directions_run</span>${acts.length} activities
           </div>
         </div>
-      `).join('');
-    }
+        <div class="flex gap-2">
+          <a href="itinerary.html?trip=${t.id}" class="flex-1 py-2 border border-outline-variant rounded-lg text-primary font-bold text-xs text-center hover:bg-primary hover:text-white transition-all">Edit Trip</a>
+          <a href="budget.html?trip=${t.id}" class="flex-1 py-2 bg-secondary text-white rounded-lg font-bold text-xs text-center hover:opacity-90">Budget</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-    loadDashboard();
-  </script>
+// Search
+function doSearch() {
+  const dest = document.getElementById('search-dest').value.trim();
+  const date = document.getElementById('search-date').value.trim();
+  if (dest) window.location = `city-search.html?q=${encodeURIComponent(dest)}`;
+  else window.location = 'city-search.html';
+}
+document.getElementById('search-dest').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
+
+// Live weather via Open-Meteo (free, no key needed)
+const WEATHER_CITIES = [
+  { id:'paris', lat:48.85, lon:2.35 },
+  { id:'tokyo', lat:35.68, lon:139.69 },
+  { id:'bali',  lat:-8.34, lon:115.09 },
+  { id:'dubai', lat:25.20, lon:55.27 },
+];
+WEATHER_CITIES.forEach(c => {
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true`)
+    .then(r => r.json())
+    .then(d => {
+      const el = document.getElementById('w-'+c.id);
+      if (el && d.current_weather) el.textContent = d.current_weather.temperature + '°C';
+    })
+    .catch(() => {});
+});
+</script>
 </body>
 </html>
