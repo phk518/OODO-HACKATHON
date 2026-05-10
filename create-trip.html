@@ -1,363 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traveloop — Create New Trip</title>
-  <meta name="description"
-    content="Start planning your next adventure — name your trip, set dates, and add a description." />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/gsap-3d.css" />
   <style>
-    .create-layout {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: var(--space-xl);
-      align-items: start;
+    .create-trip-wrapper { max-width: 800px; margin-inline: auto; }
+    .hero-section { margin-bottom: var(--space-2xl); }
+    
+    .cover-upload {
+      width: 100%; height: 240px; border-radius: var(--radius-xl);
+      background: var(--bg-card); border: 2px dashed var(--border);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: var(--space-md); cursor: pointer; transition: all 0.2s var(--ease);
+      margin-bottom: var(--space-2xl); position: relative; overflow: hidden;
     }
+    .cover-upload:hover { border-color: var(--border-primary); background: var(--bg-elevated); }
+    .cover-upload-icon { font-size: 2.5rem; color: var(--text-muted); }
+    .cover-badge { position: absolute; top: 16px; right: 16px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 4px; }
 
-    .create-form-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-xl);
-    }
+    .form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-2xl); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
+    .col-span-2 { grid-column: span 2; }
+    
+    .toggle-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-lg); display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-xl); }
+    .toggle-switch { width: 44px; height: 22px; background: var(--border); border-radius: var(--radius-full); position: relative; cursor: pointer; transition: background 0.3s; }
+    .toggle-switch::after { content: ''; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.3s; }
+    .toggle-switch.active { background: var(--primary); }
+    .toggle-switch.active::after { transform: translateX(22px); }
 
-    .emoji-picker {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: var(--space-md);
-      background: var(--bg-elevated);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-    }
+    .inspiration-section { margin-top: var(--space-3xl); }
+    .insp-bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 180px); gap: var(--space-md); }
+    .insp-bento-item { border-radius: var(--radius-xl); overflow: hidden; position: relative; cursor: pointer; }
+    .insp-bento-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+    .insp-bento-item:hover img { transform: scale(1.1); }
+    .insp-bento-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,14,26,0.8) 0%, transparent 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-lg); }
 
-    .emoji-opt {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: all var(--duration-fast) var(--ease);
-      border: 2px solid transparent;
-    }
-
-    .emoji-opt:hover {
-      background: var(--bg-surface);
-    }
-
-    .emoji-opt.selected {
-      border-color: var(--primary);
-      background: var(--primary-dim);
-    }
-
-    /* Live preview card */
-    .preview-card {
-      position: sticky;
-      top: calc(var(--navbar-h) + var(--space-lg));
-    }
-
-    .preview-card-inner {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-    }
-
-    .preview-cover {
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 5rem;
-      position: relative;
-    }
-
-    .preview-cover-bg {
-      position: absolute;
-      inset: 0;
-      transition: background var(--duration-slow) var(--ease);
-    }
-
-    .preview-cover span {
-      position: relative;
-      z-index: 1;
-    }
-
-    .preview-body {
-      padding: var(--space-lg);
-    }
-
-    .preview-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .preview-desc {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-bottom: var(--space-md);
-    }
-
-    .preview-meta {
-      display: flex;
-      gap: var(--space-md);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .preview-meta span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-md);
-    }
-
-    .step-label {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: var(--space-lg);
-      padding-bottom: var(--space-sm);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .step-num {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--primary-dim);
-      border: 1px solid var(--border-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: var(--primary);
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .col-span-2 { grid-column: span 1; }
+      .insp-bento { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     }
   </style>
 </head>
-
 <body class="bg-dots">
-  <div class="loading-screen">
-    <div class="loading-logo">✈</div>
-    <div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div>
-    <div class="loading-bar">
-      <div class="loading-bar-fill"></div>
-    </div>
-  </div>
+  <div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
   <canvas id="particles-canvas"></canvas>
   <header id="main-navbar" class="navbar"></header>
+
   <main class="page-wrapper">
-    <div class="page-header animate-in">
-      <div style="display:flex;align-items:center;gap:var(--space-sm);margin-bottom:4px;">
-        <a href="trips.html" class="btn btn-ghost btn-sm">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          My Trips
-        </a>
+    <div class="create-trip-wrapper">
+      <section class="hero-section animate-in">
+        <h1 class="page-title">Create New Trip</h1>
+        <p class="page-subtitle">Where is your next adventure taking you? Define the soul of your journey.</p>
+      </section>
+
+      <div class="cover-upload animate-in stagger-1" onclick="showToast('Premium cover photos coming soon!','info')">
+        <div class="cover-badge">
+          <span class="material-symbols-outlined" style="font-size:12px; font-variation-settings: 'FILL' 1;">auto_awesome</span>
+          RECOMMENDED
+        </div>
+        <span class="material-symbols-outlined cover-upload-icon">add_a_photo</span>
+        <div style="font-weight:600; font-size:0.9rem;">Add a Cover Photo</div>
+        <p style="font-size:0.75rem; color:var(--text-muted);">High-quality JPG or PNG, max 10MB</p>
       </div>
-      <h1 class="page-title">Plan a New Trip</h1>
-      <p class="page-subtitle">Fill in the details and start building your perfect itinerary.</p>
-    </div>
 
-    <div class="create-layout animate-in stagger-1">
-      <!-- Form -->
-      <div class="create-form-card">
+      <div class="form-card animate-in stagger-2">
         <form id="create-trip-form" onsubmit="handleCreate(event)">
-          <!-- Step 1: Basic Info -->
-          <div class="step-label">
-            <div class="step-num">1</div> Trip Details
-          </div>
-          <div style="display:flex;flex-direction:column;gap:var(--space-md);margin-bottom:var(--space-xl);">
-            <div class="form-group">
-              <label class="form-label" for="trip-name">Trip Name *</label>
-              <input type="text" id="trip-name" class="form-input" placeholder="e.g. European Summer 2025" required
-                oninput="updatePreview()" maxlength="60" />
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="trip-name">Trip Name</label>
+              <input type="text" id="trip-name" class="form-input" placeholder="e.g., Amalfi Coast Summer Escape" required />
             </div>
             <div class="form-group">
-              <label class="form-label" for="trip-desc">Description</label>
-              <textarea id="trip-desc" class="form-textarea" placeholder="What's this trip about? Dream big!" rows="3"
-                oninput="updatePreview()"></textarea>
-            </div>
-          </div>
-
-          <!-- Step 2: Dates -->
-          <div class="step-label">
-            <div class="step-num">2</div> Travel Dates
-          </div>
-          <div class="form-row" style="margin-bottom:var(--space-xl);">
-            <div class="form-group">
-              <label class="form-label" for="trip-start">Start Date *</label>
-              <input type="date" id="trip-start" class="form-input" required oninput="updatePreview()" />
+              <label class="form-label" for="trip-start">Start Date</label>
+              <input type="date" id="trip-start" class="form-input" required />
             </div>
             <div class="form-group">
-              <label class="form-label" for="trip-end">End Date *</label>
-              <input type="date" id="trip-end" class="form-input" required oninput="updatePreview()" />
+              <label class="form-label" for="trip-end">End Date</label>
+              <input type="date" id="trip-end" class="form-input" required />
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="trip-desc">Trip Description</label>
+              <textarea id="trip-desc" class="form-textarea" placeholder="What's the vibe of this trip? Mention key highlights..." rows="4"></textarea>
             </div>
           </div>
 
-          <!-- Step 3: Emoji Cover -->
-          <div class="step-label">
-            <div class="step-num">3</div> Choose a Cover Emoji
-          </div>
-          <div class="emoji-picker" style="margin-bottom:var(--space-xl);">
-            <div class="emoji-opt selected" data-emoji="✈️" onclick="selectEmoji('✈️',this)">✈️</div>
-            <div class="emoji-opt" data-emoji="🌍" onclick="selectEmoji('🌍',this)">🌍</div>
-            <div class="emoji-opt" data-emoji="🏖️" onclick="selectEmoji('🏖️',this)">🏖️</div>
-            <div class="emoji-opt" data-emoji="🏔️" onclick="selectEmoji('🏔️',this)">🏔️</div>
-            <div class="emoji-opt" data-emoji="🏛️" onclick="selectEmoji('🏛️',this)">🏛️</div>
-            <div class="emoji-opt" data-emoji="🗼" onclick="selectEmoji('🗼',this)">🗼</div>
-            <div class="emoji-opt" data-emoji="🌸" onclick="selectEmoji('🌸',this)">🌸</div>
-            <div class="emoji-opt" data-emoji="🎌" onclick="selectEmoji('🎌',this)">🎌</div>
-            <div class="emoji-opt" data-emoji="🌴" onclick="selectEmoji('🌴',this)">🌴</div>
-            <div class="emoji-opt" data-emoji="🎿" onclick="selectEmoji('🎿',this)">🎿</div>
-            <div class="emoji-opt" data-emoji="🚂" onclick="selectEmoji('🚂',this)">🚂</div>
-            <div class="emoji-opt" data-emoji="🚢" onclick="selectEmoji('🚢',this)">🚢</div>
-            <div class="emoji-opt" data-emoji="🏕️" onclick="selectEmoji('🏕️',this)">🏕️</div>
-            <div class="emoji-opt" data-emoji="🎭" onclick="selectEmoji('🎭',this)">🎭</div>
-            <div class="emoji-opt" data-emoji="🎶" onclick="selectEmoji('🎶',this)">🎶</div>
-            <div class="emoji-opt" data-emoji="🍜" onclick="selectEmoji('🍜',this)">🍜</div>
+          <div class="toggle-card">
+            <div style="display:flex; gap:var(--space-md); align-items:center;">
+              <div style="width:40px; height:40px; background:var(--primary-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary);">
+                <span class="material-symbols-outlined">group_add</span>
+              </div>
+              <div>
+                <div style="font-weight:700; font-size:0.9rem;">Collaborative Trip</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary);">Allow friends to edit and add to the itinerary.</div>
+              </div>
+            </div>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
           </div>
 
-          <div id="form-error" class="error-box" style="display:none;margin-bottom:var(--space-md);"></div>
+          <div id="form-error" class="error-box" style="display:none; margin-top:var(--space-md);"></div>
 
-          <div style="display:flex;gap:var(--space-sm);">
-            <a href="trips.html" class="btn btn-ghost" style="flex:0 0 auto;">Cancel</a>
-            <button type="submit" class="btn btn-accent btn-lg" style="flex:1;justify-content:center;" id="create-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              Create Trip &amp; Build Itinerary
+          <div style="display:flex; gap:var(--space-md); margin-top:var(--space-2xl);">
+            <button type="submit" class="btn btn-primary btn-lg" style="flex:1; justify-content:center;" id="create-btn">
+              <span class="material-symbols-outlined">save</span>
+              Save Trip
             </button>
+            <a href="trips.html" class="btn btn-outline btn-lg" style="flex:1; justify-content:center;">Discard Draft</a>
           </div>
         </form>
       </div>
 
-      <!-- Live Preview -->
-      <div class="preview-card animate-in stagger-2">
-        <div
-          style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;padding-left:4px;">
-          Live Preview</div>
-        <div class="preview-card-inner">
-          <div class="preview-cover">
-            <div class="preview-cover-bg" id="preview-bg" style="background:linear-gradient(135deg,#1a4a8a,#3B82F6);">
+      <section class="inspiration-section animate-in stagger-3">
+        <h3 class="section-title" style="margin-bottom:var(--space-xl);">Need Inspiration?</h3>
+        <div class="insp-bento">
+          <div class="insp-bento-item" style="grid-column: span 2;">
+            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800" />
+            <div class="insp-bento-overlay">
+              <span style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:var(--text-muted);">ADVENTURE</span>
+              <h4 style="font-family:var(--font-serif); font-size:1.25rem;">Swiss Alps</h4>
             </div>
-            <span id="preview-emoji">✈️</span>
           </div>
-          <div class="preview-body">
-            <div class="preview-title" id="preview-title">Your Trip Name</div>
-            <div class="preview-desc" id="preview-desc">Your trip description will appear here...</div>
-            <div class="preview-meta">
-              <span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-                <span id="preview-dates">Select dates</span>
-              </span>
-              <span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                <span id="preview-days">— days</span>
-              </span>
+          <div class="insp-bento-item" style="grid-row: span 2;">
+            <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600" />
+            <div class="insp-bento-overlay">
+              <span style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:var(--text-muted);">RELAXATION</span>
+              <h4 style="font-family:var(--font-serif); font-size:1.25rem;">Bali Retreat</h4>
+            </div>
+          </div>
+          <div class="insp-bento-item" style="grid-column: span 2;">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800" />
+            <div class="insp-bento-overlay">
+              <span style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:var(--text-muted);">CULTURE</span>
+              <h4 style="font-family:var(--font-serif); font-size:1.25rem;">Parisian Nights</h4>
             </div>
           </div>
         </div>
-
-        <div class="card mt-md" style="padding:var(--space-md);">
-          <div style="font-size:0.78rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">✨ Next Steps
-            After Creating</div>
-          <div style="font-size:0.78rem;color:var(--text-muted);display:flex;flex-direction:column;gap:4px;">
-            <div>1. Add cities & dates to your itinerary</div>
-            <div>2. Discover and add activities</div>
-            <div>3. Set your budget</div>
-            <div>4. Share your plan!</div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   </main>
 
-  <div id="toast-container"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="js/db.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/gsap-3d.js"></script>
   <script>
     const user = Session.require();
     renderNavbar(user);
-
-    let selectedEmoji = '✈️';
-    const GRADIENTS = [
-      'linear-gradient(135deg,#1a4a8a,#3B82F6)',
-      'linear-gradient(135deg,#7c2d12,#ea580c)',
-      'linear-gradient(135deg,#14532d,#16a34a)',
-      'linear-gradient(135deg,#4c1d95,#7c3aed)',
-      'linear-gradient(135deg,#831843,#db2777)',
-    ];
-    let gradIdx = 0;
-
-    function selectEmoji(emoji, el) {
-      selectedEmoji = emoji;
-      document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
-      el.classList.add('selected');
-      document.getElementById('preview-emoji').textContent = emoji;
-      gradIdx = (gradIdx + 1) % GRADIENTS.length;
-      document.getElementById('preview-bg').style.background = GRADIENTS[gradIdx];
-      updatePreview();
-    }
-
-    function updatePreview() {
-      const name = document.getElementById('trip-name').value || 'Your Trip Name';
-      const desc = document.getElementById('trip-desc').value || 'Your trip description will appear here...';
-      const start = document.getElementById('trip-start').value;
-      const end = document.getElementById('trip-end').value;
-
-      document.getElementById('preview-title').textContent = name;
-      document.getElementById('preview-desc').textContent = desc;
-
-      if (start && end) {
-        const days = daysBetween(start, end);
-        document.getElementById('preview-dates').textContent = `${formatDate(start, { month: 'short', day: 'numeric' })} — ${formatDate(end, { month: 'short', day: 'numeric', year: 'numeric' })}`;
-        document.getElementById('preview-days').textContent = `${days} day${days !== 1 ? 's' : ''}`;
-      } else {
-        document.getElementById('preview-dates').textContent = 'Select dates';
-        document.getElementById('preview-days').textContent = '— days';
-      }
-    }
 
     function handleCreate(e) {
       e.preventDefault();
       const errEl = document.getElementById('form-error');
       errEl.style.display = 'none';
 
-      const name = document.getElementById('trip-name').value.trim();
-      const desc = document.getElementById('trip-desc').value.trim();
+      const name  = document.getElementById('trip-name').value.trim();
+      const desc  = document.getElementById('trip-desc').value.trim();
       const start = document.getElementById('trip-start').value;
-      const end = document.getElementById('trip-end').value;
+      const end   = document.getElementById('trip-end').value;
 
       if (new Date(end) < new Date(start)) {
         errEl.textContent = 'End date must be after start date.';
@@ -370,8 +172,15 @@
       btn.innerHTML = '<span class="spinner"></span> Creating...';
 
       setTimeout(() => {
-        const trip = Trips.create({ userId: user.id, name, description: desc, startDate: start, endDate: end, coverEmoji: selectedEmoji });
-        showToast('Trip created! Now add your destinations. 🗺️', 'success');
+        const trip = Trips.create({ 
+          userId: user.id, 
+          name, 
+          description: desc, 
+          startDate: start, 
+          endDate: end, 
+          coverEmoji: '✈️' // Default emoji for now
+        });
+        showToast('Trip created! Start building your itinerary. 🗺️', 'success');
         setTimeout(() => { window.location.href = `itinerary.html?trip=${trip.id}`; }, 700);
       }, 500);
     }
@@ -381,10 +190,7 @@
     const inMonth = new Date(today); inMonth.setMonth(today.getMonth() + 1);
     const inMonthPlus = new Date(inMonth); inMonthPlus.setDate(inMonth.getDate() + 7);
     document.getElementById('trip-start').value = inMonth.toISOString().split('T')[0];
-    document.getElementById('trip-end').value = inMonthPlus.toISOString().split('T')[0];
-    updatePreview();
+    document.getElementById('trip-end').value   = inMonthPlus.toISOString().split('T')[0];
   </script>
-  <script src="js/gsap-3d.js"></script>
 </body>
-
 </html>
