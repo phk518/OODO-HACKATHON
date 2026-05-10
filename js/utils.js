@@ -85,7 +85,7 @@ function setActiveNav() {
     }
   });
 }
-document.addEventListener('DOMContentLoaded', setActiveNav);
+// setActiveNav is called within renderNavbar to ensure correct highlighting after dynamic injection
 
 /* ── Render Navbar ───────────────────────────────────────────── */
 function renderNavbar(user) {

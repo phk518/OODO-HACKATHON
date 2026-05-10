@@ -1,365 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traveloop — Itinerary Builder</title>
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/gsap-3d.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Design Your Adventure</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/gsap-3d.css"/>
   <style>
-    .builder-layout { display:grid; grid-template-columns:300px 1fr; gap:0; min-height:calc(100vh - var(--navbar-h)); }
-    .sidebar { background:var(--bg-surface); border-right:1px solid var(--border); padding:var(--space-lg); display:flex; flex-direction:column; gap:var(--space-md); overflow-y:auto; }
-    .sidebar-title { font-size:0.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
-    .main-area { padding:var(--space-xl); overflow-y:auto; }
-    .stop-list { display:flex; flex-direction:column; gap:var(--space-sm); }
-    .act-block { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-md); display:flex; align-items:center; gap:var(--space-md); transition:all .2s; }
-    .act-block:hover { border-color:var(--border-hover); }
-    .act-emoji { width:40px; height:40px; background:var(--bg-elevated); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
-    .act-info { flex:1; min-width:0; }
-    .act-name { font-weight:600; font-size:.875rem; }
-    .act-meta { font-size:.75rem; color:var(--text-secondary); margin-top:2px; }
-    .stop-header { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-md) var(--space-lg); margin-bottom:var(--space-md); display:flex; align-items:center; justify-content:space-between; }
-    .stop-header-left { display:flex; align-items:center; gap:var(--space-sm); }
-    .stop-flag { font-size:1.8rem; }
-    .stop-city { font-size:1.1rem; font-weight:700; }
-    .stop-dates { font-size:.8rem; color:var(--text-secondary); }
-    .activities-area { display:flex; flex-direction:column; gap:var(--space-sm); }
-    .trip-meta-bar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-md) var(--space-lg); display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-lg); }
-    .no-stop { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; gap:var(--space-md); text-align:center; }
+    .builder-grid { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-xl); align-items: start; }
+    
+    .section-stack { display: flex; flex-direction: column; gap: var(--space-lg); }
+    
+    .section-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; transition: all 0.2s; }
+    .section-card-header { padding: var(--space-md) var(--space-xl); display: flex; justify-content: space-between; align-items: center; background: var(--bg-elevated); }
+    .section-card-body { padding: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-lg); }
+    
+    .add-section-btn { width: 100%; border: 2px dashed var(--border); border-radius: var(--radius-xl); padding: var(--space-2xl); display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+    .add-section-btn:hover { border-color: var(--primary); background: var(--bg-surface); color: var(--text-primary); }
+    
+    .sidebar-stack { display: flex; flex-direction: column; gap: var(--space-xl); position: sticky; top: calc(var(--navbar-h) + 20px); }
+    
+    .tip-box { background: var(--primary-dim); border: 1px solid var(--border-primary); border-radius: var(--radius-xl); padding: var(--space-xl); color: var(--primary); }
+    .tip-box ul { list-style: disc; padding-left: 20px; font-size: 0.8rem; margin-top: 12px; }
+
+    .map-preview { height: 180px; border-radius: var(--radius-xl); overflow: hidden; position: relative; border: 1px solid var(--border); }
+    .map-badge { position: absolute; bottom: 12px; left: 12px; display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 99px; font-size: 0.7rem; color: white; }
+
+    @media (max-width: 1024px) {
+      .builder-grid { grid-template-columns: 1fr; }
+      .sidebar-stack { position: static; }
+    }
   </style>
 </head>
 <body class="bg-dots">
-<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
-<canvas id="particles-canvas"></canvas>
-<header id="main-navbar" class="navbar"></header>
+  <div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
+  <canvas id="particles-canvas"></canvas>
+  <header id="main-navbar" class="navbar"></header>
 
-<!-- City Search Modal -->
-<div class="modal-overlay" id="city-modal">
-  <div class="modal" style="max-width:600px;">
-    <div class="modal-header">
-      <div class="modal-title">Add a City Stop</div>
-      <button class="modal-close" onclick="closeModal('city-modal')">✕</button>
-    </div>
-    <div class="search-bar" style="margin-bottom:var(--space-md);">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="city-search-input" placeholder="Search cities…" oninput="renderCityResults()" />
-    </div>
-    <div id="city-results" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm);max-height:360px;overflow-y:auto;"></div>
-  </div>
-</div>
-
-<!-- Activity Modal -->
-<div class="modal-overlay" id="act-modal">
-  <div class="modal" style="max-width:600px;">
-    <div class="modal-header">
-      <div class="modal-title">Add Activity</div>
-      <button class="modal-close" onclick="closeModal('act-modal')">✕</button>
-    </div>
-    <div class="filter-chips" style="margin-bottom:var(--space-md);" id="cat-filters"></div>
-    <div id="act-results" style="display:flex;flex-direction:column;gap:var(--space-sm);max-height:400px;overflow-y:auto;"></div>
-  </div>
-</div>
-
-<!-- Stop Date Modal -->
-<div class="modal-overlay" id="stop-date-modal">
-  <div class="modal" style="max-width:420px;">
-    <div class="modal-header">
-      <div class="modal-title">Edit Stop Dates</div>
-      <button class="modal-close" onclick="closeModal('stop-date-modal')">✕</button>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:var(--space-md);">
-      <div class="form-group"><label class="form-label">Arrival Date</label><input type="date" id="stop-arrive" class="form-input"/></div>
-      <div class="form-group"><label class="form-label">Departure Date</label><input type="date" id="stop-depart" class="form-input"/></div>
-      <button class="btn btn-primary btn-full" onclick="saveStopDates()">Save Dates</button>
-    </div>
-  </div>
-</div>
-
-<div class="builder-layout">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div>
-      <div class="sidebar-title" style="margin-bottom:var(--space-sm);">Trip</div>
-      <div id="trip-name-sidebar" style="font-weight:700;font-size:1rem;"></div>
-      <div id="trip-dates-sidebar" style="font-size:.8rem;color:var(--text-secondary);margin-top:2px;"></div>
-    </div>
-    <hr class="divider" style="margin:0"/>
-    <div class="sidebar-title">Stops <span id="stop-count" style="color:var(--text-primary);font-style:normal;">(0)</span></div>
-    <div class="stop-list" id="stop-list"></div>
-    <button class="btn btn-outline-primary btn-full" onclick="openModal('city-modal')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add Stop
-    </button>
-    <hr class="divider" style="margin:0"/>
-    <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
-      <a id="view-link"   href="#" class="btn btn-ghost btn-sm btn-full">👁 View Itinerary</a>
-      <a id="budget-link" href="#" class="btn btn-ghost btn-sm btn-full">💰 Budget</a>
-      <a id="packing-link" href="#" class="btn btn-ghost btn-sm btn-full">🧳 Packing List</a>
-      <a id="notes-link" href="#" class="btn btn-ghost btn-sm btn-full">📝 Notes</a>
-      <a id="share-link"  href="#" class="btn btn-ghost btn-sm btn-full">🔗 Share Trip</a>
-    </div>
-  </aside>
-
-  <!-- Main -->
-  <main class="main-area">
-    <div class="trip-meta-bar">
-      <div id="main-trip-name" style="font-weight:700;font-size:1.1rem;"></div>
-      <div style="display:flex;gap:var(--space-sm);">
-        <span class="badge badge-primary" id="meta-stops">0 stops</span>
-        <span class="badge badge-gold"    id="meta-days">0 days</span>
-        <span class="badge badge-success" id="meta-cost">$0 est.</span>
+  <main class="page-wrapper">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-2xl animate-in">
+      <div>
+        <nav class="flex items-center gap-xs text-muted label-sm mb-xs">
+          <a href="trips.html" class="hover:text-primary">My Trips</a>
+          <span class="material-symbols-outlined" style="font-size:14px;">chevron_right</span>
+          <span class="text-primary font-bold">Build Itinerary</span>
+        </nav>
+        <h1 class="page-title">Design Your Adventure</h1>
+        <p class="page-subtitle">Structure your trip into manageable sections, activities, and milestones.</p>
+      </div>
+      <div class="flex gap-md">
+        <button class="btn btn-ghost" onclick="showToast('Draft saved!','info')">Save Draft</button>
+        <button class="btn btn-accent" onclick="showToast('Itinerary published!','success')">Publish Itinerary</button>
       </div>
     </div>
 
-    <div id="no-stop-msg" class="no-stop">
-      <div style="font-size:4rem;">🗺️</div>
-      <div style="font-size:1.1rem;font-weight:700;">Add your first city stop</div>
-      <div style="color:var(--text-muted);font-size:.875rem;">Click "Add Stop" to choose a city and start building your itinerary.</div>
-      <button class="btn btn-primary" onclick="openModal('city-modal')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add First Stop
-      </button>
-    </div>
+    <div class="builder-grid">
+      <!-- Left: Sections -->
+      <div class="section-stack animate-in stagger-1">
+        <div id="itinerary-sections-list">
+           <!-- Populated via JS -->
+        </div>
 
-    <div id="stop-detail"></div>
+        <button class="add-section-btn" onclick="openModal('city-modal')">
+           <div style="width:40px; height:40px; border-radius:50%; background:var(--bg-elevated); display:flex; align-items:center; justify-content:center; border:1px solid var(--border);">
+             <span class="material-symbols-outlined">add</span>
+           </div>
+           <span class="h4" style="margin:0;">+ Add Another Section</span>
+           <span class="body-xs">Click to insert a new destination, activity, or logistical block</span>
+        </button>
+      </div>
+
+      <!-- Right: Sidebar -->
+      <aside class="sidebar-stack animate-in stagger-2">
+        <!-- Trip Overview -->
+        <div class="card">
+          <h4 class="h4 mb-xl">Trip Overview</h4>
+          <div class="flex-col gap-md">
+            <div class="flex justify-between label-sm">
+              <span class="text-muted">Total Estimated Budget</span>
+              <span class="font-bold text-primary" id="side-total-budget">$0.00</span>
+            </div>
+            <div class="flex justify-between label-sm">
+              <span class="text-muted">Total Duration</span>
+              <span class="font-bold" id="side-total-days">0 Days</span>
+            </div>
+            <div class="flex justify-between label-sm">
+              <span class="text-muted">Sections Completed</span>
+              <span class="font-bold" id="side-sections-count">0 / 0</span>
+            </div>
+            <div class="mt-lg pt-md border-t" style="border-color:var(--border);">
+              <div class="flex justify-between label-sm mb-xs">
+                <span>Completion</span>
+                <span id="side-completion-pct">0%</span>
+              </div>
+              <div class="progress-bar-wrap" style="height:6px;">
+                <div class="progress-bar-fill accent" id="side-completion-bar" style="width:0%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Planning Tips -->
+        <div class="tip-box">
+          <div class="flex items-center gap-sm">
+             <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">lightbulb</span>
+             <h4 class="h4" style="margin:0;">Planning Tips</h4>
+          </div>
+          <ul>
+            <li>Break long trips into 3-4 day sections for better focus.</li>
+            <li>Include buffer days for unexpected delays or spontaneous exploration.</li>
+            <li>Sync your dates with local festival calendars for extra excitement.</li>
+          </ul>
+        </div>
+
+        <!-- Map Preview -->
+        <div class="map-preview">
+          <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=600" style="width:100%; height:100%; object-fit:cover;" />
+          <div class="map-badge">
+             <span class="material-symbols-outlined" style="font-size:14px;">location_on</span>
+             Tokyo, Japan
+          </div>
+        </div>
+      </aside>
+    </div>
   </main>
-</div>
 
-<div id="toast-container"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/db.js"></script>
-<script src="js/sygic-api.js"></script>
-<script src="js/cities-data.js"></script>
-<script src="js/activities-data.js"></script>
-<script src="js/utils.js"></script>
-<script>
-const user = Session.require();
-renderNavbar(user);
-
-const tripId = getParam('trip');
-if (!tripId) window.location.href = 'trips.html';
-const trip = Trips.find(tripId);
-if (!trip || trip.userId !== user.id) window.location.href = 'trips.html';
-
-let activeStopId = null;
-let editingStopId = null;
-let activeCatFilter = 'all';
-
-// Links
-document.getElementById('view-link').href   = `itinerary-view.html?trip=${tripId}`;
-document.getElementById('budget-link').href  = `budget.html?trip=${tripId}`;
-document.getElementById('packing-link').href = `packing.html?trip=${tripId}`;
-document.getElementById('notes-link').href   = `notes.html?trip=${tripId}`;
-document.getElementById('share-link').href   = `share.html?trip=${tripId}`;
-
-function refreshAll() {
-  const stops = Stops.forTrip(tripId);
-  let totalCost = 0;
-  stops.forEach(s => Activities.forStop(s.id).forEach(a => totalCost += a.cost || 0));
-
-  document.getElementById('trip-name-sidebar').textContent = trip.name;
-  document.getElementById('trip-dates-sidebar').textContent = `${formatDate(trip.startDate,{month:'short',day:'numeric'})} — ${formatDate(trip.endDate,{month:'short',day:'numeric',year:'numeric'})}`;
-  document.getElementById('main-trip-name').textContent = trip.name;
-  document.getElementById('stop-count').textContent = `(${stops.length})`;
-  document.getElementById('meta-stops').textContent = `${stops.length} stop${stops.length!==1?'s':''}`;
-  document.getElementById('meta-days').textContent  = `${daysBetween(trip.startDate,trip.endDate)} days`;
-  document.getElementById('meta-cost').textContent  = formatCurrency(totalCost);
-
-  // Sidebar stops
-  document.getElementById('stop-list').innerHTML = stops.map(s => `
-    <div class="stop-item ${s.id===activeStopId?'active':''}" onclick="selectStop('${s.id}')">
-      <span class="stop-item-flag">${s.emoji||'📍'}</span>
-      <div class="stop-item-info">
-        <div class="stop-item-city">${s.cityName}</div>
-        <div class="stop-item-dates">${formatDate(s.arrivalDate,{month:'short',day:'numeric'})} – ${formatDate(s.departureDate,{month:'short',day:'numeric'})}</div>
+  <!-- Modals -->
+  <div class="modal-overlay" id="city-modal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <div class="modal-title">Select Destination</div>
+        <button class="modal-close" onclick="closeModal('city-modal')">✕</button>
       </div>
-      <button class="btn btn-danger btn-sm btn-icon" onclick="event.stopPropagation();deleteStop('${s.id}')" title="Remove stop">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6M14 11v6"/></svg>
-      </button>
-    </div>`).join('');
-
-  if (activeStopId) renderStopDetail(activeStopId);
-  else {
-    document.getElementById('no-stop-msg').style.display = stops.length ? 'none' : '';
-    document.getElementById('stop-detail').innerHTML = stops.length ? '<div class="no-stop"><div style="font-size:3rem">👈</div><div style="font-weight:600">Select a stop to view activities</div></div>' : '';
-  }
-}
-
-function selectStop(id) {
-  activeStopId = id;
-  document.getElementById('no-stop-msg').style.display = 'none';
-  refreshAll();
-}
-
-function renderStopDetail(stopId) {
-  const stop = Stops.find(stopId);
-  if (!stop) return;
-  const acts = Activities.forStop(stopId);
-  const detail = document.getElementById('stop-detail');
-  detail.innerHTML = `
-    <div class="stop-header animate-in">
-      <div class="stop-header-left">
-        <span class="stop-flag">${stop.emoji||'📍'}</span>
-        <div>
-          <div class="stop-city">${stop.cityName}, ${stop.country}</div>
-          <div class="stop-dates">${formatDate(stop.arrivalDate,{month:'long',day:'numeric'})} — ${formatDate(stop.departureDate,{month:'long',day:'numeric',year:'numeric'})} · ${daysBetween(stop.arrivalDate,stop.departureDate)} days</div>
+      <div class="flex-col gap-lg">
+        <div class="search-bar">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="city-search-input" placeholder="Search cities..." oninput="renderCityResults()" />
         </div>
-      </div>
-      <div style="display:flex;gap:var(--space-sm);">
-        <button class="btn btn-ghost btn-sm" onclick="openEditDates('${stopId}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Edit Dates
-        </button>
-        <button class="btn btn-accent btn-sm" onclick="openActModal('${stopId}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add Activity
-        </button>
+        <div id="city-results" class="grid grid-cols-2 gap-md" style="max-height:400px; overflow-y:auto;"></div>
       </div>
     </div>
-    <div class="activities-area" id="acts-${stopId}">
-      ${acts.length ? acts.map(a => actBlock(a)).join('') : `<div class="empty-state" style="padding:var(--space-2xl) 0;"><div class="empty-state-icon">🎯</div><div class="empty-state-title">No activities yet</div><div class="empty-state-desc">Add things to do in ${stop.cityName}</div><button class="btn btn-primary mt-md" onclick="openActModal('${stopId}')">Add Activity</button></div>`}
-    </div>`;
-}
+  </div>
 
-function actBlock(a) {
-  const cat = getCategoryInfo(a.category);
-  return `<div class="act-block animate-in">
-    <div class="act-emoji">${a.emoji||cat.emoji}</div>
-    <div class="act-info">
-      <div class="act-name">${a.name}</div>
-      <div class="act-meta">${cat.label} · ${a.duration} min · ${formatCurrency(a.cost)}</div>
-    </div>
-    <div style="display:flex;gap:6px;">
-      <span class="badge badge-gold">${formatCurrency(a.cost)}</span>
-      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteActivity('${a.id}')" title="Remove">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>`;
-}
-
-function deleteActivity(id) {
-  Activities.delete(id);
-  refreshAll();
-  showToast('Activity removed','info');
-}
-
-function deleteStop(id) {
-  if (!confirm('Remove this city stop? Activities will also be deleted.')) return;
-  if (activeStopId === id) { activeStopId = null; document.getElementById('stop-detail').innerHTML=''; }
-  Stops.delete(id);
-  refreshAll();
-  showToast('Stop removed','info');
-}
-
-// City search modal
-async function renderCityResults() {
-  const q = document.getElementById('city-search-input').value;
-  const results = (await searchCities(q)).slice(0,20);
-  document.getElementById('city-results').innerHTML = results.map(c => `
-    <div class="city-card" onclick="addStop('${c.id}')">
-      <div class="city-card-image" style="height:90px;font-size:2.2rem;">
-        <div class="city-card-gradient" style="background:${getCityGradient(c.id)};border-radius:0;"></div>
-        <span style="position:relative;z-index:1;">${c.emoji}</span>
+  <div class="modal-overlay" id="act-modal">
+    <div class="modal" style="max-width:800px;">
+      <div class="modal-header">
+        <div class="modal-title">Discover Activities</div>
+        <button class="modal-close" onclick="closeModal('act-modal')">✕</button>
       </div>
-      <div class="city-card-body" style="padding:10px;">
-        <div class="city-card-name">${c.name}</div>
-        <div class="city-card-country">${c.country}</div>
+      <div class="flex-col gap-lg">
+        <div class="tab-bar" id="cat-filters"></div>
+        <div id="act-results" class="grid grid-cols-2 gap-md" style="max-height:500px; overflow-y:auto;"></div>
       </div>
-    </div>`).join('');
-}
+    </div>
+  </div>
 
-async function addStop(cityId) {
-  const city = await getCityById(cityId);
-  if (!city) return;
-  const stops = Stops.forTrip(tripId);
-  const order = stops.length;
-  const arrive = trip.startDate;
-  const depart = trip.endDate;
-  const stop = Stops.create({ tripId, cityId:city.id, cityName:city.name, country:city.country, countryCode:city.countryCode, emoji:city.emoji, arrivalDate:arrive, departureDate:depart, order });
-  closeModal('city-modal');
-  activeStopId = stop.id;
-  refreshAll();
-  showToast(`${city.emoji} ${city.name} added!`,'success');
-}
+  <div id="toast-container"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/sygic-api.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const user = Session.require();
+    renderNavbar(user);
+    const tripId = getParam('trip');
+    if (!tripId) window.location.href = 'trips.html';
+    const trip = Trips.find(tripId);
+    if (!trip) window.location.href = 'trips.html';
 
-// Activity modal
-let actStopId = null;
-async function openActModal(stopId) {
-  actStopId = stopId;
-  const stop = Stops.find(stopId);
-  activeCatFilter = 'all';
-  document.getElementById('cat-filters').innerHTML =
-    [{ id:'all', label:'All', emoji:'🌐' }, ...ACTIVITY_CATEGORIES].map(c =>
-      `<button class="chip ${c.id==='all'?'active':''}" onclick="setCatFilter('${c.id}',this)">${c.emoji||''} ${c.label}</button>`
-    ).join('');
-  await renderActResults(stop.cityId);
-  openModal('act-modal');
-}
+    function refresh() {
+      const stops = Stops.forTrip(tripId);
+      const container = document.getElementById('itinerary-sections-list');
+      
+      let totalBudget = 0;
+      let completedCount = 0;
 
-async function setCatFilter(cat, el) {
-  activeCatFilter = cat;
-  document.querySelectorAll('#cat-filters .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  const stop = Stops.find(actStopId);
-  await renderActResults(stop.cityId);
-}
+      container.innerHTML = stops.map((s, i) => {
+        const acts = Activities.forStop(s.id);
+        const stopBudget = acts.reduce((a, b) => a + (b.cost || 0), 0);
+        totalBudget += stopBudget;
+        if (acts.length > 0) completedCount++;
 
-async function renderActResults(cityId) {
-  const acts = await filterActivities(cityId, { category: activeCatFilter === 'all' ? undefined : activeCatFilter });
-  document.getElementById('act-results').innerHTML = acts.map(a => `
-    <div class="activity-card">
-      <div class="activity-card-icon">${a.emoji}</div>
-      <div class="activity-card-body">
-        <div class="activity-card-name">${a.name}</div>
-        <div style="font-size:.78rem;color:var(--text-secondary);">${a.description}</div>
-        <div class="activity-card-meta">
-          <span>${getCategoryInfo(a.category).label}</span>
-          <span>${a.duration} min</span>
-          <span class="activity-card-cost">${formatCurrency(a.avgCost)}</span>
+        return `
+          <div class="section-card">
+            <div class="section-card-header">
+               <div class="flex items-center gap-md">
+                 <span class="material-symbols-outlined text-muted cursor-grab">drag_indicator</span>
+                 <h3 class="h4" style="margin:0;">Section ${i+1}: ${s.cityName}</h3>
+               </div>
+               <button class="btn btn-icon btn-ghost" onclick="deleteStop('${s.id}')">
+                 <span class="material-symbols-outlined text-danger">delete</span>
+               </button>
+            </div>
+            <div class="section-card-body">
+               <div class="grid grid-cols-2 gap-xl">
+                 <div class="form-group">
+                    <label class="form-label">Section Title</label>
+                    <input class="form-input" value="${s.cityName}" onchange="updateStopName('${s.id}', this.value)" />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select">
+                       <option>Transport</option>
+                       <option>Accommodation</option>
+                       <option selected>Activity</option>
+                       <option>Dining</option>
+                    </select>
+                 </div>
+               </div>
+               <div class="form-group">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-textarea" rows="3" placeholder="Provide all necessary information about this section...">${s.description || ''}</textarea>
+               </div>
+               <div class="grid grid-cols-3 gap-xl">
+                 <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input class="form-input" type="date" value="${s.arrivalDate}" />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input class="form-input" type="date" value="${s.departureDate}" />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label">Budget</label>
+                    <div style="position:relative;">
+                      <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">$</span>
+                      <input class="form-input" type="number" style="padding-left:28px;" value="${stopBudget}" readonly />
+                    </div>
+                 </div>
+               </div>
+               <div class="divider">Activities & Logistics</div>
+               <div class="flex-col gap-md" id="acts-${s.id}">
+                 ${acts.map(a => `
+                   <div class="card flex items-center justify-between" style="padding:10px 16px; background:var(--bg-elevated);">
+                     <div class="flex items-center gap-md">
+                       <span style="font-size:1.2rem;">${a.emoji || '📍'}</span>
+                       <div>
+                         <div class="body-sm font-bold">${a.name}</div>
+                         <div class="body-xs text-muted">${a.category} · ${a.duration}m · ${formatCurrency(a.cost)}</div>
+                       </div>
+                     </div>
+                     <button class="btn btn-icon btn-ghost" onclick="deleteActivity('${a.id}')">
+                       <span class="material-symbols-outlined text-danger" style="font-size:18px;">close</span>
+                     </button>
+                   </div>
+                 `).join('')}
+                 <button class="btn btn-ghost btn-full btn-sm" onclick="openActModal('${s.id}')">+ Add Real-World Activity</button>
+               </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Update Sidebar
+      document.getElementById('side-total-budget').textContent = formatCurrency(totalBudget);
+      document.getElementById('side-total-days').textContent = daysBetween(trip.startDate, trip.endDate) + ' Days';
+      document.getElementById('side-sections-count').textContent = `${completedCount} / ${stops.length}`;
+      
+      const pct = stops.length > 0 ? Math.round((completedCount / stops.length) * 100) : 0;
+      document.getElementById('side-completion-pct').textContent = pct + '%';
+      document.getElementById('side-completion-bar').style.width = pct + '%';
+    }
+
+    async function renderCityResults() {
+      const q = document.getElementById('city-search-input').value;
+      if (q.length < 2) return;
+      const results = await SygicAPI.searchSygicCities(q);
+      document.getElementById('city-results').innerHTML = results.map(c => `
+        <div class="card pointer flex items-center gap-md" onclick='addStop(${JSON.stringify(c).replace(/'/g, "&apos;")})' style="padding:12px;">
+          <span style="font-size:1.5rem;">${c.emoji}</span>
+          <div>
+            <div class="body-sm font-bold">${c.name}</div>
+            <div class="body-xs text-muted">${c.country}</div>
+          </div>
         </div>
-      </div>
-      <button class="btn btn-outline-primary btn-sm" onclick="addActivity(${JSON.stringify(a).replace(/"/g,'&quot;')})">Add</button>
-    </div>`).join('');
-}
+      `).join('');
+    }
 
-function addActivity(template) {
-  Activities.create({ stopId: actStopId, name:template.name, category:template.category, cost:template.avgCost, duration:template.duration, description:template.description, emoji:template.emoji });
-  closeModal('act-modal');
-  refreshAll();
-  showToast(`${template.emoji} ${template.name} added!`,'success');
-}
+    async function addStop(city) {
+      Stops.create({ 
+        tripId, 
+        cityId: city.id, 
+        cityName: city.name, 
+        country: city.country, 
+        emoji: city.emoji, 
+        arrivalDate: trip.startDate, 
+        departureDate: trip.endDate, 
+        order: Stops.forTrip(tripId).length,
+        boundingBox: city.boundingBox
+      });
+      closeModal('city-modal');
+      refresh();
+      showToast(`${city.name} section added!`,'success');
+    }
 
-// Edit stop dates
-function openEditDates(stopId) {
-  editingStopId = stopId;
-  const stop = Stops.find(stopId);
-  document.getElementById('stop-arrive').value = stop.arrivalDate;
-  document.getElementById('stop-depart').value = stop.departureDate;
-  openModal('stop-date-modal');
-}
+    function deleteStop(id) {
+      if (confirm('Delete this section?')) {
+        Stops.delete(id);
+        refresh();
+      }
+    }
 
-function saveStopDates() {
-  const arrive = document.getElementById('stop-arrive').value;
-  const depart = document.getElementById('stop-depart').value;
-  if (!arrive || !depart) return showToast('Please select both dates','warning');
-  Stops.update(editingStopId, { arrivalDate: arrive, departureDate: depart });
-  closeModal('stop-date-modal');
-  refreshAll();
-  showToast('Dates updated','success');
-}
+    function updateStopName(id, val) {
+       Stops.update(id, { cityName: val });
+       refresh();
+    }
 
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
-});
+    let activeStopId = null;
+    let activeCatFilter = 'all';
 
-// Init
-renderCityResults();
-refreshAll();
-</script>
-<script src="js/gsap-3d.js"></script>
+    async function openActModal(stopId) {
+      activeStopId = stopId;
+      const stop = Stops.find(stopId);
+      
+      // Setup filters
+      const cats = [
+        { id:'all', label:'All', emoji:'🌐' },
+        { id:'sightseeing', label:'Sights', emoji:'🏛️' },
+        { id:'food', label:'Food', emoji:'🍽️' },
+        { id:'culture', label:'Culture', emoji:'🎨' },
+        { id:'adventure', label:'Adventure', emoji:'🏔️' }
+      ];
+      
+      document.getElementById('cat-filters').innerHTML = cats.map(c => `
+        <button class="tab-btn ${c.id === activeCatFilter ? 'active' : ''}" onclick="setCatFilter('${c.id}', this)">
+          ${c.emoji} ${c.label}
+        </button>
+      `).join('');
+
+      openModal('act-modal');
+      await renderActResults(stop);
+    }
+
+    async function setCatFilter(cat, el) {
+      activeCatFilter = cat;
+      document.querySelectorAll('#cat-filters .tab-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const stop = Stops.find(activeStopId);
+      await renderActResults(stop);
+    }
+
+    async function renderActResults(stop) {
+      const resultsContainer = document.getElementById('act-results');
+      resultsContainer.innerHTML = '<div class="empty-state"><div class="spinner"></div><p>Searching Sygic...</p></div>';
+      
+      const acts = await SygicAPI.getSygicActivities(stop.cityId, stop.boundingBox);
+      const filtered = activeCatFilter === 'all' ? acts : acts.filter(a => a.category === activeCatFilter);
+      
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = '<div class="empty-state">No activities found for this category.</div>';
+        return;
+      }
+
+      resultsContainer.innerHTML = filtered.map(a => `
+        <div class="card flex-col gap-sm">
+          <div class="flex items-center gap-md">
+            <div class="w-10 h-10 rounded-lg bg-elevated flex items-center justify-center font-bold">${a.emoji}</div>
+            <div class="flex-1">
+              <div class="body-sm font-bold truncate">${a.name}</div>
+              <div class="body-xs text-muted">${a.duration} min · ${formatCurrency(a.avgCost)}</div>
+            </div>
+          </div>
+          <p class="body-xs text-muted line-clamp-2" style="height:32px; overflow:hidden;">${a.description}</p>
+          <button class="btn btn-primary btn-sm btn-full" onclick='addActivity(${JSON.stringify(a).replace(/'/g, "&apos;")})'>Add to Section</button>
+        </div>
+      `).join('');
+    }
+
+    function addActivity(template) {
+      Activities.create({ 
+        stopId: activeStopId, 
+        name: template.name, 
+        category: template.category, 
+        cost: template.avgCost, 
+        duration: template.duration, 
+        description: template.description, 
+        emoji: template.emoji 
+      });
+      refresh();
+      showToast(`${template.name} added!`, 'success');
+    }
+
+    function deleteActivity(id) {
+      Activities.delete(id);
+      refresh();
+      showToast('Activity removed', 'info');
+    }
+
+    refresh();
+  </script>
+  <script src="js/gsap-3d.js"></script>
 </body>
 </html>

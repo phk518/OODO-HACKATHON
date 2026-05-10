@@ -67,11 +67,11 @@ async function searchSygicCities(query) {
         const results = data.places.map(place => ({
             id: place.id,
             name: place.name,
-            country: place.name_suffix ? place.name_suffix.split(', ').pop() : 'Unknown', // Basic extraction
-            region: 'Global', // Sygic doesn't return continental regions by default
-            emoji: '🏙️', // Default
+            country: place.name_suffix ? place.name_suffix.split(', ').pop() : 'Unknown',
+            region: 'Global',
+            emoji: '🏙️',
             costIndex: 2, 
-            popularity: place.rating ? Math.round((place.rating + 10) / 4) : 3, // normalize rating to 1-5
+            popularity: place.rating ? Math.round((place.rating + 10) / 4) : 3,
             description: place.perex || 'A beautiful destination.',
             boundingBox: place.bounding_box
         }));
@@ -92,7 +92,6 @@ async function getSygicActivities(cityId, boundingBox = null) {
     const cached = sessionStorage.getItem(cacheKey);
     if (cached) return JSON.parse(cached);
 
-    // If we have a bounding box (from search), use bounds, else use parent
     const params = {
         limit: 20,
         levels: 'poi'
@@ -108,7 +107,6 @@ async function getSygicActivities(cityId, boundingBox = null) {
 
     if (data && data.places) {
         const results = data.places.map(place => {
-            // Map the first Sygic category to our internal category, fallback to 'sightseeing'
             const sygicCat = place.categories && place.categories.length > 0 ? place.categories[0] : 'sightseeing';
             const ourCat = CATEGORY_MAP[sygicCat] || 'sightseeing';
             
@@ -116,8 +114,8 @@ async function getSygicActivities(cityId, boundingBox = null) {
                 id: place.id,
                 name: place.name,
                 category: ourCat,
-                avgCost: 20, // Sygic places list doesn't return exact costs by default
-                duration: place.duration ? place.duration / 60 : 120, // converted from seconds to minutes
+                avgCost: 20, 
+                duration: place.duration ? place.duration / 60 : 120,
                 emoji: getEmojiForCategory(ourCat),
                 description: place.perex || 'Explore this point of interest.'
             };
@@ -143,7 +141,6 @@ window.SygicAPI = {
     searchSygicCities,
     getSygicActivities,
     getSygicCityById: async (id) => {
-         // Fallback if needed
          const data = await fetchSygic('/places/list', { parent: id, levels: 'city', limit: 1 });
          if(data && data.places && data.places.length > 0) {
               const p = data.places[0];

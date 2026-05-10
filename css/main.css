@@ -84,6 +84,15 @@
   --navbar-h: 68px;
   --sidebar-w: 260px;
   --content-max: 1280px;
+
+  /* Z-Index Hierarchy */
+  --z-base: 1;
+  --z-elevated: 10;
+  --z-dropdown: 100;
+  --z-sticky-nav: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-toast: 500;
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
@@ -637,4 +646,17 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--primary-dim);
   border-color: var(--border-primary);
   color: var(--primary);
+}
+
+/* ── Split-Screen Form Compression ──────────────────────────── */
+@media (max-width: 1024px) {
+  .split-layout {
+    flex-direction: column;
+  }
+  .visual-panel, 
+  .form-panel {
+    width: 100% !important;
+    min-height: auto !important;
+  }
+  .visual-panel { height: 300px; }
 }

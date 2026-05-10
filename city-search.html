@@ -82,10 +82,9 @@
 <div id="toast-container"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/db.js"></script>
-<script src="js/sygic-api.js"></script>
-<script src="js/cities-data.js"></script>
-<script src="js/utils.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/sygic-api.js"></script>
+  <script src="js/utils.js"></script>
 <script>
 const user = Session.require();
 renderNavbar(user);
@@ -129,9 +128,19 @@ function resetFilters() {
 }
 
 async function renderCities() {
-  const q = (document.getElementById('search-input').value||'').toLowerCase();
-  let cities = await searchCities(q, activeRegion);
-  if (activeCost   !== 'all') cities = cities.filter(c=>c.costIndex===+activeCost);
+  const q = (document.getElementById('search-input').value||'').trim();
+  let cities = [];
+  
+  if (q.length >= 2) {
+    // Real-world search
+    cities = await SygicAPI.searchSygicCities(q);
+  } else {
+    // Fallback to curated mock data if search is empty
+    cities = typeof CITIES !== 'undefined' ? [...CITIES] : [];
+    if (activeRegion !== 'all') cities = cities.filter(c => c.region === activeRegion);
+  }
+  
+  if (activeCost !== 'all') cities = cities.filter(c => c.costIndex === +activeCost);
 
   document.getElementById('result-count').textContent = `${cities.length} destination${cities.length!==1?'s':''} found`;
   const grid  = document.getElementById('cities-grid');
@@ -161,7 +170,14 @@ async function renderCities() {
 }
 
 async function openCityDetail(cityId) {
-  const c = await getCityById(cityId);
+  // Try to find in curated list first, else handle as Sygic result
+  let c = typeof getCityById === 'function' ? await getCityById(cityId) : null;
+  if (!c) {
+     // If not in curated, it might be a Sygic ID. We can fetch basic info or use cached
+     const cached = sessionStorage.getItem(`sygic_cities_`); // This is tricky, better to store last results
+     // For simplicity, we'll assume the grid already has the data or we fetch it
+     c = await SygicAPI.getSygicCityById(cityId);
+  }
   if (!c) return;
   selectedCity = c;
   document.getElementById('city-detail-content').innerHTML = `

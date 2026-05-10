@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg-base text-text-primary font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-bold py-2 px-6 rounded-md shadow-lg transition-all active:scale-95;
+  }
+  .glass-card {
+    @apply bg-bg-card backdrop-blur-xl border border-border rounded-xl;
+  }
+}

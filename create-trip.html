@@ -1,48 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traveloop — Create New Trip</title>
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/gsap-3d.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Start Your Journey</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/gsap-3d.css"/>
   <style>
-    .create-trip-wrapper { max-width: 800px; margin-inline: auto; }
-    .hero-section { margin-bottom: var(--space-2xl); }
+    .create-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: var(--space-xl); align-items: start; }
     
-    .cover-upload {
-      width: 100%; height: 240px; border-radius: var(--radius-xl);
-      background: var(--bg-card); border: 2px dashed var(--border);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: var(--space-md); cursor: pointer; transition: all 0.2s var(--ease);
-      margin-bottom: var(--space-2xl); position: relative; overflow: hidden;
-    }
-    .cover-upload:hover { border-color: var(--border-primary); background: var(--bg-elevated); }
-    .cover-upload-icon { font-size: 2.5rem; color: var(--text-muted); }
-    .cover-badge { position: absolute; top: 16px; right: 16px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 4px; }
-
-    .form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-2xl); }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
-    .col-span-2 { grid-column: span 2; }
+    .form-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-lg); box-shadow: var(--shadow-md); }
     
-    .toggle-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-lg); display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-xl); }
-    .toggle-switch { width: 44px; height: 22px; background: var(--border); border-radius: var(--radius-full); position: relative; cursor: pointer; transition: background 0.3s; }
-    .toggle-switch::after { content: ''; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.3s; }
-    .toggle-switch.active { background: var(--primary); }
-    .toggle-switch.active::after { transform: translateX(22px); }
+    .suggest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+    .suggest-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; transition: all 0.3s; cursor: pointer; }
+    .suggest-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-lg); }
+    .suggest-img { height: 160px; width: 100%; object-fit: cover; transition: transform 0.5s; }
+    .suggest-card:hover .suggest-img { transform: scale(1.1); }
+    
+    .date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
 
-    .inspiration-section { margin-top: var(--space-3xl); }
-    .insp-bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 180px); gap: var(--space-md); }
-    .insp-bento-item { border-radius: var(--radius-xl); overflow: hidden; position: relative; cursor: pointer; }
-    .insp-bento-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
-    .insp-bento-item:hover img { transform: scale(1.1); }
-    .insp-bento-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,14,26,0.8) 0%, transparent 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-lg); }
-
-    @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .col-span-2 { grid-column: span 1; }
-      .insp-bento { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    @media (max-width: 1024px) {
+      .create-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -52,145 +31,172 @@
   <header id="main-navbar" class="navbar"></header>
 
   <main class="page-wrapper">
-    <div class="create-trip-wrapper">
-      <section class="hero-section animate-in">
-        <h1 class="page-title">Create New Trip</h1>
-        <p class="page-subtitle">Where is your next adventure taking you? Define the soul of your journey.</p>
-      </section>
-
-      <div class="cover-upload animate-in stagger-1" onclick="showToast('Premium cover photos coming soon!','info')">
-        <div class="cover-badge">
-          <span class="material-symbols-outlined" style="font-size:12px; font-variation-settings: 'FILL' 1;">auto_awesome</span>
-          RECOMMENDED
+    <div class="create-grid">
+      <!-- Left: Form -->
+      <section class="flex-col gap-xl animate-in">
+        <div>
+          <h1 class="page-title">Start Your Journey</h1>
+          <p class="page-subtitle">Fill in the details to curate your next professional adventure.</p>
         </div>
-        <span class="material-symbols-outlined cover-upload-icon">add_a_photo</span>
-        <div style="font-weight:600; font-size:0.9rem;">Add a Cover Photo</div>
-        <p style="font-size:0.75rem; color:var(--text-muted);">High-quality JPG or PNG, max 10MB</p>
-      </div>
 
-      <div class="form-card animate-in stagger-2">
-        <form id="create-trip-form" onsubmit="handleCreate(event)">
-          <div class="form-grid">
-            <div class="form-group col-span-2">
-              <label class="form-label" for="trip-name">Trip Name</label>
-              <input type="text" id="trip-name" class="form-input" placeholder="e.g., Amalfi Coast Summer Escape" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="trip-start">Start Date</label>
-              <input type="date" id="trip-start" class="form-input" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="trip-end">End Date</label>
-              <input type="date" id="trip-end" class="form-input" required />
-            </div>
-            <div class="form-group col-span-2">
-              <label class="form-label" for="trip-desc">Trip Description</label>
-              <textarea id="trip-desc" class="form-textarea" placeholder="What's the vibe of this trip? Mention key highlights..." rows="4"></textarea>
+        <form id="create-trip-form" class="form-panel">
+          <div class="form-group">
+            <label class="form-label">Trip Name</label>
+            <input type="text" id="t-name" class="form-input" placeholder="e.g. European Product Launch 2025" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Where to?</label>
+            <div style="position:relative;">
+              <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">location_on</span>
+              <input type="text" id="t-dest" class="form-input" style="padding-left:40px;" placeholder="Select City or Country" required />
             </div>
           </div>
 
-          <div class="toggle-card">
-            <div style="display:flex; gap:var(--space-md); align-items:center;">
-              <div style="width:40px; height:40px; background:var(--primary-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary);">
-                <span class="material-symbols-outlined">group_add</span>
-              </div>
-              <div>
-                <div style="font-weight:700; font-size:0.9rem;">Collaborative Trip</div>
-                <div style="font-size:0.75rem; color:var(--text-secondary);">Allow friends to edit and add to the itinerary.</div>
-              </div>
+          <div class="date-grid">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input type="date" id="t-start" class="form-input" required />
             </div>
-            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+            <div class="form-group">
+              <label class="form-label">End Date</label>
+              <input type="date" id="t-end" class="form-input" required />
+            </div>
           </div>
 
-          <div id="form-error" class="error-box" style="display:none; margin-top:var(--space-md);"></div>
+          <div class="form-group">
+            <label class="form-label">Total Budget (Est.)</label>
+            <div style="position:relative;">
+              <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">payments</span>
+              <input type="number" id="t-budget" class="form-input" style="padding-left:40px;" placeholder="Enter amount in USD" required />
+            </div>
+          </div>
 
-          <div style="display:flex; gap:var(--space-md); margin-top:var(--space-2xl);">
-            <button type="submit" class="btn btn-primary btn-lg" style="flex:1; justify-content:center;" id="create-btn">
-              <span class="material-symbols-outlined">save</span>
-              Save Trip
-            </button>
-            <a href="trips.html" class="btn btn-outline btn-lg" style="flex:1; justify-content:center;">Discard Draft</a>
+          <div class="flex-col gap-md mt-md">
+            <button type="submit" class="btn btn-accent btn-lg btn-full">Build Itinerary</button>
+            <button type="button" class="btn btn-outline btn-full" onclick="showToast('Draft saved locally.','info')">Save as Draft</button>
           </div>
         </form>
-      </div>
+      </section>
 
-      <section class="inspiration-section animate-in stagger-3">
-        <h3 class="section-title" style="margin-bottom:var(--space-xl);">Need Inspiration?</h3>
-        <div class="insp-bento">
-          <div class="insp-bento-item" style="grid-column: span 2;">
-            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800" />
-            <div class="insp-bento-overlay">
-              <span style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:var(--text-muted);">ADVENTURE</span>
-              <h4 style="font-family:var(--font-serif); font-size:1.25rem;">Swiss Alps</h4>
-            </div>
+      <!-- Right: Suggestions -->
+      <section class="flex-col gap-xl animate-in stagger-1">
+        <div class="flex justify-between items-end">
+          <div>
+            <h2 class="h3">Inspiration for you</h2>
+            <p class="body-xs text-muted">Recommended spots based on top-rated business trips.</p>
           </div>
-          <div class="insp-bento-item" style="grid-row: span 2;">
-            <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600" />
-            <div class="insp-bento-overlay">
-              <span style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:var(--text-muted);">RELAXATION</span>
-              <h4 style="font-family:var(--font-serif); font-size:1.25rem;">Bali Retreat</h4>
-            </div>
-          </div>
-          <div class="insp-bento-item" style="grid-column: span 2;">
-            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800" />
-            <div class="insp-bento-overlay">
-              <span style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:var(--text-muted);">CULTURE</span>
-              <h4 style="font-family:var(--font-serif); font-size:1.25rem;">Parisian Nights</h4>
-            </div>
-          </div>
+          <button class="label-sm text-accent hover:underline flex items-center gap-xs">
+            View All Suggestions <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+          </button>
+        </div>
+
+        <div class="suggest-grid">
+           <!-- Suggestion 1 -->
+           <div class="suggest-card" onclick="setDest('Paris, France')">
+             <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=600" class="suggest-img" />
+             <div style="padding:var(--space-md);" class="flex-col gap-xs">
+               <div class="flex justify-between items-start">
+                 <span class="badge badge-primary" style="font-size:10px;">BUSINESS HUB</span>
+                 <span class="flex items-center gap-xs label-sm text-gold"><span class="material-symbols-outlined" style="font-size:14px; font-variation-settings:'FILL' 1;">star</span> 4.9</span>
+               </div>
+               <h3 class="h4" style="margin:0;">Paris, France</h3>
+               <p class="body-xs text-muted">Perfect for networking events near the Seine.</p>
+             </div>
+           </div>
+           <!-- Suggestion 2 -->
+           <div class="suggest-card" onclick="setDest('Yosemite, USA')">
+             <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&q=80&w=600" class="suggest-img" />
+             <div style="padding:var(--space-md);" class="flex-col gap-xs">
+               <div class="flex justify-between items-start">
+                 <span class="badge badge-accent" style="font-size:10px;">RETREAT</span>
+                 <span class="flex items-center gap-xs label-sm text-gold"><span class="material-symbols-outlined" style="font-size:14px; font-variation-settings:'FILL' 1;">star</span> 4.8</span>
+               </div>
+               <h3 class="h4" style="margin:0;">Yosemite, USA</h3>
+               <p class="body-xs text-muted">Recharge with nature trails and scenic lookouts.</p>
+             </div>
+           </div>
+           <!-- Suggestion 3 -->
+           <div class="suggest-card" onclick="setDest('Tokyo, Japan')">
+             <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=600" class="suggest-img" />
+             <div style="padding:var(--space-md);" class="flex-col gap-xs">
+               <div class="flex justify-between items-start">
+                 <span class="badge badge-primary" style="font-size:10px;">TECH EXPO</span>
+                 <span class="flex items-center gap-xs label-sm text-gold"><span class="material-symbols-outlined" style="font-size:14px; font-variation-settings:'FILL' 1;">star</span> 5.0</span>
+               </div>
+               <h3 class="h4" style="margin:0;">Tokyo, Japan</h3>
+               <p class="body-xs text-muted">Navigate the cutting-edge tech districts.</p>
+             </div>
+           </div>
+           <!-- Suggestion 4 -->
+           <div class="suggest-card" onclick="setDest('Maldives')">
+             <img src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=600" class="suggest-img" />
+             <div style="padding:var(--space-md);" class="flex-col gap-xs">
+               <div class="flex justify-between items-start">
+                 <span class="badge badge-gold" style="font-size:10px;">RELAXATION</span>
+                 <span class="flex items-center gap-xs label-sm text-gold"><span class="material-symbols-outlined" style="font-size:14px; font-variation-settings:'FILL' 1;">star</span> 4.7</span>
+               </div>
+               <h3 class="h4" style="margin:0;">Maldives</h3>
+               <p class="body-xs text-muted">Unwind in luxury overwater bungalows.</p>
+             </div>
+           </div>
         </div>
       </section>
     </div>
   </main>
 
+  <div id="toast-container"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="js/db.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/gsap-3d.js"></script>
   <script>
     const user = Session.require();
     renderNavbar(user);
 
-    function handleCreate(e) {
+    function setDest(name) {
+      document.getElementById('t-dest').value = name;
+      showToast(`Selected ${name}`, 'info');
+    }
+
+    document.getElementById('create-trip-form').onsubmit = function(e) {
       e.preventDefault();
-      const errEl = document.getElementById('form-error');
-      errEl.style.display = 'none';
+      const name = document.getElementById('t-name').value;
+      const dest = document.getElementById('t-dest').value;
+      const start = document.getElementById('t-start').value;
+      const end = document.getElementById('t-end').value;
+      const budget = document.getElementById('t-budget').value;
 
-      const name  = document.getElementById('trip-name').value.trim();
-      const desc  = document.getElementById('trip-desc').value.trim();
-      const start = document.getElementById('trip-start').value;
-      const end   = document.getElementById('trip-end').value;
-
-      if (new Date(end) < new Date(start)) {
-        errEl.textContent = 'End date must be after start date.';
-        errEl.style.display = 'block';
+      if (new Date(start) > new Date(end)) {
+        showToast('End date must be after start date', 'error');
         return;
       }
 
-      const btn = document.getElementById('create-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Creating...';
+      const tripId = Trips.create({
+        userId: user.id,
+        name: name,
+        description: `Journey to ${dest}`,
+        startDate: start,
+        endDate: end,
+        coverEmoji: '✈️'
+      });
 
+      // Save initial budget
+      Budgets.create({
+        tripId: tripId,
+        totalBudget: parseFloat(budget) || 0,
+        transport: 0,
+        accommodation: 0,
+        activities: 0,
+        meals: 0,
+        miscellaneous: 0
+      });
+
+      showToast('Trip created successfully! Redirecting...', 'success');
       setTimeout(() => {
-        const trip = Trips.create({ 
-          userId: user.id, 
-          name, 
-          description: desc, 
-          startDate: start, 
-          endDate: end, 
-          coverEmoji: '✈️' // Default emoji for now
-        });
-        showToast('Trip created! Start building your itinerary. 🗺️', 'success');
-        setTimeout(() => { window.location.href = `itinerary.html?trip=${trip.id}`; }, 700);
-      }, 500);
-    }
-
-    // Set default dates
-    const today = new Date();
-    const inMonth = new Date(today); inMonth.setMonth(today.getMonth() + 1);
-    const inMonthPlus = new Date(inMonth); inMonthPlus.setDate(inMonth.getDate() + 7);
-    document.getElementById('trip-start').value = inMonth.toISOString().split('T')[0];
-    document.getElementById('trip-end').value   = inMonthPlus.toISOString().split('T')[0];
+        window.location.href = `itinerary.html?trip=${tripId}`;
+      }, 1500);
+    };
   </script>
+  <script src="js/gsap-3d.js"></script>
 </body>
 </html>

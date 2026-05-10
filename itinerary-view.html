@@ -3,221 +3,256 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Traveloop — Itinerary View</title>
+  <title>Traveloop — Detailed Itinerary</title>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="css/gsap-3d.css"/>
   <style>
-    .itinerary-hero { border-radius:var(--radius-xl); padding:var(--space-2xl); border:1px solid var(--border); background:var(--grad-hero); position:relative; overflow:hidden; margin-bottom:var(--space-xl); text-align:center; }
-    .itinerary-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 30% 50%,rgba(59,130,246,.15) 0%,transparent 60%); }
-    .hero-inner { position:relative; z-index:1; }
-    .hero-emoji { font-size:3.5rem; display:block; margin-bottom:var(--space-md); }
-    .hero-trip-name { font-size:2rem; font-weight:700; font-family:var(--font-serif); }
-    .hero-meta { display:flex; justify-content:center; gap:var(--space-xl); margin-top:var(--space-lg); }
-    .hero-stat { text-align:center; }
-    .hero-stat-val { font-size:1.5rem; font-weight:700; }
-    .hero-stat-lab { font-size:.75rem; color:var(--text-secondary); }
-    .hero-actions { display:flex; justify-content:center; gap:var(--space-md); margin-top:var(--space-lg); }
+    .itinerary-grid { display: grid; grid-template-columns: 1fr 340px; gap: var(--space-xl); align-items: start; }
+    
+    .budget-bento-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-xl); position: sticky; top: calc(var(--navbar-h) + 20px); }
+    
+    .day-section { position: relative; margin-bottom: var(--space-3xl); }
+    .day-marker { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg); }
+    .day-num { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; font-family: var(--font-serif); z-index: 10; border: 4px solid var(--bg-surface); }
+    
+    .timeline-line { position: absolute; left: 24px; top: 48px; bottom: -40px; width: 2px; background: var(--border); z-index: 0; }
+    .day-section:last-child .timeline-line { display: none; }
+    
+    .activity-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; margin-left: 56px; margin-bottom: var(--space-lg); display: flex; transition: all 0.2s; }
+    .activity-card:hover { border-color: var(--border-primary); transform: translateX(4px); }
+    .activity-img { width: 140px; height: 140px; object-fit: cover; flex-shrink: 0; }
+    .activity-content { padding: var(--space-lg); flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    
+    .time-badge { font-size: 0.7rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; background: var(--primary-dim); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 4px; }
+    
+    .view-tabs { display: flex; gap: var(--space-sm); margin-bottom: var(--space-xl); background: var(--bg-elevated); padding: 4px; border-radius: var(--radius-lg); width: fit-content; border: 1px solid var(--border); }
+    .tab-btn { padding: 6px 16px; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); }
+    .tab-btn.active { background: var(--bg-surface); color: var(--text-primary); box-shadow: var(--shadow-sm); }
 
-    .city-block { margin-bottom:var(--space-2xl); }
-    .city-block-header { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-lg) var(--space-xl); background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl) var(--radius-xl) 0 0; border-bottom:none; }
-    .city-order-badge { width:36px; height:36px; border-radius:50%; background:var(--grad-primary); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.9rem; flex-shrink:0; }
-    .city-emoji { font-size:2rem; }
-    .city-name { font-size:1.1rem; font-weight:700; }
-    .city-dates { font-size:.8rem; color:var(--text-secondary); }
-
-    .activities-list { background:var(--bg-card); border:1px solid var(--border); border-radius:0 0 var(--radius-xl) var(--radius-xl); padding:var(--space-md); display:flex; flex-direction:column; gap:8px; }
-    .act-row { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-md); background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-md); }
-    .act-row-icon { width:42px; height:42px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:var(--bg-surface); }
-    .act-row-body { flex:1; }
-    .act-row-name { font-weight:600; font-size:.875rem; }
-    .act-row-meta { font-size:.75rem; color:var(--text-secondary); margin-top:2px; }
-    .act-row-cost { color:var(--gold); font-weight:700; font-size:.9rem; }
-
-    .view-toggle { display:flex; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-lg); padding:3px; margin-bottom:var(--space-xl); width:fit-content; }
-    .view-btn { padding:7px 18px; border-radius:var(--radius-md); font-size:.8rem; font-weight:600; color:var(--text-secondary); cursor:pointer; transition:all .2s; }
-    .view-btn.active { background:var(--bg-surface); color:var(--text-primary); box-shadow:var(--shadow-sm); }
-
-    .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
-    .cal-header { text-align:center; font-size:.7rem; font-weight:700; color:var(--text-muted); padding:4px; text-transform:uppercase; }
-    .cal-day { background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px; min-height:80px; }
-    .cal-day.trip-day { border-color:var(--border-primary); background:var(--primary-dim); }
-    .cal-day.today { border-color:var(--accent); }
-    .cal-day-num { font-size:.75rem; font-weight:700; margin-bottom:4px; }
-    .cal-act { font-size:.65rem; background:rgba(59,130,246,.2); border-radius:3px; padding:2px 4px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-    .no-acts { padding:var(--space-xl); text-align:center; color:var(--text-muted); font-size:.875rem; }
+    @media (max-width: 1024px) {
+      .itinerary-grid { grid-template-columns: 1fr; }
+      .budget-bento-card { position: static; order: -1; }
+      .activity-card { flex-direction: column; }
+      .activity-img { width: 100%; height: 160px; }
+    }
   </style>
 </head>
 <body class="bg-dots">
-<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
-<canvas id="particles-canvas"></canvas>
-<header id="main-navbar" class="navbar"></header>
-<main class="page-wrapper">
+  <div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
+  <canvas id="particles-canvas"></canvas>
+  <header id="main-navbar" class="navbar"></header>
 
-  <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-md);">
-    <a id="edit-link" href="#" class="btn btn-ghost btn-sm">← Edit Itinerary</a>
-    <div style="display:flex;gap:var(--space-sm);">
-      <a id="budget-link" href="#" class="btn btn-outline-primary btn-sm">💰 Budget</a>
-      <a id="share-link"  href="#" class="btn btn-accent btn-sm">🔗 Share</a>
+  <main class="page-wrapper">
+    <div class="flex items-center gap-md mb-xl animate-in">
+      <button class="btn btn-ghost btn-sm" onclick="window.history.back()">
+        <span class="material-symbols-outlined">arrow_back</span> Back to My Trips
+      </button>
     </div>
-  </div>
 
-  <!-- Hero -->
-  <div class="itinerary-hero animate-in">
-    <div class="hero-inner">
-      <span class="hero-emoji" id="hero-emoji">✈️</span>
-      <div class="hero-trip-name" id="hero-name"></div>
-      <div style="color:var(--text-secondary);margin-top:4px;font-size:.9rem;" id="hero-desc"></div>
-      <div class="hero-meta">
-        <div class="hero-stat"><div class="hero-stat-val" id="h-dates"></div><div class="hero-stat-lab">Dates</div></div>
-        <div class="hero-stat"><div class="hero-stat-val" id="h-days"></div><div class="hero-stat-lab">Days</div></div>
-        <div class="hero-stat"><div class="hero-stat-val" id="h-cities"></div><div class="hero-stat-lab">Cities</div></div>
-        <div class="hero-stat"><div class="hero-stat-val" id="h-activities"></div><div class="hero-stat-lab">Activities</div></div>
-        <div class="hero-stat"><div class="hero-stat-val" id="h-cost"></div><div class="hero-stat-lab">Est. Cost</div></div>
+    <div class="itinerary-grid">
+      <!-- Main Content -->
+      <div class="flex-col gap-xl">
+        <header class="animate-in stagger-1">
+          <h1 class="page-title" id="trip-title-h1">Trip Itinerary</h1>
+          <p class="page-subtitle" id="trip-meta-p">Duration & Details</p>
+          <div class="flex gap-md mt-lg">
+            <span class="badge badge-primary" id="trip-dates-badge">Dates</span>
+            <span class="badge badge-muted" id="trip-travelers-badge">2 Travelers</span>
+          </div>
+        </header>
+
+        <div class="view-tabs animate-in stagger-2 mt-xl">
+          <div class="tab-btn active" onclick="setView('timeline', this)">📋 Timeline</div>
+          <div class="tab-btn" onclick="setView('list', this)">📄 List</div>
+        </div>
+
+        <div id="timeline-view" class="animate-in stagger-3">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div id="list-view" style="display:none;" class="animate-in">
+          <!-- Dynamically populated table -->
+        </div>
       </div>
+
+      <!-- Sidebar -->
+      <aside class="animate-in stagger-2">
+        <div class="budget-bento-card">
+          <div class="flex justify-between items-center mb-xl">
+            <h2 class="h4">Budget Status</h2>
+            <span class="material-symbols-outlined text-accent">account_balance_wallet</span>
+          </div>
+          <div class="flex-col gap-md">
+            <div class="flex justify-between label-sm">
+              <span>Spent: <span id="budget-spent">$0</span></span>
+              <span>Goal: <span id="budget-total">$0</span></span>
+            </div>
+            <div class="progress-bar-wrap" style="height:8px;">
+              <div class="progress-bar-fill" id="budget-bar" style="width:0%;"></div>
+            </div>
+            <div class="flex justify-between items-end mt-sm">
+              <span class="body-xs text-muted">Remaining funds</span>
+              <span class="h3" id="budget-remain" style="color:var(--text-primary);">$0</span>
+            </div>
+            <a id="budget-link" href="#" class="btn btn-outline btn-full mt-lg">Manage Expenses</a>
+          </div>
+        </div>
+
+        <div class="card mt-xl">
+          <h3 class="h4 mb-md">Trip Summary</h3>
+          <ul class="flex-col gap-sm">
+            <li class="flex justify-between body-sm"><span class="text-muted">Total Stops</span> <span id="sum-stops">0</span></li>
+            <li class="flex justify-between body-sm"><span class="text-muted">Activities</span> <span id="sum-acts">0</span></li>
+            <li class="flex justify-between body-sm"><span class="text-muted">Est. Cost</span> <span id="sum-cost" class="text-accent font-bold">$0</span></li>
+          </ul>
+        </div>
+      </aside>
     </div>
-  </div>
+  </main>
 
-  <!-- View Toggle -->
-  <div class="view-toggle animate-in stagger-1">
-    <button class="view-btn active" onclick="setView('timeline',this)">📋 Timeline</button>
-    <button class="view-btn" onclick="setView('list',this)">📄 List</button>
-  </div>
+  <div id="toast-container"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const user = Session.require();
+    renderNavbar(user);
+    const tripId = getParam('trip');
+    if (!tripId) window.location.href = 'trips.html';
+    const trip = Trips.find(tripId);
+    if (!trip) window.location.href = 'trips.html';
 
-  <!-- Timeline View -->
-  <div id="timeline-view" class="animate-in stagger-2"></div>
+    const CAT_IMAGES = {
+      sightseeing: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&q=80&w=400',
+      food:        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=400',
+      culture:     'https://images.unsplash.com/photo-1493134794382-990fbad5966c?auto=format&fit=crop&q=80&w=400',
+      adventure:   'https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&q=80&w=400',
+      shopping:    'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=400',
+      nightlife:   'https://images.unsplash.com/photo-1514525253361-bee8d400fb8e?auto=format&fit=crop&q=80&w=400',
+      wellness:    'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=400',
+      transport:   'https://images.unsplash.com/photo-1474487059411-4823248cf33a?auto=format&fit=crop&q=80&w=400',
+      default:     'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=400'
+    };
 
-  <!-- List View -->
-  <div id="list-view" style="display:none;" class="animate-in"></div>
+    function loadItinerary() {
+      const stops = Stops.forTrip(tripId);
+      const budget = Budgets.forTrip(tripId);
+      const actual = Budgets.computeActual(tripId);
+      
+      document.getElementById('trip-title-h1').textContent = trip.name;
+      document.getElementById('trip-meta-p').textContent = `${trip.description || 'Exploring the world'} · ${daysBetween(trip.startDate, trip.endDate)} Days`;
+      document.getElementById('trip-dates-badge').textContent = `${formatDate(trip.startDate, {month:'short', day:'numeric'})} — ${formatDate(trip.endDate, {month:'short', day:'numeric', year:'numeric'})}`;
+      document.getElementById('budget-link').href = `budget.html?trip=${tripId}`;
+      
+      // Update Budget
+      const spent = actual.total;
+      const total = budget.totalBudget || 5000; // Default goal
+      const pct = Math.min(100, (spent / total) * 100);
+      document.getElementById('budget-spent').textContent = formatCurrency(spent);
+      document.getElementById('budget-total').textContent = formatCurrency(total);
+      document.getElementById('budget-remain').textContent = formatCurrency(Math.max(0, total - spent));
+      document.getElementById('budget-bar').style.width = pct + '%';
+      document.getElementById('budget-bar').className = 'progress-bar-fill ' + (pct > 90 ? 'danger' : pct > 70 ? 'gold' : 'accent');
 
-</main>
+      // Update Summary
+      let actCount = 0;
+      stops.forEach(s => actCount += Activities.forStop(s.id).length);
+      document.getElementById('sum-stops').textContent = stops.length;
+      document.getElementById('sum-acts').textContent = actCount;
+      document.getElementById('sum-cost').textContent = formatCurrency(spent);
 
-<div id="toast-container"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/db.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/activities-data.js"></script>
-<script>
-const user = Session.require();
-renderNavbar(user);
+      // Render Timeline
+      const tv = document.getElementById('timeline-view');
+      if (stops.length === 0) {
+        tv.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🗺️</div><div class="empty-state-title">No stops yet</div><a href="itinerary.html?trip=${tripId}" class="btn btn-primary mt-md">Build Itinerary</a></div>`;
+        return;
+      }
 
-const tripId = getParam('trip');
-if (!tripId) window.location.href = 'trips.html';
-const trip = Trips.find(tripId);
-if (!trip) window.location.href = 'trips.html';
-
-document.getElementById('edit-link').href   = `itinerary.html?trip=${tripId}`;
-document.getElementById('budget-link').href = `budget.html?trip=${tripId}`;
-document.getElementById('share-link').href  = `share.html?trip=${tripId}`;
-
-function catInfo(id) {
-  const CATS=[{id:'sightseeing',label:'Sightseeing',emoji:'🏛️'},{id:'food',label:'Food',emoji:'🍽️'},{id:'culture',label:'Culture',emoji:'🎨'},{id:'adventure',label:'Adventure',emoji:'🏔️'},{id:'shopping',label:'Shopping',emoji:'🛍️'},{id:'nature',label:'Nature',emoji:'🌿'},{id:'nightlife',label:'Nightlife',emoji:'🎶'},{id:'wellness',label:'Wellness',emoji:'🧘'}];
-  return CATS.find(c=>c.id===id)||{label:id,emoji:'⭐'};
-}
-
-function load() {
-  const stops = Stops.forTrip(tripId);
-  let totalActs = 0, totalCost = 0;
-  stops.forEach(s => {
-    const a = Activities.forStop(s.id);
-    totalActs += a.length;
-    a.forEach(x => totalCost += x.cost||0);
-  });
-
-  document.getElementById('hero-emoji').textContent = trip.coverEmoji||'✈️';
-  document.getElementById('hero-name').textContent  = trip.name;
-  document.getElementById('hero-desc').textContent  = trip.description||'';
-  document.getElementById('h-dates').textContent    = `${formatDate(trip.startDate,{month:'short',day:'numeric'})} – ${formatDate(trip.endDate,{month:'short',day:'numeric',year:'numeric'})}`;
-  document.getElementById('h-days').textContent     = daysBetween(trip.startDate,trip.endDate);
-  document.getElementById('h-cities').textContent   = stops.length;
-  document.getElementById('h-activities').textContent = totalActs;
-  document.getElementById('h-cost').textContent     = formatCurrency(totalCost);
-
-  // Timeline
-  const tv = document.getElementById('timeline-view');
-  if (!stops.length) {
-    tv.innerHTML='<div class="empty-state"><div class="empty-state-icon">🗺️</div><div class="empty-state-title">No stops yet</div><div class="empty-state-desc">Go back to the itinerary builder and add some cities!</div><a href="itinerary.html?trip='+tripId+'" class="btn btn-primary mt-md">Build Itinerary</a></div>';
-    return;
-  }
-
-  tv.innerHTML = stops.map((stop, i) => {
-    const acts = Activities.forStop(stop.id);
-    const stopCost = acts.reduce((a,b)=>a+(b.cost||0),0);
-    return `
-      <div class="city-block animate-in" style="animation-delay:${i*60}ms;">
-        <div class="city-block-header">
-          <div class="city-order-badge">${i+1}</div>
-          <span class="city-emoji">${stop.emoji||'📍'}</span>
-          <div style="flex:1;">
-            <div class="city-name">${stop.cityName}, ${stop.country}</div>
-            <div class="city-dates">${formatDate(stop.arrivalDate,{month:'long',day:'numeric'})} — ${formatDate(stop.departureDate,{month:'long',day:'numeric',year:'numeric'})} · ${daysBetween(stop.arrivalDate,stop.departureDate)} days</div>
-          </div>
-          <div style="text-align:right;">
-            <span class="badge badge-gold">${formatCurrency(stopCost)}</span>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">${acts.length} activities</div>
-          </div>
-        </div>
-        <div class="activities-list">
-          ${acts.length ? acts.map(a=>`
-            <div class="act-row">
-              <div class="act-row-icon">${a.emoji||catInfo(a.category).emoji}</div>
-              <div class="act-row-body">
-                <div class="act-row-name">${a.name}</div>
-                <div class="act-row-meta">${catInfo(a.category).label} · ${a.duration} min</div>
+      tv.innerHTML = stops.map((stop, i) => {
+        const acts = Activities.forStop(stop.id);
+        return `
+          <section class="day-section">
+            <div class="timeline-line"></div>
+            <div class="day-marker">
+              <div class="day-num">${i + 1}</div>
+              <div>
+                <h3 class="h4" style="margin:0;">${stop.cityName}, ${stop.country}</h3>
+                <p class="label-sm">${formatDate(stop.arrivalDate, {weekday:'long', month:'short', day:'numeric'})}</p>
               </div>
-              <div class="act-row-cost">${formatCurrency(a.cost)}</div>
-            </div>`).join('')
-          : '<div class="no-acts">No activities — <a href="itinerary.html?trip='+tripId+'" style="color:var(--primary)">add some in the builder</a></div>'}
-        </div>
-      </div>`;
-  }).join('');
+            </div>
+            <div class="flex-col gap-md">
+              ${acts.length ? acts.map(a => {
+                const img = CAT_IMAGES[a.category] || CAT_IMAGES.default;
+                return `
+                  <div class="activity-card">
+                    <img src="${img}" class="activity-img" alt="${a.name}" />
+                    <div class="activity-content">
+                      <div>
+                        <div class="time-badge">${a.timeOfDay || 'Morning'}</div>
+                        <h4 class="h4" style="margin-bottom:4px;">${a.name}</h4>
+                        <p class="body-sm text-muted">${a.description || 'Experience the best of the city.'}</p>
+                      </div>
+                      <div class="flex justify-between items-end mt-md">
+                        <div class="label-sm" style="display:flex; align-items:center; gap:6px;">
+                           <span class="material-symbols-outlined" style="font-size:16px;">schedule</span> ${a.duration} min
+                        </div>
+                        <div class="h4 text-accent" style="margin:0;">${formatCurrency(a.cost)}</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('') : `
+                <div class="activity-card" style="padding:var(--space-xl); justify-content:center; color:var(--text-muted); font-size:0.85rem;">
+                  No activities scheduled for this stop.
+                </div>
+              `}
+            </div>
+          </section>
+        `;
+      }).join('');
 
-  // List view
-  const lv = document.getElementById('list-view');
-  lv.innerHTML = `
-    <div class="card">
-      <table style="width:100%;border-collapse:collapse;">
-        <thead>
-          <tr style="border-bottom:1px solid var(--border);">
-            <th style="text-align:left;padding:10px 12px;font-size:.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;">City</th>
-            <th style="text-align:left;padding:10px 12px;font-size:.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Activity</th>
-            <th style="text-align:left;padding:10px 12px;font-size:.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Category</th>
-            <th style="text-align:right;padding:10px 12px;font-size:.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${stops.flatMap(stop => {
-            const acts = Activities.forStop(stop.id);
-            return acts.length
-              ? acts.map((a,i)=>`
+      // List view table
+      const lv = document.getElementById('list-view');
+      lv.innerHTML = `
+        <div class="card" style="overflow-x:auto; padding:0;">
+          <table class="table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border); text-align:left;">
+                <th style="padding:12px 20px; font-size:0.75rem; color:var(--text-muted);">Day</th>
+                <th style="padding:12px 20px; font-size:0.75rem; color:var(--text-muted);">Activity</th>
+                <th style="padding:12px 20px; font-size:0.75rem; color:var(--text-muted);">Category</th>
+                <th style="padding:12px 20px; font-size:0.75rem; color:var(--text-muted); text-align:right;">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${stops.flatMap((stop, idx) => {
+                const acts = Activities.forStop(stop.id);
+                if (!acts.length) return [`<tr style="border-bottom:1px solid var(--border);"><td style="padding:12px 20px;">Day ${idx+1}</td><td colspan="3" style="padding:12px 20px; color:var(--text-muted);">No activities</td></tr>`];
+                return acts.map((a, i) => `
                   <tr style="border-bottom:1px solid var(--border);">
-                    ${i===0?`<td style="padding:10px 12px;font-weight:600;font-size:.85rem;" rowspan="${acts.length}">${stop.emoji} ${stop.cityName}</td>`:''}
-                    <td style="padding:10px 12px;font-size:.85rem;">${a.emoji||''} ${a.name}</td>
-                    <td style="padding:10px 12px;"><span class="badge badge-muted">${catInfo(a.category).label}</span></td>
-                    <td style="padding:10px 12px;text-align:right;color:var(--gold);font-weight:600;">${formatCurrency(a.cost)}</td>
-                  </tr>`)
-              : [`<tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 12px;font-weight:600;font-size:.85rem;">${stop.emoji} ${stop.cityName}</td><td colspan="3" style="padding:10px 12px;color:var(--text-muted);font-size:.8rem;">No activities</td></tr>`];
-          }).join('')}
-          <tr style="background:var(--bg-elevated);">
-            <td colspan="3" style="padding:10px 12px;font-weight:700;">Total</td>
-            <td style="padding:10px 12px;text-align:right;font-weight:700;color:var(--gold);font-size:1rem;">${formatCurrency(totalCost)}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>`;
-}
+                    <td style="padding:12px 20px; font-weight:700;">${i===0 ? `Day ${idx+1}` : ''}</td>
+                    <td style="padding:12px 20px;">${a.name}</td>
+                    <td style="padding:12px 20px;"><span class="badge badge-muted">${a.category}</span></td>
+                    <td style="padding:12px 20px; text-align:right; font-weight:700; color:var(--accent);">${formatCurrency(a.cost)}</td>
+                  </tr>
+                `);
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
 
-function setView(view, btn) {
-  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('timeline-view').style.display = view==='timeline' ? '' : 'none';
-  document.getElementById('list-view').style.display     = view==='list' ? '' : 'none';
-}
+    function setView(view, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('timeline-view').style.display = view === 'timeline' ? '' : 'none';
+      document.getElementById('list-view').style.display = view === 'list' ? '' : 'none';
+    }
 
-load();
-</script>
-<script src="js/gsap-3d.js"></script>
+    loadItinerary();
+  </script>
+  <script src="js/gsap-3d.js"></script>
 </body>
 </html>

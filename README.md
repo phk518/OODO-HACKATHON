@@ -1,45 +1,50 @@
-# Traveloop ✈️
+# Traveloop ✈️ (React Edition)
 
-**Personalized Travel Planning Made Easy**
+**Personalized Travel Planning Reimagined.**
 
-A full-featured travel planning web application built for the OODO Hackathon.
+This project has been modernized from a legacy static codebase to a high-performance **React + Vite** SPA. It features a reactive data layer, cinematic UI components, and a centralized management console.
 
-## Features
+## 🚀 Key Modernizations
 
-- 🔐 **Auth** — Login / Signup with demo accounts
-- 🏠 **Dashboard** — Trip stats, quick actions, recommended destinations
-- ✈️ **My Trips** — Grid view with search & status filters
-- ➕ **Create Trip** — Live preview card, emoji picker, date selection
-- 🗺️ **Itinerary Builder** — Add city stops, discover & add activities
-- 👁️ **Itinerary View** — Timeline & list view toggle
-- 🔍 **City Search** — 50+ cities with region/cost filters, add to trip
-- 💰 **Budget** — Donut + bar charts, category breakdown, editable targets
-- 🔗 **Share** — Public shareable links, copy trip feature
-- 👤 **Profile** — Edit details, travel stats, change password
-- 📊 **Admin** — Analytics charts, user management (admin@traveloop.com)
+- **React SPA Architecture**: Fully migrated from static HTML to React 18 with React Router v6.
+- **Vite Build System**: Lightning-fast development and optimized production bundles.
+- **Tailwind CSS**: Utility-first styling for a pixel-perfect, responsive "Cosmic Dark" theme.
+- **DataContext**: A custom React context provider that virtualizes the legacy LocalStorage database, enabling reactive state across all modules.
+- **Lucide React**: Modern iconography integrated natively into components.
 
-## Quick Start
+## 🛠 Features
 
-Open `index.html` in any modern browser. No build step required.
+- 🔐 **Auth Portals** — Secure Login / Register with glassmorphism UI.
+- 🏠 **Explorer Hub** — Interactive Bento Grid dashboard with trending destinations.
+- 🗺️ **Itinerary Designer** — Drag-and-drop workspace for stops and activities.
+- 📊 **Platform Analytics** — Advanced Admin console for real-time monitoring.
+- 💰 **Budget Console** — Dynamic spend tracking and category breakdown.
+- 🧳 **Traveler Toolbox** — Packing checklists, Trip notes, and Journaling.
+- 🔗 **Social Sharing** — Cinematic public shareable links.
 
-**Demo credentials:**
-- `demo@traveloop.com` / `demo123` — Pre-loaded with a European trip
-- `admin@traveloop.com` / `admin123` — Admin dashboard access
+## 🚦 Quick Start
 
-## Tech Stack
-
-- **Frontend:** Vanilla HTML5 + CSS3 + JavaScript (ES6+)
-- **Data:** localStorage with relational schema (Users, Trips, Stops, Activities, Budgets, Notes)
-- **Charts:** Chart.js 4.4
-- **Icons:** Inline SVG (Lucide)
-- **Fonts:** Google Fonts — Inter + Playfair Display
-
-## Data Schema
-
+### 1. Install Dependencies
+```bash
+npm install
 ```
-users          { id, name, email, password, avatar, language }
-trips          { id, userId, name, description, startDate, endDate, coverEmoji, shareCode }
-stops          { id, tripId, cityId, cityName, country, arrivalDate, departureDate, order }
-activities     { id, stopId, name, category, cost, duration, emoji }
-budgets        { id, tripId, totalBudget, transport, accommodation, activities, meals, miscellaneous }
+
+### 2. Launch Development Server
+```bash
+npm run dev
 ```
+
+### 3. Build for Production
+```bash
+npm run build
+```
+
+## 📂 Project Structure
+
+- `src/pages/` — Core feature modules (Trips, Profile, Admin, etc.)
+- `src/components/` — Reusable UI atoms (Navbar, Footer, Layout)
+- `src/context/` — Centralized state management (DataContext)
+- `src/styles/` — Global design tokens and Tailwind configuration
+
+---
+*Built with ❤️ for the OODO Hackathon.*

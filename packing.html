@@ -4,262 +4,289 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Traveloop — Packing Checklist</title>
-  <meta name="description" content="Manage your packing checklist — never forget essentials for your trip."/>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="css/gsap-3d.css"/>
   <style>
-    .packing-layout { display:grid; grid-template-columns:280px 1fr; gap:var(--space-xl); align-items:start; }
-    .packing-sidebar { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); position:sticky; top:calc(var(--navbar-h)+20px); }
-    .packing-progress { margin-top:var(--space-lg); }
-    .packing-progress-text { display:flex; justify-content:space-between; font-size:.78rem; color:var(--text-secondary); margin-bottom:6px; }
-    .cat-section { margin-bottom:var(--space-xl); }
-    .cat-header { display:flex; align-items:center; gap:var(--space-sm); font-weight:700; font-size:1rem; margin-bottom:var(--space-md); padding-bottom:var(--space-sm); border-bottom:1px solid var(--border); }
-    .cat-header-icon { width:32px; height:32px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1rem; }
-    .pack-item { display:flex; align-items:center; gap:var(--space-md); padding:10px var(--space-md); background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:6px; transition:all .2s; cursor:pointer; }
-    .pack-item:hover { border-color:var(--border-hover); background:var(--bg-elevated); }
-    .pack-item.packed { opacity:.5; }
-    .pack-item.packed .pack-name { text-decoration:line-through; }
-    .pack-check { width:22px; height:22px; border-radius:6px; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
-    .pack-item.packed .pack-check { background:var(--success); border-color:var(--success); color:#fff; }
-    .pack-name { flex:1; font-size:.875rem; font-weight:500; }
-    .pack-cat-badge { font-size:.7rem; color:var(--text-muted); }
-    .add-item-form { display:flex; gap:var(--space-sm); margin-bottom:var(--space-xl); }
-    .add-item-form .form-input { flex:1; }
-    .quick-add-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:var(--space-xl); }
-    .quick-tag { padding:5px 12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-full); font-size:.75rem; cursor:pointer; transition:all .2s; color:var(--text-secondary); }
-    .quick-tag:hover { border-color:var(--border-primary); color:var(--primary); background:var(--primary-dim); }
+    .packing-header-section { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-xl); margin-bottom: var(--space-2xl); }
+    
+    .progress-bento-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-xl); width: 340px; flex-shrink: 0; }
+    .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); }
+    
+    .packing-bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-lg); }
+    
+    .bento-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-xl); display: flex; flex-direction: column; }
+    .bento-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); }
+    .bento-section-title { display: flex; align-items: center; gap: var(--space-sm); font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; }
+    
+    .col-clothes     { grid-column: span 8; }
+    .col-electronics { grid-column: span 4; }
+    .col-docs        { grid-column: span 6; }
+    .col-health      { grid-column: span 6; }
+    
+    .pack-item-row { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; transition: all 0.2s; cursor: pointer; }
+    .pack-item-row:hover { border-color: var(--border-primary); transform: translateX(4px); }
+    .pack-item-row.packed { opacity: 0.5; }
+    .pack-item-row.packed .item-name { text-decoration: line-through; color: var(--text-muted); }
+    
+    .check-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+    .pack-item-row.packed .check-circle { background: var(--success); border-color: var(--success); color: white; }
+    
+    .add-inline { display: flex; gap: 8px; margin-top: auto; padding-top: var(--space-lg); }
+    .add-inline .form-input { flex: 1; padding: 8px 12px; font-size: 0.85rem; }
+    
+    .tag-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-full); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+    .tag-pill:hover { background: var(--primary-dim); border-color: var(--border-primary); color: var(--primary); }
+
+    @media (max-width: 1024px) {
+      .packing-header-section { flex-direction: column; }
+      .progress-bento-card { width: 100%; }
+      .col-clothes, .col-electronics, .col-docs, .col-health { grid-column: span 12; }
+    }
   </style>
 </head>
 <body class="bg-dots">
-<div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
-<canvas id="particles-canvas"></canvas>
-<header id="main-navbar" class="navbar"></header>
-<main class="page-wrapper">
+  <div class="loading-screen"><div class="loading-logo">✈</div><div style="color:var(--text-secondary);font-size:0.9rem;">Traveloop</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>
+  <canvas id="particles-canvas"></canvas>
+  <header id="main-navbar" class="navbar"></header>
 
-  <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;">
-    <div>
-      <div style="margin-bottom:4px;"><a id="back-link" href="itinerary.html" class="btn btn-ghost btn-sm">← Back to Itinerary</a></div>
-      <h1 class="page-title">🧳 Packing Checklist</h1>
-      <p class="page-subtitle" id="trip-name-sub"></p>
-    </div>
-    <div style="display:flex;gap:var(--space-sm);">
-      <button class="btn btn-ghost btn-sm" onclick="resetChecklist()">↩️ Reset All</button>
-      <button class="btn btn-accent btn-sm" onclick="addSuggestedItems()">✨ Add Essentials</button>
-    </div>
-  </div>
-
-  <!-- Add Item -->
-  <div class="add-item-form animate-in stagger-1">
-    <input type="text" id="new-item" class="form-input" placeholder="Add a packing item..." onkeypress="if(event.key==='Enter')addItem()"/>
-    <select id="new-cat" class="form-select" style="width:160px;">
-      <option value="clothing">👕 Clothing</option>
-      <option value="documents">📄 Documents</option>
-      <option value="electronics">🔌 Electronics</option>
-      <option value="toiletries">🧴 Toiletries</option>
-      <option value="accessories">🎒 Accessories</option>
-      <option value="general">📦 General</option>
-    </select>
-    <button class="btn btn-primary" onclick="addItem()">+ Add</button>
-  </div>
-
-  <!-- Quick Add -->
-  <div class="quick-add-tags animate-in stagger-1" id="quick-tags"></div>
-
-  <div class="packing-layout animate-in stagger-2">
-    <!-- Sidebar -->
-    <div class="packing-sidebar">
-      <div style="font-size:3rem;text-align:center;margin-bottom:var(--space-md);">🧳</div>
-      <div style="text-align:center;font-weight:700;font-size:1.1rem;" id="sidebar-trip">Trip Name</div>
-      <div style="text-align:center;color:var(--text-secondary);font-size:.8rem;margin-top:4px;" id="sidebar-dates"></div>
-      <div class="packing-progress">
-        <div class="packing-progress-text">
-          <span>Packed</span>
-          <span id="progress-label">0 / 0</span>
+  <main class="page-wrapper">
+    <!-- Header -->
+    <div class="packing-header-section animate-in">
+      <div>
+        <div class="flex items-center gap-xs text-muted body-xs mb-sm">
+          <a id="back-link" href="itinerary.html" class="hover:text-primary">My Trip</a>
+          <span class="material-symbols-outlined" style="font-size:14px;">chevron_right</span>
+          <span class="text-primary font-bold">Packing Checklist</span>
         </div>
-        <div class="progress-bar-wrap" style="height:8px;">
+        <h1 class="page-title">Packing Checklist</h1>
+        <p class="page-subtitle">Organize your essentials for <span class="text-primary font-semi" id="trip-name-display">your trip</span>.</p>
+        
+        <div class="flex gap-md mt-lg">
+           <button class="btn btn-ghost btn-sm" onclick="resetChecklist()">↩️ Reset All</button>
+           <button class="btn btn-accent btn-sm" onclick="addSuggestedItems()">✨ Add Essentials</button>
+        </div>
+      </div>
+
+      <!-- Progress Bento -->
+      <div class="progress-bento-card">
+        <div class="progress-row">
+          <span class="label-sm">Total Progress</span>
+          <span class="h3" id="progress-pct" style="color:var(--accent);">0%</span>
+        </div>
+        <div class="progress-bar-wrap" style="height:10px; margin-bottom:var(--space-md);">
           <div class="progress-bar-fill" id="progress-bar" style="width:0%;"></div>
         </div>
+        <p class="body-sm text-muted" id="progress-text">0 of 0 items packed</p>
       </div>
-      <hr class="divider"/>
-      <div style="display:flex;flex-direction:column;gap:6px;" id="cat-summary"></div>
     </div>
 
-    <!-- Items -->
-    <div id="items-container"></div>
-  </div>
+    <!-- Bento Grid -->
+    <div class="packing-bento-grid">
+      <!-- Clothing -->
+      <section class="bento-section col-clothes animate-in stagger-1">
+        <div class="bento-section-header">
+          <div class="bento-section-title"><span class="material-symbols-outlined">checkroom</span> Clothes & Apparel</div>
+          <button class="btn btn-icon btn-ghost" onclick="focusAdd('clothing')"><span class="material-symbols-outlined">add</span></button>
+        </div>
+        <div id="cat-clothing-list" class="checklist-container"></div>
+        <div class="add-inline">
+          <input type="text" id="add-clothing" class="form-input" placeholder="Add clothing..." onkeypress="if(event.key==='Enter')addItem('clothing')" />
+          <button class="btn btn-primary btn-sm" onclick="addItem('clothing')">Add</button>
+        </div>
+      </section>
 
-</main>
+      <!-- Electronics -->
+      <section class="bento-section col-electronics animate-in stagger-1">
+        <div class="bento-section-header">
+          <div class="bento-section-title"><span class="material-symbols-outlined">devices</span> Electronics</div>
+        </div>
+        <div id="cat-electronics-list" class="checklist-container"></div>
+        <div class="add-inline">
+          <input type="text" id="add-electronics" class="form-input" placeholder="Add devices..." onkeypress="if(event.key==='Enter')addItem('electronics')" />
+          <button class="btn btn-primary btn-sm" onclick="addItem('electronics')">Add</button>
+        </div>
+      </section>
 
-<div id="toast-container"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/db.js"></script>
-<script src="js/utils.js"></script>
-<script>
-const user = Session.require();
-renderNavbar(user);
-const tripId = getParam('trip');
-if (!tripId) window.location.href = 'trips.html';
-const trip = Trips.find(tripId);
-if (!trip) window.location.href = 'trips.html';
+      <!-- Documents -->
+      <section class="bento-section col-docs animate-in stagger-2">
+        <div class="bento-section-header">
+          <div class="bento-section-title"><span class="material-symbols-outlined">description</span> Documents</div>
+          <span class="badge badge-accent">Priority</span>
+        </div>
+        <div id="cat-documents-list" class="checklist-container"></div>
+        <div class="add-inline">
+          <input type="text" id="add-documents" class="form-input" placeholder="Add docs..." onkeypress="if(event.key==='Enter')addItem('documents')" />
+          <button class="btn btn-primary btn-sm" onclick="addItem('documents')">Add</button>
+        </div>
+      </section>
 
-document.getElementById('back-link').href = `itinerary.html?trip=${tripId}`;
-document.getElementById('trip-name-sub').textContent = trip.name;
-document.getElementById('sidebar-trip').textContent = trip.name;
-document.getElementById('sidebar-dates').textContent = `${formatDate(trip.startDate,{month:'short',day:'numeric'})} — ${formatDate(trip.endDate,{month:'short',day:'numeric',year:'numeric'})}`;
+      <!-- Health & Toiletries -->
+      <section class="bento-section col-health animate-in stagger-2">
+        <div class="bento-section-header">
+          <div class="bento-section-title"><span class="material-symbols-outlined">medical_services</span> Health & Toiletries</div>
+        </div>
+        <div id="cat-toiletries-list" class="checklist-container" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+        <div class="add-inline">
+          <input type="text" id="add-toiletries" class="form-input" placeholder="Add health items..." onkeypress="if(event.key==='Enter')addItem('toiletries')" />
+          <button class="btn btn-primary btn-sm" onclick="addItem('toiletries')">Add</button>
+        </div>
+      </section>
 
-const CAT_INFO = {
-  clothing:    { label:'Clothing',    emoji:'👕', color:'#3B82F6' },
-  documents:   { label:'Documents',   emoji:'📄', color:'#F59E0B' },
-  electronics: { label:'Electronics', emoji:'🔌', color:'#8B5CF6' },
-  toiletries:  { label:'Toiletries',  emoji:'🧴', color:'#10B981' },
-  accessories: { label:'Accessories', emoji:'🎒', color:'#EC4899' },
-  general:     { label:'General',     emoji:'📦', color:'#94A3B8' },
-};
+      <!-- Other/General -->
+      <section class="bento-section animate-in stagger-3" style="grid-column: span 12;">
+        <div class="bento-section-header">
+          <div class="bento-section-title"><span class="material-symbols-outlined">inventory_2</span> Other Essentials</div>
+        </div>
+        <div id="cat-general-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;"></div>
+      </section>
+    </div>
 
-const ESSENTIALS = [
-  { name:'Passport', cat:'documents' },
-  { name:'Travel Insurance Docs', cat:'documents' },
-  { name:'Phone Charger', cat:'electronics' },
-  { name:'Adapter/Converter', cat:'electronics' },
-  { name:'Toothbrush & Toothpaste', cat:'toiletries' },
-  { name:'Sunscreen', cat:'toiletries' },
-  { name:'T-Shirts', cat:'clothing' },
-  { name:'Underwear', cat:'clothing' },
-  { name:'Comfortable Shoes', cat:'clothing' },
-  { name:'Rain Jacket', cat:'clothing' },
-  { name:'Power Bank', cat:'electronics' },
-  { name:'Headphones', cat:'electronics' },
-  { name:'Day Backpack', cat:'accessories' },
-  { name:'Sunglasses', cat:'accessories' },
-  { name:'Water Bottle', cat:'general' },
-  { name:'Snacks', cat:'general' },
-];
+    <!-- Quick Add Tags -->
+    <div class="mt-xl animate-in stagger-4">
+      <h3 class="h4 mb-md">Quick Add Suggestions</h3>
+      <div class="flex flex-wrap gap-sm" id="quick-tags"></div>
+    </div>
 
-const QUICK_ADDS = ['Passport','Phone Charger','Adapter','Sunscreen','Toothbrush','Rain Jacket','Power Bank','Headphones','Sunglasses','Day Backpack','First Aid Kit','Travel Pillow'];
+    <!-- Final Actions -->
+    <div class="mt-2xl flex justify-end gap-md animate-in stagger-5">
+       <button class="btn btn-ghost" onclick="window.history.back()">Back to Trip</button>
+       <button class="btn btn-primary btn-lg" onclick="showToast('Checklist status saved!','success')">
+         <span class="material-symbols-outlined">done_all</span> Mark as Complete
+       </button>
+    </div>
+  </main>
 
-// Quick tags
-document.getElementById('quick-tags').innerHTML = QUICK_ADDS.map(name =>
-  `<button class="quick-tag" onclick="quickAdd('${name}')">${name}</button>`
-).join('');
+  <div id="toast-container"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const user = Session.require();
+    renderNavbar(user);
+    const tripId = getParam('trip');
+    if (!tripId) window.location.href = 'trips.html';
+    const trip = Trips.find(tripId);
+    if (!trip) window.location.href = 'trips.html';
 
-function quickAdd(name) {
-  const existing = Packing.forTrip(tripId);
-  if (existing.find(i => i.name.toLowerCase() === name.toLowerCase())) { showToast('Already in your list','info'); return; }
-  Packing.create({ tripId, name, category:'general' });
-  render();
-  showToast(`${name} added!`,'success');
-}
+    document.getElementById('back-link').href = `itinerary.html?trip=${tripId}`;
+    document.getElementById('trip-name-display').textContent = trip.name;
 
-function addItem() {
-  const input = document.getElementById('new-item');
-  const name = input.value.trim();
-  if (!name) return;
-  const cat = document.getElementById('new-cat').value;
-  Packing.create({ tripId, name, category:cat });
-  input.value = '';
-  render();
-  showToast('Item added!','success');
-}
+    const QUICK_ADDS = ['Passport','Phone Charger','Adapter','Sunscreen','Toothbrush','Rain Jacket','Power Bank','Headphones','Sunglasses','Day Backpack','First Aid Kit','Travel Pillow'];
 
-function toggleItem(id) {
-  Packing.toggle(id);
-  render();
-}
+    const ESSENTIALS = [
+      { name:'Passport', cat:'documents' },
+      { name:'Travel Insurance Docs', cat:'documents' },
+      { name:'Phone Charger', cat:'electronics' },
+      { name:'Adapter/Converter', cat:'electronics' },
+      { name:'Toothbrush & Toothpaste', cat:'toiletries' },
+      { name:'Sunscreen', cat:'toiletries' },
+      { name:'T-Shirts', cat:'clothing' },
+      { name:'Underwear', cat:'clothing' },
+      { name:'Comfortable Shoes', cat:'clothing' },
+      { name:'Rain Jacket', cat:'clothing' },
+    ];
 
-function deleteItem(id) {
-  Packing.delete(id);
-  render();
-  showToast('Item removed','info');
-}
+    document.getElementById('quick-tags').innerHTML = QUICK_ADDS.map(name =>
+      `<button class="tag-pill" onclick="quickAdd('${name}')">+ ${name}</button>`
+    ).join('');
 
-function resetChecklist() {
-  if (!confirm('Reset all items to unpacked?')) return;
-  Packing.forTrip(tripId).forEach(i => { if(i.isPacked) Packing.toggle(i.id); });
-  render();
-  showToast('Checklist reset!','info');
-}
+    function quickAdd(name) {
+      const existing = Packing.forTrip(tripId);
+      if (existing.find(i => i.name.toLowerCase() === name.toLowerCase())) { showToast('Already in your list','info'); return; }
+      // Default mapping for quick add
+      let cat = 'general';
+      if (['Passport'].includes(name)) cat = 'documents';
+      if (['Phone Charger','Adapter','Power Bank','Headphones'].includes(name)) cat = 'electronics';
+      if (['Sunscreen','Toothbrush','First Aid Kit'].includes(name)) cat = 'toiletries';
+      if (['Rain Jacket'].includes(name)) cat = 'clothing';
 
-function addSuggestedItems() {
-  const existing = Packing.forTrip(tripId);
-  let added = 0;
-  ESSENTIALS.forEach(e => {
-    if (!existing.find(i => i.name.toLowerCase() === e.name.toLowerCase())) {
-      Packing.create({ tripId, name:e.name, category:e.cat });
-      added++;
+      Packing.create({ tripId, name, category:cat });
+      render();
+      showToast(`${name} added!`,'success');
     }
-  });
-  render();
-  showToast(`${added} essential items added!`,'success');
-}
 
-function render() {
-  const items = Packing.forTrip(tripId);
-  const packed = items.filter(i => i.isPacked).length;
-  const total = items.length;
-  const pct = total > 0 ? Math.round((packed/total)*100) : 0;
+    function addItem(cat) {
+      const input = document.getElementById(`add-${cat}`);
+      const name = input.value.trim();
+      if (!name) return;
+      Packing.create({ tripId, name, category:cat });
+      input.value = '';
+      render();
+      showToast('Item added!','success');
+    }
 
-  document.getElementById('progress-label').textContent = `${packed} / ${total}`;
-  const bar = document.getElementById('progress-bar');
-  bar.style.width = pct + '%';
-  bar.className = 'progress-bar-fill' + (pct >= 100 ? ' accent' : pct >= 50 ? ' gold' : '');
+    function toggleItem(id) {
+      Packing.toggle(id);
+      render();
+    }
 
-  // Category summary
-  const catCounts = {};
-  Object.keys(CAT_INFO).forEach(k => catCounts[k] = { total:0, packed:0 });
-  items.forEach(i => {
-    const c = i.category || 'general';
-    if (!catCounts[c]) catCounts[c] = { total:0, packed:0 };
-    catCounts[c].total++;
-    if (i.isPacked) catCounts[c].packed++;
-  });
+    function deleteItem(id) {
+      Packing.delete(id);
+      render();
+      showToast('Item removed','info');
+    }
 
-  document.getElementById('cat-summary').innerHTML = Object.entries(CAT_INFO).map(([k,info]) => {
-    const c = catCounts[k] || { total:0, packed:0 };
-    if (c.total === 0) return '';
-    return `<div style="display:flex;align-items:center;justify-content:space-between;font-size:.8rem;">
-      <span>${info.emoji} ${info.label}</span>
-      <span style="color:${c.packed===c.total?'var(--success)':'var(--text-muted)'};">${c.packed}/${c.total}</span>
-    </div>`;
-  }).join('');
+    function resetChecklist() {
+      if (!confirm('Reset all items to unpacked?')) return;
+      Packing.forTrip(tripId).forEach(i => { if(i.isPacked) Packing.toggle(i.id); });
+      render();
+      showToast('Checklist reset!','info');
+    }
 
-  // Group by category
-  const grouped = {};
-  items.forEach(i => {
-    const c = i.category || 'general';
-    if (!grouped[c]) grouped[c] = [];
-    grouped[c].push(i);
-  });
+    function addSuggestedItems() {
+      const existing = Packing.forTrip(tripId);
+      let added = 0;
+      ESSENTIALS.forEach(e => {
+        if (!existing.find(i => i.name.toLowerCase() === e.name.toLowerCase())) {
+          Packing.create({ tripId, name:e.name, category:e.cat });
+          added++;
+        }
+      });
+      render();
+      showToast(`${added} essential items added!`,'success');
+    }
 
-  const container = document.getElementById('items-container');
-  if (!items.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🧳</div><div class="empty-state-title">No items yet</div><div class="empty-state-desc">Add items above or click "Add Essentials" to get started!</div></div>`;
-    return;
-  }
+    function render() {
+      const items = Packing.forTrip(tripId);
+      const packed = items.filter(i => i.isPacked).length;
+      const total = items.length;
+      const pct = total > 0 ? Math.round((packed/total)*100) : 0;
 
-  container.innerHTML = Object.entries(grouped).map(([cat, catItems]) => {
-    const info = CAT_INFO[cat] || CAT_INFO.general;
-    return `<div class="cat-section">
-      <div class="cat-header">
-        <div class="cat-header-icon" style="background:${info.color}22;border:1px solid ${info.color}44;">${info.emoji}</div>
-        ${info.label}
-        <span style="color:var(--text-muted);font-size:.75rem;font-weight:400;margin-left:auto;">${catItems.filter(i=>i.isPacked).length}/${catItems.length}</span>
-      </div>
-      ${catItems.map(item => `
-        <div class="pack-item ${item.isPacked?'packed':''}" onclick="toggleItem('${item.id}')">
-          <div class="pack-check">${item.isPacked ? '✓' : ''}</div>
-          <div class="pack-name">${item.name}</div>
-          <button class="btn btn-danger btn-sm btn-icon" onclick="event.stopPropagation();deleteItem('${item.id}')" style="opacity:.5;" title="Remove">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>`).join('')}
-    </div>`;
-  }).join('');
-}
+      document.getElementById('progress-pct').textContent = pct + '%';
+      document.getElementById('progress-text').textContent = `${packed} of ${total} items packed`;
+      const bar = document.getElementById('progress-bar');
+      bar.style.width = pct + '%';
+      bar.className = 'progress-bar-fill' + (pct >= 100 ? ' accent' : pct >= 50 ? ' gold' : '');
 
-render();
-</script>
-<script src="js/gsap-3d.js"></script>
+      const cats = ['clothing', 'electronics', 'documents', 'toiletries', 'general'];
+      cats.forEach(cat => {
+        const catItems = items.filter(i => (i.category || 'general') === cat);
+        const container = document.getElementById(`cat-${cat}-list`);
+        
+        if (cat === 'toiletries') {
+          container.innerHTML = catItems.map(item => `
+            <span class="tag-pill ${item.isPacked ? 'text-success' : ''}" onclick="toggleItem('${item.id}')">
+              ${item.isPacked ? '✓ ' : ''}${item.name}
+              <span class="material-symbols-outlined" style="font-size:14px; margin-left:4px;" onclick="event.stopPropagation();deleteItem('${item.id}')">close</span>
+            </span>
+          `).join('');
+        } else {
+          container.innerHTML = catItems.map(item => `
+            <div class="pack-item-row ${item.isPacked ? 'packed' : ''}" onclick="toggleItem('${item.id}')">
+              <div class="check-circle">${item.isPacked ? '<span class="material-symbols-outlined" style="font-size:14px;">check</span>' : ''}</div>
+              <span class="item-name" style="flex:1;">${item.name}</span>
+              <button class="btn btn-icon btn-ghost btn-sm" onclick="event.stopPropagation();deleteItem('${item.id}')" style="opacity:0.3;">
+                <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+              </button>
+            </div>
+          `).join('');
+        }
+      });
+    }
+
+    render();
+  </script>
+  <script src="js/gsap-3d.js"></script>
 </body>
 </html>
