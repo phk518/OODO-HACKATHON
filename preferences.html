@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Trip Preferences</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <style>
+    .memory-layout { max-width:760px; margin:0 auto; }
+    .question-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); margin-bottom:var(--space-lg); transition:all .2s; }
+    .question-card.answered { border-color:var(--border-primary); }
+    .question-label { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--primary); margin-bottom:var(--space-sm); }
+    .question-text { font-size:1.05rem; font-weight:700; font-family:var(--font-serif); margin-bottom:var(--space-lg); }
+    .options-grid { display:flex; flex-direction:column; gap:var(--space-sm); }
+    .option-row { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-md); background:var(--bg-elevated); border:2px solid var(--border); border-radius:var(--radius-lg); cursor:pointer; transition:all .2s var(--ease-bounce); }
+    .option-row:hover { border-color:var(--border-hover); background:var(--bg-surface); transform:translateX(4px); }
+    .option-row.selected { border-color:var(--primary); background:var(--primary-dim); }
+    .option-row.selected .option-radio { background:var(--primary); border-color:var(--primary); }
+    .option-row.selected .option-radio::after { opacity:1; }
+    .option-radio { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); background:var(--bg-surface); flex-shrink:0; position:relative; transition:all .2s; }
+    .option-radio::after { content:''; position:absolute; inset:3px; border-radius:50%; background:white; opacity:0; transition:opacity .15s; }
+    .option-emoji { font-size:1.4rem; }
+    .option-text { flex:1; }
+    .option-title { font-weight:600; font-size:.9rem; }
+    .option-desc  { font-size:.75rem; color:var(--text-secondary); margin-top:2px; }
+    .option-multi { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-sm); }
+    .option-multi .option-row { flex-direction:column; align-items:flex-start; gap:6px; padding:var(--space-md); }
+    .option-multi .option-row .option-radio { display:none; }
+
+    .progress-stepper { display:flex; align-items:center; gap:0; margin-bottom:var(--space-2xl); }
+    .step-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; border:2px solid var(--border); background:var(--bg-elevated); color:var(--text-muted); transition:all .3s; flex-shrink:0; }
+    .step-dot.active { border-color:var(--primary); background:var(--primary); color:white; }
+    .step-dot.done   { border-color:var(--success); background:var(--success); color:white; }
+    .step-line { flex:1; height:2px; background:var(--border); transition:background .3s; }
+    .step-line.done { background:var(--success); }
+
+    .result-card { background:var(--grad-hero); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-2xl); text-align:center; position:relative; overflow:hidden; }
+    .result-card::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 30%,rgba(59,130,246,.2) 0%,transparent 60%); }
+    .result-inner { position:relative; z-index:1; }
+    .result-badge { display:inline-flex; align-items:center; gap:8px; padding:8px 20px; background:var(--primary-dim); border:1px solid var(--border-primary); border-radius:var(--radius-full); font-size:.875rem; font-weight:600; color:var(--primary); margin-bottom:var(--space-lg); }
+    .recs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:var(--space-md); margin-top:var(--space-xl); }
+    .rec-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-md); text-align:center; }
+    .rec-icon { font-size:2rem; margin-bottom:6px; }
+    .rec-name { font-weight:700; font-size:.875rem; }
+    .rec-sub { font-size:.75rem; color:var(--text-secondary); margin-top:2px; }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+<main class="page-wrapper">
+
+  <div class="page-header animate-in" style="text-align:center;max-width:600px;margin:0 auto var(--space-xl);">
+    <h1 class="page-title">Build Your Travel Profile</h1>
+    <p class="page-subtitle">Answer a few questions so we can personalise your itinerary recommendations.</p>
+  </div>
+
+  <!-- Progress Stepper -->
+  <div class="memory-layout">
+    <div class="progress-stepper animate-in stagger-1" id="stepper"></div>
+
+    <div id="questions-area"></div>
+
+    <!-- Results (hidden) -->
+    <div id="results-area" style="display:none;" class="animate-in"></div>
+
+    <!-- Controls -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:var(--space-xl);" id="controls">
+      <button class="btn btn-ghost" id="prev-btn" onclick="prevStep()" style="visibility:hidden;">← Back</button>
+      <div style="font-size:.8rem;color:var(--text-muted);" id="step-label">Question 1 of 5</div>
+      <button class="btn btn-primary" id="next-btn" onclick="nextStep()">
+        Next →
+      </button>
+    </div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/cities-data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+const QUESTIONS = [
+  {
+    id:'pace', text:'What\'s your ideal travel pace?', type:'single',
+    options:[
+      { emoji:'🐌', title:'Slow & Immersive', desc:'3-4 days per city, deep dives', value:'slow' },
+      { emoji:'⚡', title:'Fast & Packed', desc:'1-2 days per city, see everything', value:'fast' },
+      { emoji:'⚖️', title:'Balanced Mix', desc:'Some cities longer, some shorter', value:'balanced' },
+      { emoji:'🌊', title:'Go with the Flow', desc:'I\'ll decide as I travel', value:'flexible' },
+    ]
+  },
+  {
+    id:'style', text:'Which travel style fits you best?', type:'single',
+    options:[
+      { emoji:'🏛️', title:'Culture & History', desc:'Museums, heritage, architecture', value:'culture' },
+      { emoji:'🍽️', title:'Food & Drink', desc:'Restaurants, markets, cooking classes', value:'food' },
+      { emoji:'🏔️', title:'Adventure & Nature', desc:'Hiking, outdoors, extreme sports', value:'adventure' },
+      { emoji:'💆', title:'Relaxation & Wellness', desc:'Beaches, spas, slow mornings', value:'wellness' },
+    ]
+  },
+  {
+    id:'budget', text:'What\'s your typical daily travel budget?', type:'single',
+    options:[
+      { emoji:'💰', title:'Budget ($0-$60/day)', desc:'Hostels, street food, free sights', value:'budget' },
+      { emoji:'💳', title:'Mid-Range ($60-$150/day)', desc:'3-star hotels, local restaurants', value:'midrange' },
+      { emoji:'✨', title:'Premium ($150-$300/day)', desc:'4-star hotels, fine dining', value:'premium' },
+      { emoji:'👑', title:'Luxury ($300+/day)', desc:'5-star everything, private transfers', value:'luxury' },
+    ]
+  },
+  {
+    id:'companions', text:'Who are you travelling with?', type:'single',
+    options:[
+      { emoji:'🧍', title:'Solo', desc:'Just me, myself, and I', value:'solo' },
+      { emoji:'💑', title:'Couple', desc:'Romantic getaway', value:'couple' },
+      { emoji:'👨‍👩‍👧‍👦', title:'Family', desc:'Kids in tow', value:'family' },
+      { emoji:'👯', title:'Friends Group', desc:'Squad adventure', value:'friends' },
+    ]
+  },
+  {
+    id:'interests', text:'What experiences can\'t you miss? (pick all that apply)', type:'multi',
+    options:[
+      { emoji:'📸', title:'Instagram-worthy Spots', value:'photography' },
+      { emoji:'🎭', title:'Local Shows & Events', value:'shows' },
+      { emoji:'🛍️', title:'Shopping & Markets', value:'shopping' },
+      { emoji:'🌅', title:'Sunrise / Sunset Views', value:'views' },
+      { emoji:'🚌', title:'Local Transport Experience', value:'transport' },
+      { emoji:'📚', title:'History & Learning', value:'history' },
+      { emoji:'🎶', title:'Nightlife & Music', value:'nightlife' },
+      { emoji:'🧘', title:'Yoga & Wellness', value:'wellness' },
+    ]
+  }
+];
+
+let currentStep = 0;
+let answers = {};
+
+function renderStepper() {
+  const s = document.getElementById('stepper');
+  s.innerHTML = QUESTIONS.map((q,i) => `
+    ${i>0?`<div class="step-line ${i<=currentStep?'done':''}"></div>`:''}
+    <div class="step-dot ${i<currentStep?'done':i===currentStep?'active':''}">${i<currentStep?'✓':i+1}</div>
+  `).join('');
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentStep];
+  const saved = answers[q.id];
+  const area = document.getElementById('questions-area');
+
+  if (q.type === 'single') {
+    area.innerHTML = `
+      <div class="question-card ${saved?'answered':''} animate-in">
+        <div class="question-label">Question ${currentStep+1} of ${QUESTIONS.length}</div>
+        <div class="question-text">${q.text}</div>
+        <div class="options-grid">
+          ${q.options.map(o=>`
+            <div class="option-row ${saved===o.value?'selected':''}" onclick="selectSingle('${q.id}','${o.value}',this)">
+              <div class="option-radio"></div>
+              <span class="option-emoji">${o.emoji}</span>
+              <div class="option-text">
+                <div class="option-title">${o.title}</div>
+                <div class="option-desc">${o.desc}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    const multi = saved || [];
+    area.innerHTML = `
+      <div class="question-card ${multi.length?'answered':''} animate-in">
+        <div class="question-label">Question ${currentStep+1} of ${QUESTIONS.length}</div>
+        <div class="question-text">${q.text}</div>
+        <div class="option-multi">
+          ${q.options.map(o=>`
+            <div class="option-row ${multi.includes(o.value)?'selected':''}" onclick="toggleMulti('${q.id}','${o.value}',this)">
+              <div style="font-size:1.6rem;">${o.emoji}</div>
+              <div class="option-title">${o.title}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  // Controls
+  document.getElementById('step-label').textContent = `Question ${currentStep+1} of ${QUESTIONS.length}`;
+  document.getElementById('prev-btn').style.visibility = currentStep>0 ? 'visible' : 'hidden';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = currentStep===QUESTIONS.length-1 ? 'See My Results ✨' : 'Next →';
+}
+
+function selectSingle(qId, value, el) {
+  answers[qId] = value;
+  document.querySelectorAll('.option-row').forEach(r=>r.classList.remove('selected'));
+  el.classList.add('selected');
+  document.querySelector('.question-card').classList.add('answered');
+}
+
+function toggleMulti(qId, value, el) {
+  if (!answers[qId]) answers[qId] = [];
+  const idx = answers[qId].indexOf(value);
+  if (idx>=0) { answers[qId].splice(idx,1); el.classList.remove('selected'); }
+  else { answers[qId].push(value); el.classList.add('selected'); }
+}
+
+function nextStep() {
+  const q = QUESTIONS[currentStep];
+  if (!answers[q.id] || (Array.isArray(answers[q.id]) && !answers[q.id].length)) {
+    showToast('Please select an option to continue','warning'); return;
+  }
+  if (currentStep < QUESTIONS.length-1) {
+    currentStep++;
+    renderStepper();
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function prevStep() {
+  if (currentStep>0) { currentStep--; renderStepper(); renderQuestion(); }
+}
+
+function showResults() {
+  document.getElementById('questions-area').style.display='none';
+  document.getElementById('controls').style.display='none';
+  document.getElementById('stepper').style.display='none';
+
+  // Save preferences
+  Users.update(user.id, { preferences: answers });
+
+  // Compute traveller type
+  const style = answers.style;
+  const budget = answers.budget;
+  const types = {
+    culture:   { label:'Cultural Explorer', emoji:'🏛️', desc:'You seek depth — history, art, and authentic local experiences.' },
+    food:      { label:'Culinary Adventurer', emoji:'🍽️', desc:'Food is your compass. You\'ll plan entire days around a great meal.' },
+    adventure: { label:'Thrill Seeker', emoji:'🏔️', desc:'You push limits and seek the road less travelled.' },
+    wellness:  { label:'Mindful Wanderer', emoji:'🧘', desc:'You travel to recharge — beauty, peace, and slow mornings.' },
+  };
+  const type = types[style] || types.culture;
+
+  // Recommend cities based on preferences
+  let recs = CITIES;
+  if (budget==='budget')   recs = recs.filter(c=>c.costIndex<=2);
+  if (budget==='luxury')   recs = recs.filter(c=>c.costIndex>=3);
+  if (style==='adventure') recs = recs.filter(c=>['Bali','Reykjavik','Kathmandu','Cape Town','Oslo'].some(n=>c.name.includes(n)));
+  if (style==='food')      recs = recs.filter(c=>['Tokyo','Bangkok','Mexico City','Istanbul','Barcelona','Rome'].some(n=>c.name.includes(n)));
+  recs = recs.slice(0,6);
+  if (recs.length<3) recs = CITIES.filter(c=>c.popularity>=4).slice(0,6);
+
+  document.getElementById('results-area').style.display='';
+  document.getElementById('results-area').innerHTML = `
+    <div class="result-card">
+      <div class="result-inner">
+        <div style="font-size:3.5rem;margin-bottom:var(--space-md);">${type.emoji}</div>
+        <div class="result-badge">✨ Your Traveller Type</div>
+        <h2 style="font-size:1.8rem;font-weight:700;font-family:var(--font-serif);margin-bottom:var(--space-sm);">${type.label}</h2>
+        <p style="color:var(--text-secondary);max-width:480px;margin:0 auto var(--space-xl);">${type.desc}</p>
+        <div style="display:flex;justify-content:center;gap:var(--space-xl);margin-bottom:var(--space-xl);">
+          <div><div style="font-weight:700;">${answers.budget}</div><div style="font-size:.75rem;color:var(--text-secondary);">Budget</div></div>
+          <div><div style="font-weight:700;">${answers.pace}</div><div style="font-size:.75rem;color:var(--text-secondary);">Pace</div></div>
+          <div><div style="font-weight:700;">${answers.companions}</div><div style="font-size:.75rem;color:var(--text-secondary);">Travel Style</div></div>
+        </div>
+        <div style="font-weight:700;margin-bottom:var(--space-md);">🗺️ Recommended Destinations for You</div>
+        <div class="recs-grid">
+          ${recs.map(c=>`
+            <div class="rec-card" onclick="window.location='city-search.html?city=${c.id}'" style="cursor:pointer;">
+              <div class="rec-icon">${c.emoji}</div>
+              <div class="rec-name">${c.name}</div>
+              <div class="rec-sub">${c.country} · ${'$'.repeat(c.costIndex)}</div>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:var(--space-xl);display:flex;justify-content:center;gap:var(--space-md);">
+          <a href="create-trip.html" class="btn btn-primary btn-lg">✈️ Start Planning</a>
+          <a href="city-search.html" class="btn btn-ghost btn-lg">🔍 Explore Cities</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+renderStepper();
+renderQuestion();
+</script>
+</body>
+</html>

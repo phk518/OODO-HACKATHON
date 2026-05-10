@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Community</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <style>
+    .community-layout { display:grid; grid-template-columns:1fr 320px; gap:var(--space-xl); align-items:start; }
+    .post-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:var(--space-lg); transition:all .2s; }
+    .post-card:hover { border-color:var(--border-hover); box-shadow:var(--shadow-md); }
+    .post-header { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-md) var(--space-lg); }
+    .post-body { padding:0 var(--space-lg) var(--space-md); }
+    .post-title { font-weight:700; font-size:1rem; margin-bottom:6px; }
+    .post-text { color:var(--text-secondary); font-size:.875rem; line-height:1.6; }
+    .post-cover { width:100%; height:160px; display:flex; align-items:center; justify-content:center; font-size:4rem; position:relative; margin-bottom:var(--space-md); }
+    .post-cover-bg { position:absolute; inset:0; }
+    .post-cover span { position:relative; z-index:1; }
+    .post-stops { display:flex; gap:6px; flex-wrap:wrap; padding:0 var(--space-lg) var(--space-md); }
+    .post-actions { display:flex; align-items:center; gap:var(--space-md); padding:var(--space-md) var(--space-lg); border-top:1px solid var(--border); }
+    .action-btn { display:flex; align-items:center; gap:6px; font-size:.8rem; color:var(--text-secondary); cursor:pointer; padding:6px 12px; border-radius:var(--radius-md); transition:all .15s; }
+    .action-btn:hover { background:var(--bg-elevated); color:var(--text-primary); }
+    .action-btn.liked { color:var(--accent); }
+    .action-btn.liked svg { fill:var(--accent); }
+    .sidebar-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-lg); margin-bottom:var(--space-lg); }
+    .sidebar-card-title { font-weight:700; font-size:.9rem; margin-bottom:var(--space-md); }
+    .trending-city { display:flex; align-items:center; gap:var(--space-md); padding:8px 0; border-bottom:1px solid rgba(255,255,255,.04); }
+    .trending-city:last-child { border-bottom:none; }
+    .trending-rank { width:24px; height:24px; border-radius:50%; background:var(--primary-dim); color:var(--primary); font-size:.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .feed-tabs { display:flex; gap:4px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-lg); padding:4px; margin-bottom:var(--space-xl); width:fit-content; }
+    .feed-tab { padding:7px 20px; border-radius:var(--radius-md); font-size:.875rem; font-weight:600; color:var(--text-secondary); cursor:pointer; transition:all .15s; }
+    .feed-tab.active { background:var(--bg-surface); color:var(--text-primary); box-shadow:var(--shadow-sm); }
+    .share-cta { background:var(--grad-hero); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); text-align:center; position:relative; overflow:hidden; margin-bottom:var(--space-xl); }
+    .share-cta::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 50%,rgba(59,130,246,.12) 0%,transparent 70%); }
+    .share-cta-content { position:relative; z-index:1; }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+<main class="page-wrapper">
+
+  <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <h1 class="page-title">Community</h1>
+      <p class="page-subtitle">Explore trips shared by fellow travellers. Get inspired.</p>
+    </div>
+    <button class="btn btn-accent" onclick="shareMyTrip()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share My Trip
+    </button>
+  </div>
+
+  <!-- Feed Tabs -->
+  <div class="feed-tabs animate-in stagger-1">
+    <div class="feed-tab active" onclick="setFeed('discover',this)">🌍 Discover</div>
+    <div class="feed-tab" onclick="setFeed('popular',this)">🔥 Popular</div>
+    <div class="feed-tab" onclick="setFeed('recent',this)">🕐 Recent</div>
+    <div class="feed-tab" onclick="setFeed('mine',this)">✈️ My Shares</div>
+  </div>
+
+  <div class="community-layout animate-in stagger-2">
+
+    <!-- Feed -->
+    <div id="feed"></div>
+
+    <!-- Sidebar -->
+    <div>
+      <!-- Share CTA -->
+      <div class="share-cta">
+        <div class="share-cta-content">
+          <div style="font-size:2.5rem;margin-bottom:var(--space-sm);">🌍</div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:6px;">Share Your Adventures</div>
+          <div style="color:var(--text-secondary);font-size:.8rem;margin-bottom:var(--space-md);">Make your trip public and inspire other travellers.</div>
+          <button class="btn btn-primary btn-sm btn-full" onclick="shareMyTrip()">Share a Trip</button>
+        </div>
+      </div>
+
+      <!-- Trending Cities -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">🔥 Trending Destinations</div>
+        <div id="trending-cities"></div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">📊 Community Stats</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;">
+            <span style="color:var(--text-secondary);">Trips Shared</span>
+            <span id="stat-shared" style="font-weight:700;">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;">
+            <span style="color:var(--text-secondary);">Cities Explored</span>
+            <span id="stat-cities" style="font-weight:700;">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;">
+            <span style="color:var(--text-secondary);">Travellers</span>
+            <span id="stat-users" style="font-weight:700;">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="share-modal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title">Share a Trip to Community</div>
+      <button class="modal-close" onclick="closeModal('share-modal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+      <div class="form-group">
+        <label class="form-label">Select Trip</label>
+        <select id="share-trip-select" class="form-select"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Caption (optional)</label>
+        <textarea id="share-caption" class="form-textarea" placeholder="Tell the community about your trip…" rows="3"></textarea>
+      </div>
+      <button class="btn btn-accent btn-full" onclick="publishTrip()">
+        🌍 Publish to Community
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/cities-data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+let activeFeed = 'discover';
+let likedPosts = JSON.parse(localStorage.getItem('tl_liked')||'[]');
+
+// Demo community posts (simulating other users' trips)
+const DEMO_POSTS = [
+  { id:'cp1', userId:'demo1', userName:'Sarah K.', initials:'SK', tripName:'Japan Cherry Blossom Tour', caption:'Absolutely magical — sakura season in Kyoto is unlike anything else on earth. Highly recommend the Philosopher\'s Path!', stops:['Tokyo','Kyoto','Osaka'], emojis:['🗾','⛩️','🏮'], grad:'linear-gradient(135deg,#7c2d12,#ea580c)', emoji:'🌸', shareCode:'SAKURA1', days:14, cost:3200, likes:247 },
+  { id:'cp2', userId:'demo2', userName:'Marco R.', initials:'MR', tripName:'Southeast Asia Backpack', caption:'25 days across 4 countries on a $1,200 budget. Thailand, Vietnam, Cambodia, Bali — the BEST value destinations.', stops:['Bangkok','Hanoi','Siem Reap','Bali'], emojis:['🛕','🏮','🏛️','🌴'], grad:'linear-gradient(135deg,#064e3b,#059669)', emoji:'🎒', shareCode:'SEA2025', days:25, cost:1200, likes:189 },
+  { id:'cp3', userId:'demo3', userName:'Priya M.', initials:'PM', tripName:'European Grand Tour', caption:'3 weeks, 6 countries, unforgettable memories. Rome stole my heart — the food, the history, just wow.', stops:['Paris','Rome','Barcelona','Amsterdam'], emojis:['🗼','🏛️','🌊','🚲'], grad:'linear-gradient(135deg,#1e3a5f,#2563eb)', emoji:'🌍', shareCode:'EURO23', days:21, cost:4500, likes:312 },
+  { id:'cp4', userId:'demo4', userName:'James T.', initials:'JT', tripName:'Maldives Honeymoon', caption:'7 days in paradise. Our overwater villa had a glass floor panel — woke up to fish swimming beneath us every morning!', stops:['Malé'], emojis:['🏝️'], grad:'linear-gradient(135deg,#164e63,#0891b2)', emoji:'💍', shareCode:'MALDIVES', days:7, cost:8500, likes:421 },
+  { id:'cp5', userId:'demo5', userName:'Aisha B.', initials:'AB', tripName:'Morocco Desert Adventure', caption:'Marrakech medinas, Sahara camel ride, Chefchaouen blue streets — Morocco is sensory overload in the best way.', stops:['Marrakech'], emojis:['🕌'], grad:'linear-gradient(135deg,#422006,#ca8a04)', emoji:'🐫', shareCode:'MOROCCO', days:10, cost:1800, likes:156 },
+];
+
+const GRADIENTS = ['linear-gradient(135deg,#1a4a8a,#3B82F6)','linear-gradient(135deg,#7c2d12,#ea580c)','linear-gradient(135deg,#14532d,#16a34a)','linear-gradient(135deg,#4c1d95,#7c3aed)','linear-gradient(135deg,#831843,#db2777)'];
+
+function setFeed(type, el) {
+  activeFeed = type;
+  document.querySelectorAll('.feed-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderFeed();
+}
+
+function getAllPosts() {
+  // Community posts = demo posts + user's shared trips
+  const userShared = JSON.parse(localStorage.getItem('tl_community_posts')||'[]');
+  const allUsers = Users.all();
+  const userPostsFull = userShared.map(p => {
+    const u = allUsers.find(u=>u.id===p.userId) || {};
+    return { ...p, userName:u.name||'You', initials:getInitials(u.name||'You') };
+  });
+  return [...DEMO_POSTS, ...userPostsFull];
+}
+
+function renderFeed() {
+  let posts = getAllPosts();
+  const myTrips = Trips.forUser(user.id).filter(t=>t.isPublic);
+
+  if (activeFeed==='popular') posts = [...posts].sort((a,b)=>(b.likes||0)-(a.likes||0));
+  else if (activeFeed==='recent') posts = [...posts].reverse();
+  else if (activeFeed==='mine') posts = myTrips.map(t => {
+    const stops = Stops.forTrip(t.id);
+    return { id:t.id, userId:t.userId, userName:user.name, initials:getInitials(user.name), tripName:t.name, caption:t.description||'', stops:stops.map(s=>s.cityName), emojis:stops.map(s=>s.emoji), grad:GRADIENTS[0], emoji:t.coverEmoji||'✈️', shareCode:t.shareCode, days:daysBetween(t.startDate,t.endDate), cost:0, likes:0, isOwn:true };
+  });
+
+  const feed = document.getElementById('feed');
+  if (!posts.length) {
+    feed.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><div class="empty-state-title">' + (activeFeed==='mine'?'No shared trips yet':'No posts') + '</div><div class="empty-state-desc">Share one of your trips to appear here!</div><button class="btn btn-primary mt-md" onclick="shareMyTrip()">Share a Trip</button></div>';
+    return;
+  }
+
+  feed.innerHTML = posts.map(p => {
+    const liked = likedPosts.includes(p.id);
+    return `
+      <div class="post-card animate-in">
+        <div class="post-cover">
+          <div class="post-cover-bg" style="background:${p.grad};"></div>
+          <span>${p.emoji}</span>
+        </div>
+        <div class="post-header">
+          <div class="avatar avatar-md" style="background:var(--grad-primary);">${p.initials}</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:.9rem;">${p.userName}</div>
+            <div style="font-size:.72rem;color:var(--text-muted);">${p.days} days · ${formatCurrency(p.cost||0)} est.</div>
+          </div>
+          <a href="share.html?code=${p.shareCode}" class="btn btn-ghost btn-sm" target="_blank">View</a>
+        </div>
+        <div class="post-body">
+          <div class="post-title">${p.tripName}</div>
+          ${p.caption?`<div class="post-text">${p.caption}</div>`:''}
+        </div>
+        <div class="post-stops">
+          ${(p.stops||[]).map((s,i)=>`<span class="badge badge-muted">${p.emojis?.[i]||'📍'} ${s}</span>`).join('')}
+        </div>
+        <div class="post-actions">
+          <div class="action-btn ${liked?'liked':''}" onclick="toggleLike('${p.id}',this)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span id="likes-${p.id}">${p.likes+(likedPosts.includes(p.id)?1:0)}</span>
+          </div>
+          <div class="action-btn" onclick="copyShareLink('${p.shareCode}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Copy Link
+          </div>
+          <a href="share.html?code=${p.shareCode}" class="action-btn" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            View Trip
+          </a>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Stats
+  const allPosts = getAllPosts();
+  document.getElementById('stat-shared').textContent = allPosts.length;
+  document.getElementById('stat-cities').textContent = new Set(allPosts.flatMap(p=>p.stops||[])).size;
+  document.getElementById('stat-users').textContent  = new Set(allPosts.map(p=>p.userId)).size;
+
+  // Trending cities
+  const cityCount = {};
+  allPosts.forEach(p=>(p.stops||[]).forEach(c=>{ cityCount[c]=(cityCount[c]||0)+1; }));
+  const top = Object.entries(cityCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('trending-cities').innerHTML = top.map(([city,cnt],i)=>`
+    <div class="trending-city">
+      <div class="trending-rank">${i+1}</div>
+      <div style="flex:1;font-size:.875rem;font-weight:500;">${city}</div>
+      <span class="badge badge-muted">${cnt} trips</span>
+    </div>`).join('');
+}
+
+function toggleLike(postId, el) {
+  const idx = likedPosts.indexOf(postId);
+  if (idx>=0) likedPosts.splice(idx,1); else likedPosts.push(postId);
+  localStorage.setItem('tl_liked', JSON.stringify(likedPosts));
+  el.classList.toggle('liked');
+}
+
+function copyShareLink(code) {
+  const url = `${location.origin}${location.pathname.replace('community.html','share.html')}?code=${code}`;
+  navigator.clipboard.writeText(url).then(()=>showToast('Link copied!','success'));
+}
+
+function shareMyTrip() {
+  const trips = Trips.forUser(user.id);
+  if (!trips.length) { showToast('Create a trip first!','warning'); return; }
+  document.getElementById('share-trip-select').innerHTML = trips.map(t=>`<option value="${t.id}">${t.coverEmoji||'✈️'} ${t.name}</option>`).join('');
+  document.getElementById('share-caption').value='';
+  openModal('share-modal');
+}
+
+function publishTrip() {
+  const tripId  = document.getElementById('share-trip-select').value;
+  const caption = document.getElementById('share-caption').value.trim();
+  const trip    = Trips.find(tripId);
+  if (!trip) return;
+
+  // Mark trip as public
+  Trips.update(tripId, { isPublic:true });
+
+  // Save to community posts
+  const stops = Stops.forTrip(tripId);
+  const posts = JSON.parse(localStorage.getItem('tl_community_posts')||'[]');
+  posts.unshift({ id:'up'+Date.now(), userId:user.id, tripName:trip.name, caption, stops:stops.map(s=>s.cityName), emojis:stops.map(s=>s.emoji), grad:GRADIENTS[Math.floor(Math.random()*GRADIENTS.length)], emoji:trip.coverEmoji||'✈️', shareCode:trip.shareCode, days:daysBetween(trip.startDate,trip.endDate), cost:0, likes:0, createdAt:new Date().toISOString() });
+  localStorage.setItem('tl_community_posts', JSON.stringify(posts));
+
+  closeModal('share-modal');
+  setFeed('discover', document.querySelector('.feed-tab'));
+  showToast('Trip published to the community! 🌍','success');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('active'); });
+});
+
+renderFeed();
+</script>
+</body>
+</html>

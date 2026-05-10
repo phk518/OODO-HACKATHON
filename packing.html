@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveloop — Packing Checklist</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <style>
+    .packing-layout { display:grid; grid-template-columns:280px 1fr; gap:var(--space-xl); align-items:start; }
+    .trip-selector { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-lg); position:sticky; top:calc(var(--navbar-h)+20px); }
+    .trip-selector-item { display:flex; align-items:center; gap:var(--space-sm); padding:10px 12px; border-radius:var(--radius-md); cursor:pointer; transition:all .15s; font-size:.875rem; }
+    .trip-selector-item:hover { background:var(--bg-elevated); }
+    .trip-selector-item.active { background:var(--primary-dim); color:var(--primary); border:1px solid var(--border-primary); }
+    .progress-summary { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:var(--space-xl); margin-bottom:var(--space-xl); display:flex; align-items:center; gap:var(--space-xl); }
+    .progress-ring-wrap { position:relative; width:100px; height:100px; flex-shrink:0; }
+    .progress-ring-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:.75rem; color:var(--text-secondary); }
+    .progress-ring-pct { font-size:1.3rem; font-weight:700; color:var(--text-primary); line-height:1; }
+    .cat-section { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:var(--space-md); }
+    .cat-header { display:flex; align-items:center; justify-content:space-between; padding:var(--space-md) var(--space-lg); background:var(--bg-elevated); cursor:pointer; transition:background .15s; user-select:none; }
+    .cat-header:hover { background:var(--bg-surface); }
+    .cat-header-left { display:flex; align-items:center; gap:var(--space-sm); font-weight:600; }
+    .cat-icon { width:32px; height:32px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:.95rem; }
+    .cat-progress { font-size:.75rem; color:var(--text-muted); }
+    .cat-items { padding:var(--space-sm) var(--space-md); }
+    .pack-item { display:flex; align-items:center; gap:var(--space-md); padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.04); transition:background .1s; border-radius:var(--radius-sm); }
+    .pack-item:last-child { border-bottom:none; }
+    .pack-item:hover { background:var(--bg-elevated); }
+    .pack-item.packed .pack-label { text-decoration:line-through; color:var(--text-muted); }
+    .pack-checkbox { width:20px; height:20px; border-radius:6px; border:2px solid var(--border); background:var(--bg-elevated); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all .2s var(--ease-bounce); }
+    .pack-checkbox.checked { background:var(--success); border-color:var(--success); animation:scaleIn .2s var(--ease-bounce); }
+    .pack-label { flex:1; font-size:.875rem; }
+    .pack-delete { opacity:0; transition:opacity .15s; }
+    .pack-item:hover .pack-delete { opacity:1; }
+    .add-item-row { display:flex; gap:var(--space-sm); padding:var(--space-md); border-top:1px solid var(--border); }
+    .add-item-row input { flex:1; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px 12px; font-size:.85rem; color:var(--text-primary); }
+    .add-item-row input:focus { border-color:var(--primary); outline:none; }
+    .collapsed-items { display:none; }
+    .cat-section.open .collapsed-items { display:block; }
+    .cat-chevron { transition:transform .2s; }
+    .cat-section.open .cat-chevron { transform:rotate(180deg); }
+  </style>
+</head>
+<body class="bg-dots">
+<header id="main-navbar" class="navbar"></header>
+<main class="page-wrapper">
+
+  <div class="page-header animate-in" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <h1 class="page-title">Packing Checklist</h1>
+      <p class="page-subtitle">Stay organised — never forget the essentials.</p>
+    </div>
+    <div style="display:flex;gap:var(--space-sm);">
+      <button class="btn btn-ghost" onclick="resetAll()">↺ Reset All</button>
+      <button class="btn btn-accent" onclick="openModal('add-cat-modal')">+ Add Item</button>
+    </div>
+  </div>
+
+  <div class="packing-layout animate-in stagger-1">
+
+    <!-- Trip Selector -->
+    <div class="trip-selector">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md);">Select Trip</div>
+      <div id="trip-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+      <div class="empty-state" id="no-trips" style="display:none;padding:var(--space-lg) 0;">
+        <div style="font-size:2rem;">🧳</div>
+        <div style="font-size:.85rem;color:var(--text-muted);">No trips yet</div>
+        <a href="create-trip.html" class="btn btn-primary btn-sm mt-md">Create Trip</a>
+      </div>
+    </div>
+
+    <!-- Main Checklist -->
+    <div id="checklist-area">
+      <div class="empty-state" id="select-trip-msg">
+        <div class="empty-state-icon">👈</div>
+        <div class="empty-state-title">Select a trip</div>
+        <div class="empty-state-desc">Choose a trip from the sidebar to manage its packing list.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Add Item Modal -->
+<div class="modal-overlay" id="add-cat-modal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <div class="modal-title">Add Packing Item</div>
+      <button class="modal-close" onclick="closeModal('add-cat-modal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+      <div class="form-group">
+        <label class="form-label">Item Name</label>
+        <input type="text" id="new-item-name" class="form-input" placeholder="e.g. Sunscreen SPF 50"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="new-item-cat" class="form-select">
+          <option value="clothing">👔 Clothing</option>
+          <option value="documents">📄 Documents</option>
+          <option value="electronics">💻 Electronics</option>
+          <option value="toiletries">🧴 Toiletries</option>
+          <option value="medical">💊 Medical</option>
+          <option value="accessories">👜 Accessories</option>
+          <option value="general">📦 General</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="addItemFromModal()">Add to Checklist</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script>
+const user = Session.require();
+renderNavbar(user);
+
+const CATS = [
+  { id:'clothing',    label:'Clothing',    emoji:'👔', color:'#3B82F6' },
+  { id:'documents',   label:'Documents',   emoji:'📄', color:'#F59E0B' },
+  { id:'electronics', label:'Electronics', emoji:'💻', color:'#8B5CF6' },
+  { id:'toiletries',  label:'Toiletries',  emoji:'🧴', color:'#10B981' },
+  { id:'medical',     label:'Medical',     emoji:'💊', color:'#EF4444' },
+  { id:'accessories', label:'Accessories', emoji:'👜', color:'#EC4899' },
+  { id:'general',     label:'General',     emoji:'📦', color:'#94A3B8' },
+];
+
+const DEFAULT_ITEMS = [
+  { name:'Passport',            category:'documents'   },
+  { name:'Travel Insurance',    category:'documents'   },
+  { name:'Flight Tickets',      category:'documents'   },
+  { name:'T-Shirts (×5)',       category:'clothing'    },
+  { name:'Jeans / Trousers',    category:'clothing'    },
+  { name:'Underwear (×7)',      category:'clothing'    },
+  { name:'Comfortable Shoes',   category:'clothing'    },
+  { name:'Phone Charger',       category:'electronics' },
+  { name:'Power Bank',          category:'electronics' },
+  { name:'Universal Adapter',   category:'electronics' },
+  { name:'Toothbrush & Paste',  category:'toiletries'  },
+  { name:'Shampoo & Conditioner',category:'toiletries' },
+  { name:'Sunscreen',           category:'toiletries'  },
+  { name:'Pain Killers',        category:'medical'     },
+  { name:'Hand Sanitiser',      category:'medical'     },
+];
+
+let activeTripId = null;
+
+function loadTrips() {
+  const trips = Trips.forUser(user.id);
+  const list = document.getElementById('trip-list');
+  const none = document.getElementById('no-trips');
+  if (!trips.length) { list.innerHTML=''; none.style.display=''; return; }
+  none.style.display='none';
+  list.innerHTML = trips.map(t=>`
+    <div class="trip-selector-item ${t.id===activeTripId?'active':''}" onclick="selectTrip('${t.id}')">
+      <span style="font-size:1.2rem;">${t.coverEmoji||'✈️'}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;truncate;">${t.name}</div>
+        <div style="font-size:.72rem;color:var(--text-muted);">${formatDate(t.startDate,{month:'short',day:'numeric',year:'numeric'})}</div>
+      </div>
+    </div>`).join('');
+  if (trips.length === 1 && !activeTripId) selectTrip(trips[0].id);
+}
+
+function selectTrip(tripId) {
+  activeTripId = tripId;
+  const items = Packing.forTrip(tripId);
+  // Auto-seed default items if empty
+  if (!items.length) {
+    DEFAULT_ITEMS.forEach(i => Packing.create({ tripId, name:i.name, category:i.category }));
+  }
+  loadTrips();
+  renderChecklist();
+}
+
+function renderChecklist() {
+  if (!activeTripId) return;
+  const items = Packing.forTrip(activeTripId);
+  const packed = items.filter(i=>i.isPacked).length;
+  const pct = items.length ? Math.round((packed/items.length)*100) : 0;
+  const area = document.getElementById('checklist-area');
+
+  // Progress ring SVG
+  const r=42, circ=2*Math.PI*r;
+  const dash = circ * pct/100;
+
+  area.innerHTML = `
+    <!-- Progress -->
+    <div class="progress-summary animate-in" style="margin-bottom:var(--space-xl);">
+      <div class="progress-ring-wrap">
+        <svg width="100" height="100" style="transform:rotate(-90deg)">
+          <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--bg-elevated)" stroke-width="8"/>
+          <circle cx="50" cy="50" r="${r}" fill="none" stroke="${pct===100?'var(--success)':'var(--primary)'}" stroke-width="8"
+            stroke-dasharray="${dash} ${circ}" stroke-linecap="round" style="transition:stroke-dasharray .6s ease;"/>
+        </svg>
+        <div class="progress-ring-text"><div class="progress-ring-pct">${pct}%</div>packed</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:1.2rem;font-weight:700;margin-bottom:4px;">${pct===100?'All packed! 🎉':pct>=50?'Looking good! Keep going 💪':'Let\'s start packing 🧳'}</div>
+        <div style="color:var(--text-secondary);font-size:.875rem;margin-bottom:var(--space-md);">${packed} of ${items.length} items packed</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill ${pct===100?'accent':''}" style="width:${pct}%;transition:width .6s ease;"></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+        <button class="btn btn-ghost btn-sm" onclick="checkAll()">✅ Check All</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetAll()">↺ Uncheck All</button>
+        <button class="btn btn-accent btn-sm" onclick="openModal('add-cat-modal')">+ Add Item</button>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    ${CATS.map(cat=>{
+      const catItems = items.filter(i=>i.category===cat.id);
+      if (!catItems.length) return '';
+      const catPacked = catItems.filter(i=>i.isPacked).length;
+      return `
+        <div class="cat-section open animate-in" id="cat-${cat.id}" onclick_header="toggleCat('${cat.id}')">
+          <div class="cat-header" onclick="toggleCat('${cat.id}')">
+            <div class="cat-header-left">
+              <div class="cat-icon" style="background:${cat.color}22;border:1px solid ${cat.color}44;">${cat.emoji}</div>
+              ${cat.label}
+              <span class="cat-progress">${catPacked}/${catItems.length}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-sm);">
+              ${catPacked===catItems.length?'<span class="badge badge-success">Done</span>':''}
+              <svg class="cat-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="collapsed-items">
+            <div class="cat-items">
+              ${catItems.map(item=>`
+                <div class="pack-item ${item.isPacked?'packed':''}" id="pack-${item.id}">
+                  <div class="pack-checkbox ${item.isPacked?'checked':''}" onclick="toggleItem('${item.id}')">
+                    ${item.isPacked?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+                  </div>
+                  <span class="pack-label">${item.name}</span>
+                  <button class="btn btn-danger btn-sm btn-icon pack-delete" onclick="deleteItem('${item.id}')">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>`).join('')}
+            </div>
+            <div class="add-item-row">
+              <input type="text" placeholder="Add item…" id="inline-${cat.id}" onkeydown="if(event.key==='Enter')addInline('${cat.id}','${activeTripId}')"/>
+              <button class="btn btn-outline-primary btn-sm" onclick="addInline('${cat.id}','${activeTripId}')">Add</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('')}
+
+    <!-- Empty categories prompt -->
+    <div style="margin-top:var(--space-md);text-align:center;">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('add-cat-modal')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Another Item
+      </button>
+    </div>`;
+}
+
+function toggleCat(catId) {
+  const el = document.getElementById('cat-'+catId);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleItem(id) {
+  Packing.toggle(id);
+  renderChecklist();
+}
+
+function deleteItem(id) {
+  Packing.delete(id);
+  renderChecklist();
+  showToast('Item removed','info');
+}
+
+function checkAll() {
+  Packing.forTrip(activeTripId).forEach(i=>{ if(!i.isPacked) Packing.toggle(i.id); });
+  renderChecklist();
+  showToast('All items marked as packed! 🎉','success');
+}
+
+function resetAll() {
+  Packing.forTrip(activeTripId).forEach(i=>{ if(i.isPacked) Packing.toggle(i.id); });
+  renderChecklist();
+  showToast('Checklist reset','info');
+}
+
+function addInline(cat, tripId) {
+  const input = document.getElementById('inline-'+cat);
+  const name = input?.value?.trim();
+  if (!name) return;
+  Packing.create({ tripId, name, category:cat });
+  input.value='';
+  renderChecklist();
+}
+
+function addItemFromModal() {
+  if (!activeTripId) { showToast('Select a trip first','warning'); return; }
+  const name = document.getElementById('new-item-name').value.trim();
+  const cat  = document.getElementById('new-item-cat').value;
+  if (!name) return;
+  Packing.create({ tripId:activeTripId, name, category:cat });
+  document.getElementById('new-item-name').value='';
+  closeModal('add-cat-modal');
+  renderChecklist();
+  showToast(`${name} added to checklist`,'success');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('active'); });
+});
+
+loadTrips();
+</script>
+</body>
+</html>
