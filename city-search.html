@@ -83,6 +83,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/db.js"></script>
+<script src="js/sygic-api.js"></script>
 <script src="js/cities-data.js"></script>
 <script src="js/utils.js"></script>
 <script>
@@ -127,12 +128,10 @@ function resetFilters() {
   renderCities();
 }
 
-function renderCities() {
+async function renderCities() {
   const q = (document.getElementById('search-input').value||'').toLowerCase();
-  let cities = CITIES;
-  if (activeRegion !== 'all') cities = cities.filter(c=>c.region===activeRegion);
+  let cities = await searchCities(q, activeRegion);
   if (activeCost   !== 'all') cities = cities.filter(c=>c.costIndex===+activeCost);
-  if (q) cities = cities.filter(c=>c.name.toLowerCase().includes(q)||c.country.toLowerCase().includes(q));
 
   document.getElementById('result-count').textContent = `${cities.length} destination${cities.length!==1?'s':''} found`;
   const grid  = document.getElementById('cities-grid');
@@ -161,8 +160,8 @@ function renderCities() {
     </div>`).join('');
 }
 
-function openCityDetail(cityId) {
-  const c = getCityById(cityId);
+async function openCityDetail(cityId) {
+  const c = await getCityById(cityId);
   if (!c) return;
   selectedCity = c;
   document.getElementById('city-detail-content').innerHTML = `
@@ -189,8 +188,8 @@ function openCityDetail(cityId) {
   openModal('city-detail-modal');
 }
 
-function openAddToTrip(cityId) {
-  const c = getCityById(cityId);
+async function openAddToTrip(cityId) {
+  const c = await getCityById(cityId);
   selectedCity = c;
   document.getElementById('add-city-name').textContent = c.name;
   const trips = Trips.forUser(user.id);
@@ -209,9 +208,9 @@ function openAddToTrip(cityId) {
   openModal('add-to-trip-modal');
 }
 
-function addCityToTrip(tripId, cityId) {
+async function addCityToTrip(tripId, cityId) {
   const trip = Trips.find(tripId);
-  const city = getCityById(cityId);
+  const city = await getCityById(cityId);
   const stops = Stops.forTrip(tripId);
   Stops.create({ tripId, cityId:city.id, cityName:city.name, country:city.country, countryCode:city.countryCode, emoji:city.emoji, arrivalDate:trip.startDate, departureDate:trip.endDate, order:stops.length });
   closeModal('add-to-trip-modal');

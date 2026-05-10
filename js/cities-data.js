@@ -70,7 +70,12 @@ function getCityGradient(cityId) {
   return CITY_GRADIENTS[hash % CITY_GRADIENTS.length];
 }
 
-function searchCities(query, region = 'all') {
+async function searchCities(query, region = 'all') {
+  if (window.SygicAPI && window.SYGIC_API_KEY !== 'YOUR_SYGIC_API_KEY_HERE') {
+      const results = await window.SygicAPI.searchSygicCities(query);
+      if (results && results.length > 0) return results;
+  }
+  // Fallback to static data
   let results = CITIES;
   if (region !== 'all') results = results.filter(c => c.region === region);
   if (query) {
@@ -82,4 +87,12 @@ function searchCities(query, region = 'all') {
   return results;
 }
 
-function getCityById(id) { return CITIES.find(c => c.id === id) || null; }
+async function getCityById(id) { 
+  let c = CITIES.find(c => c.id === id);
+  if (c) return c;
+  
+  if (window.SygicAPI && window.SYGIC_API_KEY !== 'YOUR_SYGIC_API_KEY_HERE') {
+      return await window.SygicAPI.getSygicCityById(id);
+  }
+  return null;
+}
