@@ -96,12 +96,16 @@ const GENERIC_ACTIVITIES = [
   { name:'Shopping District', category:'shopping', avgCost:100, duration:180, emoji:'🛍️', description:'Explore local markets and designer boutiques.' },
 ];
 
-function getActivitiesForCity(cityId) {
+async function getActivitiesForCity(cityId) {
+  if (window.SygicAPI && window.SYGIC_API_KEY !== 'YOUR_SYGIC_API_KEY_HERE') {
+      const results = await window.SygicAPI.getSygicActivities(cityId);
+      if (results && results.length > 0) return results;
+  }
   return CITY_ACTIVITIES[cityId] || GENERIC_ACTIVITIES;
 }
 
-function filterActivities(cityId, { category = 'all', maxCost = Infinity } = {}) {
-  let acts = getActivitiesForCity(cityId);
+async function filterActivities(cityId, { category = 'all', maxCost = Infinity } = {}) {
+  let acts = await getActivitiesForCity(cityId);
   if (category !== 'all') acts = acts.filter(a => a.category === category);
   if (maxCost < Infinity) acts = acts.filter(a => a.avgCost <= maxCost);
   return acts;

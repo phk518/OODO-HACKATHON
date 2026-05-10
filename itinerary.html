@@ -130,6 +130,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/db.js"></script>
+<script src="js/sygic-api.js"></script>
 <script src="js/cities-data.js"></script>
 <script src="js/activities-data.js"></script>
 <script src="js/utils.js"></script>
@@ -254,9 +255,9 @@ function deleteStop(id) {
 }
 
 // City search modal
-function renderCityResults() {
+async function renderCityResults() {
   const q = document.getElementById('city-search-input').value;
-  const results = searchCities(q).slice(0,20);
+  const results = (await searchCities(q)).slice(0,20);
   document.getElementById('city-results').innerHTML = results.map(c => `
     <div class="city-card" onclick="addStop('${c.id}')">
       <div class="city-card-image" style="height:90px;font-size:2.2rem;">
@@ -270,8 +271,8 @@ function renderCityResults() {
     </div>`).join('');
 }
 
-function addStop(cityId) {
-  const city = getCityById(cityId);
+async function addStop(cityId) {
+  const city = await getCityById(cityId);
   if (!city) return;
   const stops = Stops.forTrip(tripId);
   const order = stops.length;
@@ -286,7 +287,7 @@ function addStop(cityId) {
 
 // Activity modal
 let actStopId = null;
-function openActModal(stopId) {
+async function openActModal(stopId) {
   actStopId = stopId;
   const stop = Stops.find(stopId);
   activeCatFilter = 'all';
@@ -294,20 +295,20 @@ function openActModal(stopId) {
     [{ id:'all', label:'All', emoji:'🌐' }, ...ACTIVITY_CATEGORIES].map(c =>
       `<button class="chip ${c.id==='all'?'active':''}" onclick="setCatFilter('${c.id}',this)">${c.emoji||''} ${c.label}</button>`
     ).join('');
-  renderActResults(stop.cityId);
+  await renderActResults(stop.cityId);
   openModal('act-modal');
 }
 
-function setCatFilter(cat, el) {
+async function setCatFilter(cat, el) {
   activeCatFilter = cat;
   document.querySelectorAll('#cat-filters .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   const stop = Stops.find(actStopId);
-  renderActResults(stop.cityId);
+  await renderActResults(stop.cityId);
 }
 
-function renderActResults(cityId) {
-  const acts = filterActivities(cityId, { category: activeCatFilter === 'all' ? undefined : activeCatFilter });
+async function renderActResults(cityId) {
+  const acts = await filterActivities(cityId, { category: activeCatFilter === 'all' ? undefined : activeCatFilter });
   document.getElementById('act-results').innerHTML = acts.map(a => `
     <div class="activity-card">
       <div class="activity-card-icon">${a.emoji}</div>
