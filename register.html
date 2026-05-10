@@ -292,9 +292,10 @@
     btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> Creating...';
 
     setTimeout(() => {
+      // Pass RAW password — Users.create() in db.js handles btoa() internally
       const user = Users.create({
-        name: `${first} ${last}`, email, password: btoa(pass),
-        phone, city, country, bio, language: 'en'
+        name: `${first} ${last}`, email, password: pass,
+        phone, city, country, bio
       });
       Session.set(user);
       window.location.href = 'preferences.html';

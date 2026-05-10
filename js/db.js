@@ -56,12 +56,12 @@ function dbDeleteWhere(key, predicate) {
 
 /* ── Users ──────────────────────────────────────────────────── */
 const Users = {
-  create({ name, email, password }) {
+  create({ name, email, password, city='', country='', phone='', bio='' }) {
     if (this.findByEmail(email)) throw new Error('Email already registered');
     return dbInsert(DB_KEYS.USERS, {
       name, email,
-      password: btoa(password), // simple obfuscation (not real security)
-      avatar: null,
+      password: btoa(password), // stores btoa(rawPassword) — always pass raw password
+      avatar: null, city, country, phone, bio,
       language: 'en',
       savedDestinations: [],
       isAdmin: email === 'admin@traveloop.com',
